@@ -5,12 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 
-namespace EGE.Environment.Paths
+namespace EGE.Environment
 {
-    public class PathNode:Node
+    public class Node
     {
-        
-
-
+        public Vector3 NodeLocation { get; set; }
     }
 }

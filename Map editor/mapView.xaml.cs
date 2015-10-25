@@ -24,6 +24,7 @@ namespace Map_editor
         ScaleTransform zoom = new ScaleTransform(10, 10);
         double Thickness = 1;
         TranslateTransform offset = new TranslateTransform(10, 10);
+        double PixelScale = 20;
         public mapView()
         {
             InitializeComponent();
@@ -78,23 +79,38 @@ namespace Map_editor
                     
                     if (first)
                     {
-                        l.X1 = p.NodeLocation.X;
-                        l.Y1 = p.NodeLocation.Z;
+                        l.X1 = p.NodeLocation.X*PixelScale;
+                        l.Y1 = p.NodeLocation.Z * PixelScale;
                         first = false;
                     }
                     else
                     {
-                        l.X2 = p.NodeLocation.X;
-                        l.Y2 = p.NodeLocation.Z;
+                        l.X2 = p.NodeLocation.X * PixelScale;
+                        l.Y2 = p.NodeLocation.Z * PixelScale;
                         map.Children.Add(l);
                         l = new Line();
                         l.StrokeThickness = Thickness;
                         l.Stroke = Brushes.Black;
-                        l.X1 = p.NodeLocation.X;
-                        l.Y1 = p.NodeLocation.Z;
+                        l.X1 = p.NodeLocation.X * PixelScale;
+                        l.Y1 = p.NodeLocation.Z * PixelScale;
                     }
                 }
             }
+        }
+
+        public Button addNode(object obj)
+        {
+            Button nodeBtn = new Button();
+            nodeBtn.Tag = obj;
+            nodeBtn.Height = 10;
+            nodeBtn.Width = 10;
+            nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+            nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+            double Top = (((EGE.Environment.Node)obj).NodeLocation.Z * PixelScale) - 5;
+            double Left = (((EGE.Environment.Node)obj).NodeLocation.X * PixelScale) - 5;
+            nodeBtn.Margin = new Thickness(Left, Top, 0, 0);
+            map.Children.Add(nodeBtn);
+            return nodeBtn;
         }
     }
 }

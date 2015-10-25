@@ -16,7 +16,14 @@ namespace Map_editor
 {
     public partial class Form1 : Form
     {
-        
+        struct NodeTag
+        {
+            public object value;
+            public object mapObject;
+
+            public NodeTag(object val) { value = val; mapObject = null; }
+        }
+
         Dictionary<Type, int> dataTypes = new Dictionary<Type, int>();
         World currentWorld;
         bool OpenGLLoaded = false;
@@ -31,7 +38,7 @@ namespace Map_editor
             dataTypes.Add(typeof(Vector2), 2);
             dataTypes.Add(typeof(Vector3), 3);
             currentWorld = new World();
-            
+            LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
         }
 
         #region Files
@@ -79,6 +86,7 @@ namespace Map_editor
         {
             Type type = obj.GetType();
             TreeNode t = new TreeNode(Title, 4, 4);
+            
             if (type.IsArray)
             {
                 Array objectArray = (Array)obj;
@@ -103,7 +111,12 @@ namespace Map_editor
                     AddNode(properties[i].GetValue(obj), t.Nodes, properties[i].Name);
                 }
             }
-            t.Tag = obj;
+            t.Tag = new NodeTag(obj);
+            if ( type.IsSubclassOf(typeof(EGE.Environment.Node)))
+            {
+                t.Tag = new NodeTag(obj) { mapObject = mapView1.addNode(obj)};
+            }
+            if (t.Tag == null) System.Diagnostics.Debugger.Break();
             node.Add(t);            
         }
 
@@ -113,11 +126,11 @@ namespace Map_editor
             if (e.Button == MouseButtons.Right) treeView1.SelectedNode = e.Node;
             if (previousNode != null && valueEditor1.GetType() != typeof(Editors.GeneralEditor))
             {
-                previousNode.Tag = valueEditor1.GetValue();
+                previousNode.Tag = new NodeTag(valueEditor1.GetValue());
                 RefreshParents(previousNode);
             }
             splitContainer1.Panel1.Controls.Remove(valueEditor1);
-            valueEditor1 = Editors.ValueEditor.GetAppropriateEditor(e.Node.Tag);
+            valueEditor1 = Editors.ValueEditor.GetAppropriateEditor(((NodeTag)e.Node.Tag).value);
             valueEditor1.Dock = DockStyle.Fill;
 
             splitContainer1.Panel1.Controls.Add(valueEditor1);
@@ -130,15 +143,15 @@ namespace Map_editor
             int level = settingNode.Level;
             for (int i = level; i > 0; i--)
             {
-                object parentTag = settingNode.Parent.Tag;
+                object parentTag = ((NodeTag)settingNode.Parent.Tag).value;
                 if (!parentTag.GetType().IsArray)
                 {
-                    parentTag.GetType().GetProperty(settingNode.Text).SetValue(settingNode.Parent.Tag, settingNode.Tag);
+                    parentTag.GetType().GetProperty(settingNode.Text).SetValue(parentTag, ((NodeTag)settingNode.Tag).value);
                 }
                 else
                 {
                     Array parent = (Array)parentTag;
-                    parent.SetValue(settingNode.Tag, Convert.ToInt32(settingNode.Text));
+                    parent.SetValue(((NodeTag)settingNode.Tag).value, Convert.ToInt32(settingNode.Text));
                 }
                 settingNode = settingNode.Parent;
             }
@@ -147,7 +160,7 @@ namespace Map_editor
         private void RefreshChildren(TreeNode settingNode)
         {
             settingNode.Nodes.Clear();
-            Array nodeArray = (Array)settingNode.Tag;
+            Array nodeArray = (Array)((NodeTag)settingNode.Tag).value;
             for (int i = 0; i < nodeArray.Length; i++)
             {
                 AddNode(nodeArray.GetValue(i), settingNode.Nodes, i.ToString());
@@ -188,7 +201,7 @@ namespace Map_editor
         {           
             try
             {
-                World w = (World)treeView1.Nodes[0].Tag;
+                World w = (World)((NodeTag)treeView1.Nodes[0].Tag).value;
                 w.Update(glControl1.Focused, 0);
                 w.Resize(glControl1.Width, glControl1.Height);
                 w.Draw(glControl1.Focused);
@@ -233,8 +246,8 @@ namespace Map_editor
         {
             TreeNode selectedNode = treeView1.SelectedNode;
             TreeNode parentNode = selectedNode.Parent;
-            Array arrayObject = (Array)parentNode.Tag;
-            Array copyArray = Array.CreateInstance(selectedNode.Tag.GetType(), arrayObject.Length - 1);
+            Array arrayObject = (Array)((NodeTag)parentNode.Tag).value;
+            Array copyArray = Array.CreateInstance(((NodeTag)selectedNode.Tag).value.GetType(), arrayObject.Length - 1);
             int j = 0;
             for (int i = 0; i < arrayObject.Length; i++)
             {
@@ -243,7 +256,7 @@ namespace Map_editor
                     copyArray.SetValue(arrayObject.GetValue(i), j++);
                 }
             }
-            parentNode.Tag = copyArray;
+            parentNode.Tag = new NodeTag(copyArray);
 
             RefreshChildren(parentNode);
             RefreshParents(parentNode);
@@ -252,12 +265,12 @@ namespace Map_editor
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode selectedNode = treeView1.SelectedNode;
-            Array arrayObject = (Array)selectedNode.Tag;
-            Array copyArray = Array.CreateInstance(selectedNode.Tag.GetType().GetElementType(), arrayObject.Length + 1);
+            Array arrayObject = (Array)((NodeTag)selectedNode.Tag).value;
+            Array copyArray = Array.CreateInstance(((NodeTag)selectedNode.Tag).value.GetType().GetElementType(), arrayObject.Length + 1);
             Array.Copy(arrayObject, 0, copyArray, 0, arrayObject.Length);
             
-            copyArray.SetValue(Activator.CreateInstance(treeView1.SelectedNode.Tag.GetType().GetElementType()), arrayObject.Length);
-            selectedNode.Tag = copyArray;
+            copyArray.SetValue(Activator.CreateInstance(((NodeTag)treeView1.SelectedNode.Tag).value.GetType().GetElementType()), arrayObject.Length);
+            selectedNode.Tag = new NodeTag(copyArray);
 
             RefreshChildren(selectedNode);
             RefreshParents(selectedNode);

@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="Map_editor.mapView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Map_editor"
+             mc:Ignorable="d" 
+               PreviewMouseWheel="UserControl_PreviewMouseWheel" Width="545" Height="372.275">
+    <Grid x:Name="mainGrid" Background="CornflowerBlue">
+        <Grid x:Name="map" RenderTransformOrigin="0,0" Margin="0,0,100,100">
+
+        </Grid>
+        <Slider x:Name="slider" Margin="10,0,0,10" ValueChanged="slider_ValueChanged" Maximum="100" SmallChange="0.05" Minimum="1" Value="10" HorizontalAlignment="Left" Width="200" Height="25" VerticalAlignment="Bottom"/>
+    </Grid>
+</UserControl>

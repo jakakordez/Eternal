@@ -9,12 +9,13 @@ namespace EGE.Environment.Paths
     public class Road
     {
         public Path RoadPath { get; set; }
-        public string test { get; set; }
+
+        List<Path> Lanes;
 
         public Road()
         {
             RoadPath = new Path();
-            test = "";
+            Lanes = new List<Path>();
         }
     }
 }

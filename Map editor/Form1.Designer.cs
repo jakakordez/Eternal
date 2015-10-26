@@ -63,6 +63,7 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblLocation = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.valueEditor1 = new Map_editor.Editors.ValueEditor();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -341,7 +342,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblStatus});
+            this.lblStatus,
+            this.lblLocation});
             this.statusStrip1.Location = new System.Drawing.Point(0, 417);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(683, 22);
@@ -353,6 +355,12 @@
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(39, 17);
             this.lblStatus.Text = "Ready";
+            // 
+            // lblLocation
+            // 
+            this.lblLocation.Name = "lblLocation";
+            this.lblLocation.Size = new System.Drawing.Size(48, 17);
+            this.lblLocation.Text = "X: 0 Y: 0";
             // 
             // splitContainer1
             // 
@@ -514,6 +522,7 @@
             this.Name = "Form1";
             this.Text = "Map editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -584,6 +593,7 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private mapView mapView1;
+        private System.Windows.Forms.ToolStripStatusLabel lblLocation;
     }
 }
 

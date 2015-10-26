@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Map_editor"
              mc:Ignorable="d" 
-               PreviewMouseWheel="UserControl_PreviewMouseWheel" Width="545" Height="372.275">
+               PreviewMouseWheel="UserControl_PreviewMouseWheel" Width="545" Height="372.275" PreviewMouseMove="UserControl_PreviewMouseMove">
     <Grid x:Name="mainGrid" Background="CornflowerBlue">
         <Grid x:Name="map" RenderTransformOrigin="0,0" Margin="0,0,100,100">
         </Grid>
-        <Slider x:Name="slider" Margin="10,0,0,10" ValueChanged="slider_ValueChanged" Maximum="100" SmallChange="0.05" Minimum="1" Value="10" HorizontalAlignment="Left" Width="200" Height="25" VerticalAlignment="Bottom"/>
+        <Slider x:Name="slider" Margin="10,0,0,10" ValueChanged="slider_ValueChanged" Maximum="2" SmallChange="0.01" Minimum="0.1" Value="1" HorizontalAlignment="Left" Width="200" Height="25" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>

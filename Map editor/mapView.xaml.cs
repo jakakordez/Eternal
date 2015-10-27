@@ -26,7 +26,6 @@ namespace Map_editor
         double Thickness = 1;
         TranslateTransform offset = new TranslateTransform(10, 10);
         Double PixelScale = 20;
-        bool MousePressed = false;
 
         public delegate void LocationUpdate(double X, double Y, object argument);
         public event LocationUpdate UpdateLocation;
@@ -66,8 +65,6 @@ namespace Map_editor
         {
             zoom.ScaleX = 1/e.NewValue;
             zoom.ScaleY = 1/e.NewValue;
-            Thickness = 1 / e.NewValue;
-            Thickness = 1 / e.NewValue;
         }
 
         public void DrawWorld()
@@ -112,30 +109,18 @@ namespace Map_editor
             nodeBtn.VerticalAlignment = VerticalAlignment.Top;
             nodeBtn = UpdatePosition(nodeBtn, obj);
             nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-            nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
-            nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
             map.Children.Add(nodeBtn);
             return nodeBtn;
         }
 
-        private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            MousePressed = false;
-        }
-
-        private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            MousePressed = true;
-        }
-
         private void NodeBtn_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (MousePressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                double Top = (Mouse.GetPosition(map).Y)-5;
-                double Left = (Mouse.GetPosition(map).X)-5;
-                ((Button)sender).Margin = new Thickness(Left, Top, 0, 0);
-                ((Node)((Button)sender).Tag).NodeLocation = new OpenTK.Vector3((float)(Top / PixelScale), ((Node)((Button)sender).Tag).NodeLocation.Y, (float)(Left / PixelScale));
+                Point p = Mouse.GetPosition(map);
+                ((Button)sender).Margin = new Thickness(p.X-5, p.Y-5, 0, 0);
+                p = ScreenToWorld(p);
+                ((Node)((Button)sender).Tag).NodeLocation = new OpenTK.Vector3((float)(p.X), ((Node)((Button)sender).Tag).NodeLocation.Y, (float)(p.Y));
             }
         }
 
@@ -151,6 +136,27 @@ namespace Map_editor
         private void UserControl_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             UpdateLocation.Invoke((Mouse.GetPosition(map).X)/PixelScale, (Mouse.GetPosition(map).Y)/PixelScale, this);
+        }
+        Point grabPoint;
+        private void mainGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            grabPoint = ScreenToWorld(Mouse.GetPosition(map));
+        }
+
+        private void mainGrid_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                Vector p = Point.Subtract((grabPoint), ScreenToWorld(Mouse.GetPosition(map)));
+                offset.X -= p.X;
+                offset.Y -= p.Y;
+                grabPoint = ScreenToWorld(Mouse.GetPosition(map));
+            }
+        }
+
+        private Point ScreenToWorld(Point p)
+        {
+            return new Point(((p.X/slider.Value)) - offset.X, ((p.Y/slider.Value)) - offset.Y);
         }
     }
 }

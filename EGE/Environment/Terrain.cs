@@ -35,6 +35,14 @@ namespace EGE
             Roads = new Road[0];
         }
 
+        public void Draw()
+        {
+            foreach (Road road in Roads)
+            {
+                road.Draw();
+            }
+        }
+
         public void Load(World currentWorld, string filePath)
         {
             FilePath = filePath;

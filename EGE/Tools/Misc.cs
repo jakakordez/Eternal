@@ -97,13 +97,21 @@ namespace EGE
             return angle;
         }
 
-        public static float getVectorAngle(Vector2 vector)
+        public static float getAngle(Vector2 vector)
         {
             if (vector.Y >= 0 && vector.X >= 0) return (float)Math.Asin(vector.Y / vector.Length);
             if (vector.Y >= 0 && vector.X <= 0) return MathHelper.Pi-(float)Math.Asin(vector.Y / vector.Length);
             if (vector.Y <= 0 && vector.X >= 0) return (MathHelper.Pi*2) + (float)Math.Asin(vector.Y / vector.Length);
             if (vector.Y <= 0 && vector.X <= 0) return MathHelper.Pi - (float)Math.Asin(vector.Y / vector.Length);
             return 0;
+        }
+
+        public static Vector2 getCartesian(float angle)
+        {
+            float sin = (float)Math.Sin(angle);
+            float cos = (float)Math.Cos(angle);
+            //float cos = (float)Math.Sqrt(1 - (sin * sin));
+            return new Vector2(cos, sin);
         }
 
         public static string StreamToString(Stream stream)

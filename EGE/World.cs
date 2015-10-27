@@ -94,7 +94,7 @@ namespace EGE
             MainCharacter.Draw();
 
             GL.Color3(0, 0, 0);
-            foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
+            /*foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
                 GL.LineWidth(r.RoadPath.Width);
                 GL.Begin(PrimitiveType.LineStrip);
@@ -103,7 +103,8 @@ namespace EGE
                     GL.Vertex3(p.NodeLocation);
                 }
                 GL.End();
-            }
+            }*/
+            CurrentMap.CurrentTerrain.Draw();
 
             //    if (Focused) camera.Update(mouse);
 

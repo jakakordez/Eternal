@@ -12,7 +12,7 @@ using System.IO;
 
 namespace EGE
 {
-    static class Misc
+    public static class Misc
     {
         public static float toFloat(string data)
         {
@@ -20,6 +20,19 @@ namespace EGE
             float.TryParse(data, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result);
             return result;
         }
+
+        public static string pathUp(string path)
+        {
+            string[] p = path.Replace("\\", "/").Split('/');
+            return string.Join("/", p, 0, p.Length - 1);
+        }
+
+        public static string pathName(string path)
+        {
+            string[] p = path.Replace("\\", "/").Split('/');
+            return p[p.Length-1];
+        }
+
         public static void parseFloat(string data, out float result)
         {
             float.TryParse(data, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result);

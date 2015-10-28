@@ -16,7 +16,8 @@ namespace EGE
         {
             Converters = new List<JsonConverter> { new Tools.Vector3Serializer() },
             Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            Culture = System.Globalization.CultureInfo.InvariantCulture
         };
 
     }

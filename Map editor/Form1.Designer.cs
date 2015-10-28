@@ -377,7 +377,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
             this.splitContainer1.Size = new System.Drawing.Size(683, 368);
-            this.splitContainer1.SplitterDistance = 101;
+            this.splitContainer1.SplitterDistance = 146;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
@@ -387,7 +387,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.valueEditor1.Location = new System.Drawing.Point(0, 0);
             this.valueEditor1.Name = "valueEditor1";
-            this.valueEditor1.Size = new System.Drawing.Size(101, 30);
+            this.valueEditor1.Size = new System.Drawing.Size(146, 30);
             this.valueEditor1.TabIndex = 1;
             // 
             // treeView1
@@ -400,7 +400,7 @@
             this.treeView1.Location = new System.Drawing.Point(0, 30);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(101, 338);
+            this.treeView1.Size = new System.Drawing.Size(146, 338);
             this.treeView1.TabIndex = 0;
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
@@ -423,7 +423,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(578, 368);
+            this.tabControl1.Size = new System.Drawing.Size(533, 368);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -433,7 +433,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(570, 342);
+            this.tabPage1.Size = new System.Drawing.Size(525, 342);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Map";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -443,7 +443,7 @@
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(3, 3);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(564, 336);
+            this.elementHost1.Size = new System.Drawing.Size(519, 336);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.mapView1;

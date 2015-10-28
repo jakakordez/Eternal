@@ -14,7 +14,7 @@ namespace EGE.Tools
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             Vector3 obj = (Vector3)value;
-            writer.WriteValue(obj.X + ";" + obj.Y + ";" + obj.Z);
+            writer.WriteValue(obj.X.ToString(serializer.Culture) + ";" + obj.Y.ToString(serializer.Culture) + ";" + obj.Z.ToString(serializer.Culture));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

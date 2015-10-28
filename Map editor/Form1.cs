@@ -31,8 +31,7 @@ namespace Map_editor
             dataTypes.Add(typeof(Vector3), 3);
             currentWorld = new World();
             LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
-            mapView1.MoveNode += MapView1_MoveNode1;
-            setWorldValue("CurrentMap/CurrentTerrain/Roads/0", currentWorld, null);
+            //setWorldValue("CurrentMap/CurrentTerrain/Roads/0", currentWorld, null);
         }
 
         public static object getWorldValue(string path)
@@ -65,18 +64,12 @@ namespace Map_editor
             return v;
         }
 
-        private void MapView1_MoveNode1(double X, double Y, object argument)
-        {
-            treeView1.Nodes.Clear();
-            AddNode(currentWorld, treeView1.Nodes, "World");
-        }
-
         #region Files
         public void LoadMap(string path)
         {
             currentWorld.LoadData(path);
             treeView1.Nodes.Clear();
-            AddNode(currentWorld, treeView1.Nodes, "Map");
+            AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
             mapView1.DrawWorld();
         }
 
@@ -107,12 +100,12 @@ namespace Map_editor
             currentWorld = new World();
             MapPath = "";
             treeView1.Nodes.Clear();
-            AddNode(currentWorld, treeView1.Nodes, "World");
+            AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
         }
         #endregion
 
         #region Nodes
-        void AddNode(object obj, TreeNodeCollection node, string Title)
+        void AddNode(object obj, TreeNodeCollection node, string Title, string path)
         {
             Type type = obj.GetType();
             TreeNode t = new TreeNode(Title, 4, 4);
@@ -124,7 +117,7 @@ namespace Map_editor
                 t.ContextMenuStrip = ctxArray;
                 for (int i = 0; i < objectArray.Length; i++)
                 {
-                    AddNode(objectArray.GetValue(i), t.Nodes, i.ToString());
+                    AddNode(objectArray.GetValue(i), t.Nodes, i.ToString(), path+"/"+i);
                     t.Nodes[i].ContextMenuStrip = ctxNode;
                 }
             }
@@ -138,62 +131,31 @@ namespace Map_editor
                 PropertyInfo[] properties = obj.GetType().GetProperties();
                 for (int i = 0; i < properties.Length; i++)
                 {
-                    AddNode(properties[i].GetValue(obj), t.Nodes, properties[i].Name);
+                    AddNode(properties[i].GetValue(obj), t.Nodes, properties[i].Name, path+"/"+properties[i].Name);
                 }
             }
-            t.Tag = obj;
-            if (t.Tag == null) System.Diagnostics.Debugger.Break();
+            t.Tag = path;
+            t.Name = Title;
             node.Add(t);            
         }
 
-        TreeNode previousNode;
+        string previousPath = "";
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == MouseButtons.Right) treeView1.SelectedNode = e.Node;
-            if (previousNode != null && valueEditor1.GetType() != typeof(Editors.GeneralEditor))
+            if (previousPath != "" && valueEditor1.GetType() != typeof(Editors.GeneralEditor))
             {
-                previousNode.Tag = valueEditor1.GetValue();
-                RefreshParents(previousNode);
+                setWorldValue(previousPath, currentWorld, valueEditor1.GetValue());
             }
+            object val = getWorldValue(e.Node.Tag.ToString());
             splitContainer1.Panel1.Controls.Remove(valueEditor1);
-            valueEditor1 = Editors.ValueEditor.GetAppropriateEditor(e.Node.Tag);
+            valueEditor1 = Editors.ValueEditor.GetAppropriateEditor(val);
             valueEditor1.Dock = DockStyle.Fill;
 
             splitContainer1.Panel1.Controls.Add(valueEditor1);
             valueEditor1.Realign();
-            if (valueEditor1.GetType() != typeof(Editors.GeneralEditor)) previousNode = e.Node;
-        }
-
-        private void RefreshParents(TreeNode settingNode)
-        {
-            int level = settingNode.Level;
-            for (int i = level; i > 0; i--)
-            {
-                object parentTag = settingNode.Parent.Tag;
-                if (!parentTag.GetType().IsArray)
-                {
-                    parentTag.GetType().GetProperty(settingNode.Text).SetValue(parentTag, settingNode.Tag);
-                }
-                else
-                {
-                    Array parent = (Array)parentTag;
-                    parent.SetValue(settingNode.Tag, Convert.ToInt32(settingNode.Text));
-                }
-                settingNode = settingNode.Parent;
-            }
-
-            mapView1.DrawWorld();
-        }
-
-        private void RefreshChildren(TreeNode settingNode)
-        {
-            settingNode.Nodes.Clear();
-            Array nodeArray = (Array)settingNode.Tag;
-            for (int i = 0; i < nodeArray.Length; i++)
-            {
-                AddNode(nodeArray.GetValue(i), settingNode.Nodes, i.ToString());
-                settingNode.Nodes[i].ContextMenuStrip = ctxNode;
-            }
+            if (valueEditor1.GetType() != typeof(Editors.GeneralEditor)) previousPath = e.Node.Tag.ToString();
+            else previousPath = "";
         }
 
         #endregion
@@ -229,10 +191,9 @@ namespace Map_editor
         {           
             try
             {
-                World w = (World)treeView1.Nodes[0].Tag;
-                w.Update(glControl1.Focused, 0);
-                w.Resize(glControl1.Width, glControl1.Height);
-                w.Draw(glControl1.Focused);
+                currentWorld.Update(glControl1.Focused, 0);
+                currentWorld.Resize(glControl1.Width, glControl1.Height);
+                currentWorld.Draw(glControl1.Focused);
             }
             catch { }
             
@@ -272,22 +233,19 @@ namespace Map_editor
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode selectedNode = treeView1.SelectedNode;
-            TreeNode parentNode = selectedNode.Parent;
-            Array arrayObject = (Array)parentNode.Tag;
-            Array copyArray = Array.CreateInstance(selectedNode.Tag.GetType(), arrayObject.Length - 1);
+            object arr = getWorldValue(Misc.pathUp(treeView1.SelectedNode.Tag.ToString()));
+            Array arrayObject = (Array)arr;
+            Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length - 1);
             int j = 0;
             for (int i = 0; i < arrayObject.Length; i++)
             {
-                if (i != Convert.ToInt32(selectedNode.Text))
+                if (i != Convert.ToInt32(Misc.pathName(treeView1.SelectedNode.Tag.ToString())))
                 {
                     copyArray.SetValue(arrayObject.GetValue(i), j++);
                 }
             }
-            parentNode.Tag = copyArray;
-
-            RefreshChildren(parentNode);
-            RefreshParents(parentNode);
+            setWorldValue(Misc.pathUp(treeView1.SelectedNode.Tag.ToString()), currentWorld, copyArray);
+            UpdateArray(Misc.pathUp(treeView1.SelectedNode.Tag.ToString()));
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -308,16 +266,28 @@ namespace Map_editor
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode selectedNode = treeView1.SelectedNode;
-            Array arrayObject = (Array)selectedNode.Tag;
-            Array copyArray = Array.CreateInstance(selectedNode.Tag.GetType().GetElementType(), arrayObject.Length + 1);
+            object arr = getWorldValue(treeView1.SelectedNode.Tag.ToString());
+            Array arrayObject = (Array)arr;
+            Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length + 1);
             Array.Copy(arrayObject, 0, copyArray, 0, arrayObject.Length);
             
-            copyArray.SetValue(Activator.CreateInstance(treeView1.SelectedNode.Tag.GetType().GetElementType()), arrayObject.Length);
-            selectedNode.Tag = copyArray;
+            copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), arrayObject.Length);
+            setWorldValue(treeView1.SelectedNode.Tag.ToString(), currentWorld, copyArray);
+            UpdateArray(treeView1.SelectedNode.Tag.ToString());
+        }
 
-            RefreshChildren(selectedNode);
-            RefreshParents(selectedNode);
+        private void UpdateArray(string path)
+        {
+            string[] pathParts = path.Split('/');
+            TreeNode nod = treeView1.Nodes[0];
+            
+            for (int i = 1; i < pathParts.Length; i++)
+            {
+                nod = nod.Nodes.Find(pathParts[i], false)[0];
+            }
+            TreeNode parent = nod.Parent;
+            parent.Nodes.Remove(nod);
+            AddNode(getWorldValue(path), parent.Nodes, nod.Name, path);
         }
     }
 }

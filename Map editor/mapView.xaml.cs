@@ -95,19 +95,19 @@ namespace Map_editor
                         l.X1 = p.NodeLocation.X * PixelScale;
                         l.Y1 = p.NodeLocation.Z * PixelScale;
                     }
-                    addNode(p);
+                    //addNode(p);
                 }
             }
         }
 
-        public Button addNode(Node obj)
+        public Button addNode(string path)
         {
             Button nodeBtn = new Button();
             nodeBtn.Height = 10;
             nodeBtn.Width = 10;
             nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
             nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-            nodeBtn = UpdatePosition(nodeBtn, obj);
+            nodeBtn = UpdatePosition(nodeBtn, path);
             nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
             nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
             nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
@@ -135,11 +135,12 @@ namespace Map_editor
             }
         }
 
-        public Button UpdatePosition(Button btn, Node obj)
+        public Button UpdatePosition(Button btn, string path)
         {
-            btn.Tag = obj;
-            double Top = (obj.NodeLocation.Z * PixelScale) - 5;
-            double Left = (obj.NodeLocation.X * PixelScale) - 5;
+            btn.Tag = path;
+            Node n = (Node)Form1.getWorldValue(path);
+            double Top = (n.NodeLocation.Z * PixelScale) - 5;
+            double Left = (n.NodeLocation.X * PixelScale) - 5;
             btn.Margin = new Thickness(Left, Top, 0, 0);
             return btn;
         }

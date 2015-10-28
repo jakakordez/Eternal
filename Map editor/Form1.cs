@@ -32,7 +32,7 @@ namespace Map_editor
             currentWorld = new World();
             LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
             mapView1.MoveNode += MapView1_MoveNode1;
-            getWorldValue("CurrentMap/CurrentTerrain/Roads/0");
+            setWorldValue("CurrentMap/CurrentTerrain/Roads/0", currentWorld, null);
         }
 
         public static object getWorldValue(string path)
@@ -43,6 +43,24 @@ namespace Map_editor
             {
                 if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
                 else v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
+            }
+            return v;
+        }
+
+        public static object setWorldValue(string path, object v, object o)
+        {
+            string[] pathParts = path.Split('/');
+            if (path == "") return o;
+            string newPath = String.Join("/", pathParts, 1, pathParts.Length - 1);
+            if (v.GetType().IsArray)
+            {
+                object currentValue = ((Array)v).GetValue(Convert.ToInt32(pathParts[0]));
+                ((Array)v).SetValue(setWorldValue(newPath, currentValue, o), Convert.ToInt32(pathParts[0]));
+            }
+            else
+            {
+                object currentValue = v.GetType().GetProperty(pathParts[0]).GetValue(v);
+                v.GetType().GetProperty(pathParts[0]).SetValue(v, setWorldValue(newPath, currentValue, o));
             }
             return v;
         }

@@ -31,6 +31,26 @@ namespace Map_editor
             dataTypes.Add(typeof(Vector3), 3);
             currentWorld = new World();
             LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
+            mapView1.MoveNode += MapView1_MoveNode1;
+            getWorldValue("CurrentMap/CurrentTerrain/Roads/0");
+        }
+
+        public static object getWorldValue(string path)
+        {
+            string[] pathParts = path.Split('/');
+            object v = currentWorld;
+            for (int i = 0; i < pathParts.Length; i++)
+            {
+                if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
+                else v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
+            }
+            return v;
+        }
+
+        private void MapView1_MoveNode1(double X, double Y, object argument)
+        {
+            treeView1.Nodes.Clear();
+            AddNode(currentWorld, treeView1.Nodes, "World");
         }
 
         #region Files

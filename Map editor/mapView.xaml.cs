@@ -108,9 +108,20 @@ namespace Map_editor
             nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
             nodeBtn.VerticalAlignment = VerticalAlignment.Top;
             nodeBtn = UpdatePosition(nodeBtn, obj);
+            nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
             nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+            nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
             map.Children.Add(nodeBtn);
             return nodeBtn;
+        }
+
+        private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            MoveNode.Invoke(0, 0, sender);
+        }
+
+        private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
         }
 
         private void NodeBtn_PreviewMouseMove(object sender, MouseEventArgs e)

@@ -30,26 +30,23 @@ namespace Map_editor
         public delegate void LocationUpdate(double X, double Y, object argument);
         public event LocationUpdate UpdateLocation;
         public event LocationUpdate MoveNode;
+        public Dictionary<string, UIElement> MapObjects;        
         public mapView()
         {
             InitializeComponent();
+            MapObjects = new Dictionary<string, UIElement>();
             TransformGroup g = new TransformGroup();
+            //g.Children.Add(offset);
             g.Children.Add(zoom);
-            g.Children.Add(offset);
-            map.RenderTransform = g;
+           
+            map.LayoutTransform = g;
             
             Line unitX = new Line();
-            unitX.X1 = 0;
             unitX.X2 = 10;
-            unitX.Y1 = 0;
-            unitX.Y2 = 0;
             unitX.StrokeThickness = Thickness;
             unitX.Stroke = Brushes.Red;
             map.Children.Add(unitX);
             Line unitZ = new Line();
-            unitZ.X1 = 0;
-            unitZ.X2 = 0;
-            unitZ.Y1 = 0;
             unitZ.Y2 = 10;
             unitZ.StrokeThickness = Thickness;
             unitZ.Stroke = Brushes.LimeGreen;
@@ -58,13 +55,63 @@ namespace Map_editor
 
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            slider.Value += e.Delta/2000f;
+            slider.Value -= e.Delta/2000f;
         }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             zoom.ScaleX = 1/e.NewValue;
             zoom.ScaleY = 1/e.NewValue;
+        }
+
+        public void UpdateWorld()
+        {
+            for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.Roads.Length; i++)
+            {
+                Node prevNode = new Node();
+                EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i];
+                for (int j = 0; j < r.RoadPath.PathNodes.Length; j++)
+                {
+                    string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/RoadPath/PathNodes/" + j;
+                    if (!MapObjects.Keys.Contains(path))
+                    {
+                        Button nodeBtn = new Button();
+                        nodeBtn.Height = 10;
+                        nodeBtn.Width = 10;
+                        nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+                        nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+                        nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
+                        nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+                        nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
+                        map.Children.Add(nodeBtn);
+                        MapObjects.Add(path, nodeBtn);
+                    }
+                    Node n = (Node)Form1.getWorldValue(path);
+                    double Top = (n.NodeLocation.Z * PixelScale) - 5;
+                    double Left = (n.NodeLocation.X * PixelScale) - 5;
+                    ((Button)MapObjects[path]).Tag = path;
+                    ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
+
+                    if (j > 0)
+                    {
+                        path = "CurrentMap/CurrentTerrain/Roads/" + i + "/" + j;
+                        if (!MapObjects.Keys.Contains(path))
+                        {
+                            Line l = new Line();
+                            l.StrokeThickness = Thickness;
+                            l.Stroke = Brushes.Black;
+                            map.Children.Add(l);
+                            MapObjects.Add(path, l);
+                        }
+                        
+                        ((Line)MapObjects[path]).X1 = prevNode.NodeLocation.X*PixelScale;
+                        ((Line)MapObjects[path]).Y1 = prevNode.NodeLocation.Z * PixelScale;
+                        ((Line)MapObjects[path]).X2 = n.NodeLocation.X*PixelScale;
+                        ((Line)MapObjects[path]).Y2 = n.NodeLocation.Z*PixelScale;
+                    }
+                    prevNode = n;
+                }
+            }
         }
 
         public void DrawWorld()
@@ -100,24 +147,13 @@ namespace Map_editor
             }
         }
 
-        public Button addNode(string path)
-        {
-            Button nodeBtn = new Button();
-            nodeBtn.Height = 10;
-            nodeBtn.Width = 10;
-            nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
-            nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-            nodeBtn = UpdatePosition(nodeBtn, path);
-            nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
-            nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-            nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
-            map.Children.Add(nodeBtn);
-            return nodeBtn;
-        }
-
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            MoveNode.Invoke(0, 0, sender);
+            Point p = Mouse.GetPosition(mainGrid);
+            //p = ScreenToWorld(p);
+            p = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
+            Form1.setWorldValue(((Button)sender).Tag+"/NodeLocation/X", Form1.currentWorld, (float)p.X);
+            Form1.setWorldValue(((Button)sender).Tag + "/NodeLocation/Z", Form1.currentWorld, (float)p.Y);
         }
 
         private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -128,21 +164,11 @@ namespace Map_editor
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Point p = Mouse.GetPosition(map);
+                Point p = Mouse.GetPosition(mainGrid);
+                p.X = ((p.X  - map.Margin.Left) / zoom.ScaleX);
+                p.Y = ((p.Y  - map.Margin.Top) / zoom.ScaleY);
                 ((Button)sender).Margin = new Thickness(p.X-5, p.Y-5, 0, 0);
-                p = ScreenToWorld(p);
-                ((Node)((Button)sender).Tag).NodeLocation = new OpenTK.Vector3((float)(p.X), ((Node)((Button)sender).Tag).NodeLocation.Y, (float)(p.Y));
             }
-        }
-
-        public Button UpdatePosition(Button btn, string path)
-        {
-            btn.Tag = path;
-            Node n = (Node)Form1.getWorldValue(path);
-            double Top = (n.NodeLocation.Z * PixelScale) - 5;
-            double Left = (n.NodeLocation.X * PixelScale) - 5;
-            btn.Margin = new Thickness(Left, Top, 0, 0);
-            return btn;
         }
 
         private void UserControl_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -152,23 +178,22 @@ namespace Map_editor
         Point grabPoint;
         private void mainGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            grabPoint = ScreenToWorld(Mouse.GetPosition(map));
+            grabPoint = Mouse.GetPosition(mainGrid);
         }
 
         private void mainGrid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Pressed)
             {
-                Vector p = Point.Subtract((grabPoint), ScreenToWorld(Mouse.GetPosition(map)));
-                offset.X -= p.X;
-                offset.Y -= p.Y;
-                grabPoint = ScreenToWorld(Mouse.GetPosition(map));
+                Vector p = Point.Subtract(grabPoint,Mouse.GetPosition(mainGrid));
+                map.Margin = new Thickness(map.Margin.Left - p.X, map.Margin.Top - p.Y, 0, 0);
+                grabPoint = Mouse.GetPosition(mainGrid);
             }
         }
 
         private Point ScreenToWorld(Point p)
         {
-            return new Point(((p.X/slider.Value)) - offset.X, ((p.Y/slider.Value)) - offset.Y);
+            return new Point(((p.X) / zoom.ScaleX) , ((p.Y  ) / zoom.ScaleY) );
         }
     }
 }

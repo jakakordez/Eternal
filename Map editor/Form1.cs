@@ -58,8 +58,16 @@ namespace Map_editor
             }
             else
             {
-                object currentValue = v.GetType().GetProperty(pathParts[0]).GetValue(v);
-                v.GetType().GetProperty(pathParts[0]).SetValue(v, setWorldValue(newPath, currentValue, o));
+                PropertyInfo prop = v.GetType().GetProperty(pathParts[0]);
+                if (prop != null)
+                {
+                    prop.SetValue(v, setWorldValue(newPath, prop.GetValue(v), o));
+                }
+                else
+                {
+                    FieldInfo field = v.GetType().GetField(pathParts[0]);
+                    field.SetValue(v, setWorldValue(newPath, field.GetValue(v), o));
+                }
             }
             return v;
         }
@@ -70,7 +78,7 @@ namespace Map_editor
             currentWorld.LoadData(path);
             treeView1.Nodes.Clear();
             AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
-            mapView1.DrawWorld();
+            mapView1.UpdateWorld();
         }
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)

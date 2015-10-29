@@ -7,7 +7,9 @@
              mc:Ignorable="d" 
                PreviewMouseWheel="UserControl_PreviewMouseWheel" Width="545" Height="372.275" PreviewMouseMove="UserControl_PreviewMouseMove">
     <Grid x:Name="mainGrid" Background="CornflowerBlue" PreviewMouseRightButtonDown="mainGrid_PreviewMouseRightButtonDown" PreviewMouseMove="mainGrid_PreviewMouseMove">
-        <Grid x:Name="map" RenderTransformOrigin="0,0" ClipToBounds="False" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid x:Name="mapContainer">
+            <Grid x:Name="map" RenderTransformOrigin="0,0" ClipToBounds="False" VerticalAlignment="Top" HorizontalAlignment="Left">
+            </Grid>
         </Grid>
         <Slider x:Name="slider" Margin="10,0,0,10" ValueChanged="slider_ValueChanged" Maximum="2" SmallChange="0.01" Minimum="0.1" Value="1" HorizontalAlignment="Left" Width="200" Height="25" VerticalAlignment="Bottom"/>
     </Grid>

@@ -24,7 +24,6 @@ namespace Map_editor
     {
         ScaleTransform zoom = new ScaleTransform(10, 10);
         double Thickness = 1;
-        TranslateTransform offset = new TranslateTransform(10, 10);
         Double PixelScale = 20;
 
         public delegate void LocationUpdate(double X, double Y, object argument);
@@ -36,10 +35,8 @@ namespace Map_editor
             InitializeComponent();
             MapObjects = new Dictionary<string, UIElement>();
             TransformGroup g = new TransformGroup();
-            //g.Children.Add(offset);
             g.Children.Add(zoom);
-           
-            map.LayoutTransform = g;
+            mapContainer.LayoutTransform = g;
             
             Line unitX = new Line();
             unitX.X2 = 10;
@@ -62,6 +59,7 @@ namespace Map_editor
         {
             zoom.ScaleX = 1/e.NewValue;
             zoom.ScaleY = 1/e.NewValue;
+            map.Margin = new Thickness(map.Margin.Left, map.Margin.Top, 0, 0);
         }
 
         public void UpdateWorld()
@@ -114,43 +112,9 @@ namespace Map_editor
             }
         }
 
-        public void DrawWorld()
-        {
-            map.Children.Clear();
-            foreach (EGE.Environment.Paths.Road r in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
-            {
-                Line l = new Line();
-                l.StrokeThickness = Thickness;
-                l.Stroke = Brushes.Black;
-                bool first = true;
-                foreach (EGE.Environment.Paths.PathNode p in r.RoadPath.PathNodes)
-                {
-                    if (first)
-                    {
-                        l.X1 = p.NodeLocation.X*PixelScale;
-                        l.Y1 = p.NodeLocation.Z * PixelScale;
-                        first = false;
-                    }
-                    else
-                    {
-                        l.X2 = p.NodeLocation.X * PixelScale;
-                        l.Y2 = p.NodeLocation.Z * PixelScale;
-                        map.Children.Add(l);
-                        l = new Line();
-                        l.StrokeThickness = Thickness;
-                        l.Stroke = Brushes.Black;
-                        l.X1 = p.NodeLocation.X * PixelScale;
-                        l.Y1 = p.NodeLocation.Z * PixelScale;
-                    }
-                    //addNode(p);
-                }
-            }
-        }
-
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             Point p = Mouse.GetPosition(mainGrid);
-            //p = ScreenToWorld(p);
             p = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
             Form1.setWorldValue(((Button)sender).Tag+"/NodeLocation/X", Form1.currentWorld, (float)p.X);
             Form1.setWorldValue(((Button)sender).Tag + "/NodeLocation/Z", Form1.currentWorld, (float)p.Y);
@@ -165,8 +129,8 @@ namespace Map_editor
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 Point p = Mouse.GetPosition(mainGrid);
-                p.X = ((p.X  - map.Margin.Left) / zoom.ScaleX);
-                p.Y = ((p.Y  - map.Margin.Top) / zoom.ScaleY);
+                p.X = ((p.X  ) / zoom.ScaleX) - map.Margin.Left;
+                p.Y = ((p.Y  ) / zoom.ScaleY) - map.Margin.Top;
                 ((Button)sender).Margin = new Thickness(p.X-5, p.Y-5, 0, 0);
             }
         }
@@ -186,14 +150,11 @@ namespace Map_editor
             if (e.RightButton == MouseButtonState.Pressed)
             {
                 Vector p = Point.Subtract(grabPoint,Mouse.GetPosition(mainGrid));
+                p.X = p.X / zoom.ScaleX;
+                p.Y = p.Y / zoom.ScaleY;
                 map.Margin = new Thickness(map.Margin.Left - p.X, map.Margin.Top - p.Y, 0, 0);
                 grabPoint = Mouse.GetPosition(mainGrid);
             }
-        }
-
-        private Point ScreenToWorld(Point p)
-        {
-            return new Point(((p.X) / zoom.ScaleX) , ((p.Y  ) / zoom.ScaleY) );
         }
     }
 }

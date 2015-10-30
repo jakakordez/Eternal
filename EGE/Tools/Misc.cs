@@ -105,8 +105,15 @@ namespace EGE
         public static float normalizeAngle(float angle)
         { 
             angle%=MathHelper.Pi*2;
-            if (angle < 0) angle += MathHelper.Pi * 2;
+            if (angle < 0) angle += MathHelper.TwoPi;
             if (angle > (3.145f*2)) angle = 0;
+            return angle;
+        }
+
+        public static float halfNormalizeAngle(float angle)
+        {
+            angle = normalizeAngle(angle);
+            if (angle > MathHelper.Pi) angle -= MathHelper.TwoPi;
             return angle;
         }
 

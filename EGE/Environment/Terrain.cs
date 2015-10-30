@@ -95,7 +95,7 @@ namespace EGE
                             indicies[c++] = i;
                         }
                     }
-                    HeightfieldMesh = new BufferedObject(points, indicies, texturecoords);
+                    //HeightfieldMesh = new BufferedObject(points, indicies, texturecoords);
                     entryStream.Close();
                 }
             }

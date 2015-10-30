@@ -46,6 +46,19 @@ namespace Map_editor
             return v;
         }
 
+        public static object invokeWorldMethod(string path)
+        {
+            string[] pathParts = path.Split('/');
+            object v = currentWorld;
+            for (int i = 0; i < pathParts.Length; i++)
+            {
+                if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
+                else if (v.GetType().GetProperty(pathParts[i]) != null) v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
+                else v.GetType().GetMethod(pathParts[i]).Invoke(v, null);
+            }
+            return v;
+        }
+
         public static object setWorldValue(string path, object v, object o)
         {
             string[] pathParts = path.Split('/');
@@ -75,6 +88,7 @@ namespace Map_editor
         #region Files
         public void LoadMap(string path)
         {
+            MapPath = path;
             currentWorld.LoadData(path);
             treeView1.Nodes.Clear();
             AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
@@ -83,15 +97,12 @@ namespace Map_editor
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                MapPath = folderBrowserDialog1.SelectedPath;
-                LoadMap(MapPath);
-            }
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK) LoadMap(folderBrowserDialog1.SelectedPath);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             if (MapPath != "") currentWorld.SaveData(MapPath);
             else {
                 var dialog = new FolderBrowserDialog();
@@ -101,6 +112,7 @@ namespace Map_editor
                     currentWorld.SaveData(MapPath);
                 }
             }
+            Cursor = Cursors.Default;
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)

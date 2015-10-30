@@ -12,7 +12,7 @@ namespace EGE
     {
         int VertexBuffer, ElementArray, TextureCoordinateBuffer, ElementArraySize;
 
-        public BufferedObject(Vector3[] Vertices, int[] indicies, Vector2[] TextureCoordinates)
+        public void Load(Vector3[] Vertices, int[] indicies, Vector2[] TextureCoordinates)
         {
             VertexBuffer = GL.GenBuffer();
             ElementArray = GL.GenBuffer();
@@ -63,24 +63,56 @@ namespace EGE
 
         public void Draw()
         {
-            GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
-            // Set the Pointer to the current bound array describing how the data ia stored
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
-            // Enable the client state so it will use this array buffer pointer
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            switch (Settings.CurrentDrawingMode)
+            {
+                case Settings.DrawingModes.Debug:
+                    break;
+                case Settings.DrawingModes.Wireframe:
+                    GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
+                    // Set the Pointer to the current bound array describing how the data ia stored
+                    GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
+                    // Enable the client state so it will use this array buffer pointer
+                    GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-            // Vertex Array Buffer
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
-            // Set the Pointer to the current bound array describing how the data ia stored
-            GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
-            // Enable the client state so it will use this array buffer pointer
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
-            GL.DrawElements(PrimitiveType.Triangles, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-            // Restore the state
-            GL.PopClientAttrib();
+                    // Vertex Array Buffer
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
+                                                                           // Set the Pointer to the current bound array describing how the data ia stored
+                    GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
+                    // Enable the client state so it will use this array buffer pointer
+                    GL.EnableClientState(ArrayCap.VertexArray);
+                    GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
+                    GL.DrawElements(PrimitiveType.Triangles, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    // Restore the state
+                    GL.PopClientAttrib();
+                    break;
+                case Settings.DrawingModes.Full:
+                    break;
+                case Settings.DrawingModes.Textured:
+                    GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
+                    // Set the Pointer to the current bound array describing how the data ia stored
+                    GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
+                    // Enable the client state so it will use this array buffer pointer
+                    GL.EnableClientState(ArrayCap.TextureCoordArray);
+
+                    // Vertex Array Buffer
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
+                                                                           // Set the Pointer to the current bound array describing how the data ia stored
+                    GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
+                    // Enable the client state so it will use this array buffer pointer
+                    GL.EnableClientState(ArrayCap.VertexArray);
+                    GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
+                    GL.DrawElements(PrimitiveType.Triangles, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    // Restore the state
+                    GL.PopClientAttrib();
+                    break;
+                default:
+                    break;
+            }
+            
         }
     }
 }

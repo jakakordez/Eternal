@@ -118,6 +118,8 @@ namespace Map_editor
             p = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
             Form1.setWorldValue(((Button)sender).Tag+"/NodeLocation/X", Form1.currentWorld, (float)p.X);
             Form1.setWorldValue(((Button)sender).Tag + "/NodeLocation/Z", Form1.currentWorld, (float)p.Y);
+            string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
+            Form1.invokeWorldMethod("CurrentMap/"+String.Join("/", pathParts, 1, pathParts.Length - 4) + "/Build");
         }
 
         private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)

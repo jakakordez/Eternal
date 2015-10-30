@@ -50,6 +50,7 @@ namespace EGE
         {
             WorldDataPath = Path;
             CurrentMap.Load(this, Path + "\\Map");
+            CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
         }
 
         public void SaveData(string Path)

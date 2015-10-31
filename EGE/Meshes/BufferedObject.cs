@@ -19,7 +19,7 @@ namespace EGE
             TextureCoordinateBuffer = GL.GenBuffer();
             ElementArraySize = indicies.Length;
             long bufferSize;
-
+                
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicies.Length * sizeof(int)), indicies, BufferUsageHint.StaticDraw);
             GL.GetBufferParameter(BufferTarget.ElementArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
@@ -65,8 +65,6 @@ namespace EGE
         {
             switch (Settings.CurrentDrawingMode)
             {
-                case Settings.DrawingModes.Debug:
-                    break;
                 case Settings.DrawingModes.Wireframe:
                     GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);

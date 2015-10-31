@@ -8,7 +8,7 @@ namespace EGE
 {
     static class Settings
     {
-        public static DrawingModes CurrentDrawingMode;
+        public static DrawingModes CurrentDrawingMode = DrawingModes.Debug;
 
         public enum DrawingModes
         {

@@ -50,7 +50,21 @@ namespace EGE
         {
             WorldDataPath = Path;
             CurrentMap.Load(this, Path + "\\Map");
-            CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
+        }
+        BufferedObject obj = new BufferedObject();
+        public void Build()
+        {
+            Vector3[] v = new Vector3[4];
+            v[0] = new Vector3(5, 0, 5);
+            v[1] = new Vector3(10, 0, 5);
+            v[2] = new Vector3(10, 0, 10);
+            v[3] = new Vector3(5, 0, 10);
+            //obj.Load(v, new int[] { 0, 1, 2, 2, 0, 3 }, new Vector2[6]);
+            //CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
+            foreach (EGE.Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
+            {
+                r.Build();
+            }
         }
 
         public void SaveData(string Path)
@@ -95,6 +109,7 @@ namespace EGE
             MainCharacter.Draw();
 
             GL.Color3(0, 0, 0);
+            //obj.Draw();
             /*foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
                 GL.LineWidth(r.RoadPath.Width);

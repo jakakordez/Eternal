@@ -189,6 +189,7 @@ namespace Map_editor
             GLHeight = glControl1.Height;
             GL.Viewport(0, 0, GLWidth, GLHeight);
             tmrPreview.Start();
+            currentWorld.Build();
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)

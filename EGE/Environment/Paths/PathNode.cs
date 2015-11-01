@@ -9,8 +9,7 @@ namespace EGE.Environment.Paths
 {
     public class PathNode:Node
     {
-        
-
+        public PathNode(Vector3 Location) : base(Location) { }
 
     }
 }

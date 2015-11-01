@@ -10,5 +10,8 @@ namespace EGE.Environment
     public class Node
     {
         public Vector3 NodeLocation { get; set; }
+
+        public Node() { }
+        public Node(Vector3 Location) { NodeLocation = Location; }
     }
 }

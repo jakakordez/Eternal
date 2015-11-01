@@ -80,7 +80,7 @@ namespace EGE
                     // Enable the client state so it will use this array buffer pointer
                     GL.EnableClientState(ArrayCap.VertexArray);
                     GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
-                    GL.DrawElements(PrimitiveType.Triangles, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                    GL.DrawElements(PrimitiveType.LineStrip, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     // Restore the state
                     GL.PopClientAttrib();

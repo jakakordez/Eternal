@@ -14,19 +14,14 @@ namespace EGE.Environment.Paths
 
         List<Path> Lanes;
 
-        List<Vector3> Points;
-
         BufferedObject RoadMesh;
-        Vector3[] Vertices;
-        List<Vector2> BezierCurve = new List<Vector2>();
+        
 
         public Road()
         {
             RoadPath = new Path();
             Lanes = new List<Path>();
-            Points = new List<Vector3>();
             RoadMesh = new BufferedObject();
-            Vertices = new Vector3[0];
         }
 
         public void Draw()
@@ -35,22 +30,9 @@ namespace EGE.Environment.Paths
             {
                 GL.LineWidth(RoadPath.Width);
                 GL.Begin(PrimitiveType.LineStrip);
-                /*for (int i = 0; i < Points.Count; i++)
-                {
-                    GL.Vertex3(Points[i]);
-                }*/
                 for (int i = 0; i < RoadPath.PathNodes.Length; i++)
                 {
                     GL.Vertex3(RoadPath.PathNodes[i].NodeLocation);
-                }
-                GL.End();
-
-                GL.PointSize(5);
-                GL.Begin(PrimitiveType.Points);
-
-                for (int i = 0; i < BezierCurve.Count; i++)
-                {
-                    GL.Vertex3(new Vector3(BezierCurve[i].X, 0, BezierCurve[i].Y));
                 }
                 GL.End();
             }
@@ -61,17 +43,17 @@ namespace EGE.Environment.Paths
         {
             //try
             {
-                Points.Clear();
+                List<Vector3> BezierCurve = new List<Vector3>();
                 float Sharpness = 2;
                 
-                Vector2[] BezierControlPoints = new Vector2[4];
+                Vector3[] BezierControlPoints = new Vector3[4];
                 float angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[1].NodeLocation.Xz - RoadPath.PathNodes[0].NodeLocation.Xz));
                 Vector2 l = Misc.getCartesian(angle) * Sharpness;
 
                 for (int i = 0; i < RoadPath.PathNodes.Length - 1; i++)
                 {
-                    BezierControlPoints[0] = RoadPath.PathNodes[i].NodeLocation.Xz;
-                    BezierControlPoints[1] = BezierControlPoints[0] + l;
+                    BezierControlPoints[0] = RoadPath.PathNodes[i].NodeLocation;
+                    BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
 
                     angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz));
                     if (i < RoadPath.PathNodes.Length - 2)
@@ -82,21 +64,18 @@ namespace EGE.Environment.Paths
                     }
                     float segments = (RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz).Length * 1;
                     l = Misc.getCartesian(angle) * (segments / 2);
-                    BezierControlPoints[2] = RoadPath.PathNodes[i + 1].NodeLocation.Xz - l;
-                    BezierControlPoints[3] = RoadPath.PathNodes[i + 1].NodeLocation.Xz;
+                    BezierControlPoints[2] = RoadPath.PathNodes[i + 1].NodeLocation - new Vector3(l.X, 0, l.Y);
+                    BezierControlPoints[3] = RoadPath.PathNodes[i + 1].NodeLocation;
 
-                    //Vector2[] bezierPoints = Misc.GetBezierApproximation(BezierControlPoints, (int)segments);
-                    Path roadEdgeRight = new Path(BezierControlPoints, (int)segments, 1, 0, false);
-                    Path roadEdgeLeft = new Path(BezierControlPoints, (int)segments, -1, 0, false);
-                    //BezierCurve.AddRange(roadEdge.PathNodes.Select(p=>p.NodeLocation.Xz));
+                    Path roadEdgeRight = new Path(BezierControlPoints, (int)segments, 1, false);
+                    Path roadEdgeLeft = new Path(BezierControlPoints, (int)segments, -1, false);
                     for (int j = 0; j < roadEdgeLeft.PathNodes.Length; j++)
                     {
-                        BezierCurve.Add(roadEdgeLeft.PathNodes[j].NodeLocation.Xz);
-                        BezierCurve.Add(roadEdgeRight.PathNodes[j].NodeLocation.Xz);
+                        BezierCurve.Add(roadEdgeLeft.PathNodes[j].NodeLocation);
+                        BezierCurve.Add(roadEdgeRight.PathNodes[j].NodeLocation);
                     }
                 }
 
-                Vertices = new Vector3[BezierCurve.Count * 2];
                 int[] Indices = new int[(BezierCurve.Count - 2) * 3];
                 for (int i = 0; i < (BezierCurve.Count/2)-1; i++)
                 {
@@ -107,7 +86,7 @@ namespace EGE.Environment.Paths
                     Indices[(i * 6) + 4] = (i * 2) + 1;
                     Indices[(i * 6) + 5] = (i * 2) + 3;
                 }
-                RoadMesh.Load(BezierCurve.Select(f=>new Vector3(f.X, 0, f.Y)).ToArray(), Indices, new Vector2[BezierCurve.Count * 6]);
+                RoadMesh.Load(BezierCurve.ToArray(), Indices, new Vector2[BezierCurve.Count * 6]);
             }
             //catch { }
         }

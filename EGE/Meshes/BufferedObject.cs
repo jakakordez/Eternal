@@ -67,12 +67,6 @@ namespace EGE
             {
                 case Settings.DrawingModes.Wireframe:
                     GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
-                    // Set the Pointer to the current bound array describing how the data ia stored
-                    GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
-                    // Enable the client state so it will use this array buffer pointer
-                    GL.EnableClientState(ArrayCap.TextureCoordArray);
-
                     // Vertex Array Buffer
                     GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
                                                                            // Set the Pointer to the current bound array describing how the data ia stored
@@ -81,11 +75,21 @@ namespace EGE
                     GL.EnableClientState(ArrayCap.VertexArray);
                     GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
                     GL.DrawElements(PrimitiveType.LineStrip, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
                     // Restore the state
                     GL.PopClientAttrib();
                     break;
                 case Settings.DrawingModes.Full:
+                    GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
+                    // Vertex Array Buffer
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
+                                                                           // Set the Pointer to the current bound array describing how the data ia stored
+                    GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
+                    // Enable the client state so it will use this array buffer pointer
+                    GL.EnableClientState(ArrayCap.VertexArray);
+                    GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArray);
+                    GL.DrawElements(PrimitiveType.Triangles, ElementArraySize, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                    // Restore the state
+                    GL.PopClientAttrib();
                     break;
                 case Settings.DrawingModes.Textured:
                     GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);

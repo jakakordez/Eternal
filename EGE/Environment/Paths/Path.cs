@@ -10,7 +10,6 @@ namespace EGE.Environment.Paths
     public class Path
     {
         public PathNode[] PathNodes { get; set; }
-        public float Width { get; set; }
 
         public Path()
         {

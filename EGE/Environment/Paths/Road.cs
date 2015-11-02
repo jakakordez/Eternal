@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -12,23 +13,29 @@ namespace EGE.Environment.Paths
     {
         public Path RoadPath { get; set; }
 
+        public string TextureName { get; set; }
+
+        public float RoadWidth { get; set; }
+
         List<Path> Lanes;
 
         BufferedObject RoadMesh;
-        
+
+        int RoadTexture;
 
         public Road()
         {
             RoadPath = new Path();
             Lanes = new List<Path>();
             RoadMesh = new BufferedObject();
+            RoadWidth = 2;
+            TextureName = "";
         }
 
         public void Draw()
         {
             if (Settings.CurrentDrawingMode == Settings.DrawingModes.Debug)
             {
-                GL.LineWidth(RoadPath.Width);
                 GL.Begin(PrimitiveType.LineStrip);
                 for (int i = 0; i < RoadPath.PathNodes.Length; i++)
                 {
@@ -36,7 +43,12 @@ namespace EGE.Environment.Paths
                 }
                 GL.End();
             }
-            else RoadMesh.Draw();
+            else
+            {
+                GL.Color4(Color.White);
+                GL.BindTexture(TextureTarget.Texture2D, RoadTexture);
+                RoadMesh.Draw();
+            }
         }
 
         public void Build()
@@ -67,8 +79,8 @@ namespace EGE.Environment.Paths
                     BezierControlPoints[2] = RoadPath.PathNodes[i + 1].NodeLocation - new Vector3(l.X, 0, l.Y);
                     BezierControlPoints[3] = RoadPath.PathNodes[i + 1].NodeLocation;
 
-                    Path roadEdgeRight = new Path(BezierControlPoints, (int)segments, 1, false);
-                    Path roadEdgeLeft = new Path(BezierControlPoints, (int)segments, -1, false);
+                    Path roadEdgeRight = new Path(BezierControlPoints, (int)segments, RoadWidth/2, false);
+                    Path roadEdgeLeft = new Path(BezierControlPoints, (int)segments, -RoadWidth/2, false);
                     for (int j = 0; j < roadEdgeLeft.PathNodes.Length; j++)
                     {
                         BezierCurve.Add(roadEdgeLeft.PathNodes[j].NodeLocation);
@@ -76,7 +88,9 @@ namespace EGE.Environment.Paths
                     }
                 }
 
-                int[] Indices = new int[(BezierCurve.Count - 2) * 3];
+                Vector3[] Vertices = new Vector3[BezierCurve.Count * 2];
+                int[] Indices = new int[(BezierCurve.Count) * 3];
+                Vector2[] TextureCoordinates = new Vector2[BezierCurve.Count * 2];
                 for (int i = 0; i < (BezierCurve.Count/2)-1; i++)
                 {
                     Indices[(i * 6) + 0] = (i * 2) + 0;
@@ -85,9 +99,20 @@ namespace EGE.Environment.Paths
                     Indices[(i * 6) + 3] = (i * 2) + 2;
                     Indices[(i * 6) + 4] = (i * 2) + 1;
                     Indices[(i * 6) + 5] = (i * 2) + 3;
+
+                    Vertices[(i * 2) + 0] = BezierCurve[(i * 2) + 0];
+                    Vertices[(i * 2) + 1] = BezierCurve[(i * 2) + 1];
+                    Vertices[(i * 2) + 2] = BezierCurve[(i * 2) + 2];
+                    Vertices[(i * 2) + 3] = BezierCurve[(i * 2) + 3];
+
+                    TextureCoordinates[(i * 4) + 0] = new Vector2(1, 0);
+                    TextureCoordinates[(i * 4) + 1] = new Vector2(0, 0);
+                    TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.5f);
+                    TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.5f);
                 }
-                RoadMesh.Load(BezierCurve.ToArray(), Indices, new Vector2[BezierCurve.Count * 6]);
+                RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureCoordinates);
             }
+            RoadTexture = Misc.LoadTexture((Bitmap)Image.FromFile("road.jpg"), 1);
             //catch { }
         }
     }

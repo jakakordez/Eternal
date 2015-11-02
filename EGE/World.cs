@@ -44,6 +44,7 @@ namespace EGE
             broadphase = new DbvtBroadphase();
             DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
             DynamicsWorld.Gravity = new Vector3(0, -10, 0);
+            
         }
 
         public void LoadData(string Path)
@@ -65,6 +66,15 @@ namespace EGE
             {
                 r.Build();
             }
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.DepthClamp);
+            GL.ClearColor(Color.Transparent);
+            GL.Enable(EnableCap.ColorMaterial);
+            GL.Enable(EnableCap.Texture2D);
+            GL.Enable(EnableCap.Light0);
+            //GL.Enable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Blend);
+            GL.Enable(EnableCap.AlphaTest);
         }
 
         public void SaveData(string Path)

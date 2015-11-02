@@ -207,14 +207,18 @@ namespace Map_editor
 
             base.OnResize(e);
         }
-
+        System.Diagnostics.Stopwatch fpsCounter = new System.Diagnostics.Stopwatch();
         private void tmpPreview_Tick(object sender, EventArgs e)
         {           
             try
             {
                 currentWorld.Update(glControl1.Focused, 0);
                 currentWorld.Resize(glControl1.Width, glControl1.Height);
+                fpsCounter.Restart();
                 currentWorld.Draw(glControl1.Focused);
+                fpsCounter.Stop();
+                if (fpsCounter.ElapsedMilliseconds == 0) lblFPS.Text = "<1000 FPS";
+                else lblFPS.Text = (1 / fpsCounter.ElapsedMilliseconds*1000) + " FPS";
             }
             catch { }
             

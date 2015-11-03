@@ -29,7 +29,8 @@ namespace Map_editor
         public delegate void LocationUpdate(double X, double Y, object argument);
         public event LocationUpdate UpdateLocation;
         public event LocationUpdate MoveNode;
-        public Dictionary<string, UIElement> MapObjects;        
+        public Dictionary<string, UIElement> MapObjects;
+        Canvas lineCanvas = new Canvas();     
         public mapView()
         {
             InitializeComponent();
@@ -48,6 +49,8 @@ namespace Map_editor
             unitZ.StrokeThickness = Thickness;
             unitZ.Stroke = Brushes.LimeGreen;
             map.Children.Add(unitZ);
+
+            map.Children.Add(lineCanvas);
         }
 
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -74,8 +77,8 @@ namespace Map_editor
                     if (!MapObjects.Keys.Contains(path))
                     {
                         Button nodeBtn = new Button();
-                        nodeBtn.Height = 10;
-                        nodeBtn.Width = 10;
+                        nodeBtn.Height = 20;
+                        nodeBtn.Width = 20;
                         nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
                         nodeBtn.VerticalAlignment = VerticalAlignment.Top;
                         nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
@@ -85,8 +88,8 @@ namespace Map_editor
                         MapObjects.Add(path, nodeBtn);
                     }
                     Node n = (Node)Form1.getWorldValue(path);
-                    double Top = (n.NodeLocation.Z * PixelScale) - 5;
-                    double Left = (n.NodeLocation.X * PixelScale) - 5;
+                    double Top = (n.NodeLocation.Z * PixelScale) - 10;
+                    double Left = (n.NodeLocation.X * PixelScale) - 10;
                     ((Button)MapObjects[path]).Tag = path;
                     ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
 
@@ -98,6 +101,7 @@ namespace Map_editor
                             Line l = new Line();
                             l.StrokeThickness = Thickness;
                             l.Stroke = Brushes.Black;
+                            
                             map.Children.Add(l);
                             MapObjects.Add(path, l);
                         }
@@ -106,6 +110,7 @@ namespace Map_editor
                         ((Line)MapObjects[path]).Y1 = prevNode.NodeLocation.Z * PixelScale;
                         ((Line)MapObjects[path]).X2 = n.NodeLocation.X*PixelScale;
                         ((Line)MapObjects[path]).Y2 = n.NodeLocation.Z*PixelScale;
+                        Canvas.SetZIndex(((Line)MapObjects[path]), -1);
                     }
                     prevNode = n;
                 }
@@ -119,7 +124,10 @@ namespace Map_editor
             Form1.setWorldValue(((Button)sender).Tag+"/NodeLocation/X", Form1.currentWorld, (float)p.X);
             Form1.setWorldValue(((Button)sender).Tag + "/NodeLocation/Z", Form1.currentWorld, (float)p.Y);
             string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
-            Form1.invokeWorldMethod("CurrentMap/"+String.Join("/", pathParts, 1, pathParts.Length - 4) + "/Build");
+            string road = "CurrentMap/" + String.Join("/", pathParts, 1, pathParts.Length - 4);
+            Form1.invokeWorldMethod(road + "/Build");
+            UpdateWorld();
+
         }
 
         private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -133,7 +141,7 @@ namespace Map_editor
                 Point p = Mouse.GetPosition(mainGrid);
                 p.X = ((p.X  ) / zoom.ScaleX) - map.Margin.Left;
                 p.Y = ((p.Y  ) / zoom.ScaleY) - map.Margin.Top;
-                ((Button)sender).Margin = new Thickness(p.X-5, p.Y-5, 0, 0);
+                ((Button)sender).Margin = new Thickness(p.X-10, p.Y-10, 0, 0);
             }
         }
 

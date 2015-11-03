@@ -185,10 +185,9 @@ namespace Map_editor
         private void glControl1_Load(object sender, EventArgs e)
         {
             OpenGLLoaded = true;
-            GLWidth = glControl1.Width;
-            GLHeight = glControl1.Height;
-            GL.Viewport(0, 0, GLWidth, GLHeight);
+            currentWorld.Resize(glControl1.Width, glControl1.Height);
             tmrPreview.Start();
+            currentWorld.Init();
             currentWorld.Build();
         }
 
@@ -196,15 +195,11 @@ namespace Map_editor
         {
             if (!OpenGLLoaded) return;
         }
-        int GLWidth, GLHeight;
 
         private void glControl1_Resize(object sender, EventArgs e)
         {
             if (!OpenGLLoaded) return;
-            GLWidth = glControl1.Width;
-            GLHeight = glControl1.Height;
-            GL.Viewport(0, 0, GLWidth, GLHeight);
-
+            currentWorld.Resize(glControl1.Width, glControl1.Height);
             base.OnResize(e);
         }
         System.Diagnostics.Stopwatch fpsCounter = new System.Diagnostics.Stopwatch();
@@ -213,7 +208,6 @@ namespace Map_editor
             try
             {
                 currentWorld.Update(glControl1.Focused, 0);
-                currentWorld.Resize(glControl1.Width, glControl1.Height);
                 fpsCounter.Restart();
                 currentWorld.Draw(glControl1.Focused);
                 fpsCounter.Stop();

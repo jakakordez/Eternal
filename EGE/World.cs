@@ -27,7 +27,6 @@ namespace EGE
         CollisionConfiguration collisionConf;
 
         string WorldDataPath;
-        float AspectRatio;
 
         public World()
         {
@@ -35,7 +34,6 @@ namespace EGE
             PrimaryCamera = new Camera();
             MeshCollection = new MeshCollector();
             MainCharacter = new Characters.DebugView();
-            Controller.InitController();
 
             // collision configuration contains default setup for memory, collision setup
             collisionConf = new DefaultCollisionConfiguration();
@@ -44,7 +42,14 @@ namespace EGE
             broadphase = new DbvtBroadphase();
             DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
             DynamicsWorld.Gravity = new Vector3(0, -10, 0);
+
             
+        }
+
+        public void Init()
+        {
+            Tools.Graphics.Init();
+            Controller.InitController();
         }
 
         public void LoadData(string Path)
@@ -52,29 +57,14 @@ namespace EGE
             WorldDataPath = Path;
             CurrentMap.Load(this, Path + "\\Map");
         }
-        BufferedObject obj = new BufferedObject();
+
         public void Build()
         {
-            Vector3[] v = new Vector3[4];
-            v[0] = new Vector3(5, 0, 5);
-            v[1] = new Vector3(10, 0, 5);
-            v[2] = new Vector3(10, 0, 10);
-            v[3] = new Vector3(5, 0, 10);
-            //obj.Load(v, new int[] { 0, 1, 2, 2, 0, 3 }, new Vector2[6]);
             //CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
             foreach (EGE.Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
                 r.Build();
             }
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.DepthClamp);
-            GL.ClearColor(Color.Transparent);
-            GL.Enable(EnableCap.ColorMaterial);
-            GL.Enable(EnableCap.Texture2D);
-            GL.Enable(EnableCap.Light0);
-            //GL.Enable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Blend);
-            GL.Enable(EnableCap.AlphaTest);
         }
 
         public void SaveData(string Path)
@@ -104,7 +94,8 @@ namespace EGE
 
         public void Resize(float Width, float Height)
         {
-            AspectRatio = Width / Height;
+
+            Tools.Graphics.Resize(Width, Height);
         }
 
         public void Draw(bool Focused)
@@ -112,9 +103,7 @@ namespace EGE
             GL.ClearColor(Color.CornflowerBlue);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.MatrixMode(MatrixMode.Projection);
-            Matrix4 ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90), AspectRatio, 0.1f, 500);
-            GL.LoadMatrix(ref ProjectionMatrix);
+            Tools.Graphics.SetProjection();
 
             MainCharacter.Draw();
 

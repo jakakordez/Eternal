@@ -106,6 +106,7 @@
     <Compile Include="Meshes\BufferedObject.cs" />
     <Compile Include="Meshes\Mesh.cs" />
     <Compile Include="Meshes\MeshCollector.cs" />
+    <Compile Include="Tools\Graphics.cs" />
     <Compile Include="Tools\Misc.cs" />
     <Compile Include="Tools\Settings.cs" />
     <Compile Include="Tools\Vector3Serializer.cs" />

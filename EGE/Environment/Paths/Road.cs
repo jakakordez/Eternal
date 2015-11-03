@@ -107,8 +107,8 @@ namespace EGE.Environment.Paths
 
                     TextureCoordinates[(i * 4) + 0] = new Vector2(1, 0);
                     TextureCoordinates[(i * 4) + 1] = new Vector2(0, 0);
-                    TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.5f);
-                    TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.5f);
+                    TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.2f);
+                    TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
                 }
                 RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureCoordinates);
             }

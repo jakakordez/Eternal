@@ -11,7 +11,7 @@ namespace EGE.Environment.Paths
 {
     public class Road
     {
-        public Path RoadPath { get; set; }
+        public Path RoadPath{ get; set; }
 
         public string TextureName { get; set; }
 
@@ -26,8 +26,7 @@ namespace EGE.Environment.Paths
             RoadPath = new Path();
             Lanes = new List<Path>();
             RoadMesh = new BufferedObject();
-            RoadWidth = 2;
-            TextureName = "road.jpg";
+            TextureName = "";
         }
 
         public void Draw()
@@ -50,66 +49,62 @@ namespace EGE.Environment.Paths
 
         public void Build()
         {
-            //try
-            {
-                List<Vector3> BezierCurve = new List<Vector3>();
-                float Sharpness = 2;
+            List<Vector3> BezierCurve = new List<Vector3>();
+            float Sharpness = 2;
                 
-                Vector3[] BezierControlPoints = new Vector3[4];
-                float angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[1].NodeLocation.Xz - RoadPath.PathNodes[0].NodeLocation.Xz));
-                Vector2 l = Misc.getCartesian(angle) * Sharpness;
+            Vector3[] BezierControlPoints = new Vector3[4];
+            float angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[1].NodeLocation.Xz - RoadPath.PathNodes[0].NodeLocation.Xz));
+            Vector2 l = Misc.getCartesian(angle) * Sharpness;
 
-                for (int i = 0; i < RoadPath.PathNodes.Length - 1; i++)
+            for (int i = 0; i < RoadPath.PathNodes.Length - 1; i++)
+            {
+                BezierControlPoints[0] = RoadPath.PathNodes[i].NodeLocation;
+                BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
+
+                angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz));
+                if (i < RoadPath.PathNodes.Length - 2)
                 {
-                    BezierControlPoints[0] = RoadPath.PathNodes[i].NodeLocation;
-                    BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
+                    float nextAngle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 2].NodeLocation.Xz - RoadPath.PathNodes[i + 1].NodeLocation.Xz));
 
-                    angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz));
-                    if (i < RoadPath.PathNodes.Length - 2)
-                    {
-                        float nextAngle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 2].NodeLocation.Xz - RoadPath.PathNodes[i + 1].NodeLocation.Xz));
-
-                        angle = (Misc.halfNormalizeAngle(angle + nextAngle) / 2);
-                    }
-                    float segments = (RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz).Length * 1;
-                    l = Misc.getCartesian(angle) * (segments / 2);
-                    BezierControlPoints[2] = RoadPath.PathNodes[i + 1].NodeLocation - new Vector3(l.X, 0, l.Y);
-                    BezierControlPoints[3] = RoadPath.PathNodes[i + 1].NodeLocation;
-
-                    Path roadEdgeRight = new Path(BezierControlPoints, (int)segments, RoadWidth/2, false);
-                    Path roadEdgeLeft = new Path(BezierControlPoints, (int)segments, -RoadWidth/2, false);
-                    for (int j = 0; j < roadEdgeLeft.PathNodes.Length; j++)
-                    {
-                        BezierCurve.Add(roadEdgeLeft.PathNodes[j].NodeLocation);
-                        BezierCurve.Add(roadEdgeRight.PathNodes[j].NodeLocation);
-                    }
+                    angle = (Misc.halfNormalizeAngle(angle + nextAngle) / 2);
                 }
+                float segments = (RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz).Length * 1;
+                l = Misc.getCartesian(angle) * (segments / 2);
+                BezierControlPoints[2] = RoadPath.PathNodes[i + 1].NodeLocation - new Vector3(l.X, 0, l.Y);
+                BezierControlPoints[3] = RoadPath.PathNodes[i + 1].NodeLocation;
 
-                Vector3[] Vertices = new Vector3[BezierCurve.Count * 2];
-                int[] Indices = new int[(BezierCurve.Count) * 3];
-                Vector2[] TextureCoordinates = new Vector2[BezierCurve.Count * 2];
-                for (int i = 0; i < (BezierCurve.Count/2)-1; i++)
+                Path roadEdgeRight = new Path(BezierControlPoints, (int)segments, RoadWidth/2, false);
+                Path roadEdgeLeft = new Path(BezierControlPoints, (int)segments, -RoadWidth/2, false);
+                for (int j = 0; j < roadEdgeLeft.PathNodes.Length; j++)
                 {
-                    Indices[(i * 6) + 0] = (i * 2) + 0;
-                    Indices[(i * 6) + 1] = (i * 2) + 1;
-                    Indices[(i * 6) + 2] = (i * 2) + 2;
-                    Indices[(i * 6) + 3] = (i * 2) + 2;
-                    Indices[(i * 6) + 4] = (i * 2) + 1;
-                    Indices[(i * 6) + 5] = (i * 2) + 3;
-
-                    Vertices[(i * 2) + 0] = BezierCurve[(i * 2) + 0];
-                    Vertices[(i * 2) + 1] = BezierCurve[(i * 2) + 1];
-                    Vertices[(i * 2) + 2] = BezierCurve[(i * 2) + 2];
-                    Vertices[(i * 2) + 3] = BezierCurve[(i * 2) + 3];
-
-                    TextureCoordinates[(i * 4) + 0] = new Vector2(1, 0);
-                    TextureCoordinates[(i * 4) + 1] = new Vector2(0, 0);
-                    TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.2f);
-                    TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
+                    BezierCurve.Add(roadEdgeLeft.PathNodes[j].NodeLocation);
+                    BezierCurve.Add(roadEdgeRight.PathNodes[j].NodeLocation);
                 }
-                RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureCoordinates);
             }
-            //catch { }
+
+            Vector3[] Vertices = new Vector3[BezierCurve.Count * 2];
+            int[] Indices = new int[(BezierCurve.Count) * 3];
+            Vector2[] TextureCoordinates = new Vector2[BezierCurve.Count * 2];
+            for (int i = 0; i < (BezierCurve.Count/2)-1; i++)
+            {
+                Indices[(i * 6) + 0] = (i * 2) + 0;
+                Indices[(i * 6) + 1] = (i * 2) + 1;
+                Indices[(i * 6) + 2] = (i * 2) + 2;
+                Indices[(i * 6) + 3] = (i * 2) + 2;
+                Indices[(i * 6) + 4] = (i * 2) + 1;
+                Indices[(i * 6) + 5] = (i * 2) + 3;
+
+                Vertices[(i * 2) + 0] = BezierCurve[(i * 2) + 0];
+                Vertices[(i * 2) + 1] = BezierCurve[(i * 2) + 1];
+                Vertices[(i * 2) + 2] = BezierCurve[(i * 2) + 2];
+                Vertices[(i * 2) + 3] = BezierCurve[(i * 2) + 3];
+
+                TextureCoordinates[(i * 4) + 0] = new Vector2(1, 0);
+                TextureCoordinates[(i * 4) + 1] = new Vector2(0, 0);
+                TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.2f);
+                TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
+            }
+            RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureCoordinates);
         }
     }
 }

@@ -88,6 +88,7 @@ namespace Map_editor
         #region Files
         public void LoadMap(string path)
         {
+            toolStrip1.Enabled = true;
             MapPath = path;
             currentWorld.LoadData(path);
             treeView1.Nodes.Clear();
@@ -311,6 +312,7 @@ namespace Map_editor
             TreeNode parent = nod.Parent;
             parent.Nodes.Remove(nod);
             AddNode(getWorldValue(path), parent.Nodes, nod.Name, path);
+            mapView1.UpdateWorld();
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)

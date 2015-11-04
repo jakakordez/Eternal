@@ -11,5 +11,7 @@ namespace EGE.Environment.Paths
     {
         public PathNode(Vector3 Location) : base(Location) { }
 
+        public PathNode() : base() { }
+
     }
 }

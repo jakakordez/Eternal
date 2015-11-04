@@ -124,8 +124,11 @@ namespace Map_editor
             Form1.setWorldValue(((Button)sender).Tag+"/NodeLocation/X", Form1.currentWorld, (float)p.X);
             Form1.setWorldValue(((Button)sender).Tag + "/NodeLocation/Z", Form1.currentWorld, (float)p.Y);
             string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
-            string road = "CurrentMap/" + String.Join("/", pathParts, 1, pathParts.Length - 4);
-            Form1.invokeWorldMethod(road + "/Build");
+            if (MapObjects.ContainsKey(Misc.pathUp(((Button)sender).Tag.ToString()) + "/1")) // Update only if road contains at least two nodes
+            {
+                string road = "CurrentMap/" + String.Join("/", pathParts, 1, pathParts.Length - 4);
+                Form1.invokeWorldMethod(road + "/Build");
+            }
             UpdateWorld();
 
         }

@@ -13,6 +13,8 @@ namespace Map_editor
     public partial class TextureCollection : Form
     {
         Dictionary<string, Bitmap> images = new Dictionary<string, Bitmap>();
+        public string TextureResult;
+
         public TextureCollection()
         {
             InitializeComponent();
@@ -62,6 +64,16 @@ namespace Map_editor
                 images.Remove(listView1.SelectedItems[0].Text);
                 EGE.Tools.TextureManager.RemoveTexture(listView1.SelectedItems[0].Text);
                 listView1.SelectedItems[0].Remove();
+            }
+        }
+
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listView1.SelectedItems.Count > 0)
+            {
+                TextureResult = listView1.SelectedItems[0].Text;
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
     }

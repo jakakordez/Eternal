@@ -101,6 +101,9 @@
     <EmbeddedResource Include="Editors\NumberEditor.resx">
       <DependentUpon>NumberEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Editors\StringEditor.resx">
+      <DependentUpon>StringEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Editors\ValueEditor.resx">
       <DependentUpon>ValueEditor.cs</DependentUpon>
     </EmbeddedResource>

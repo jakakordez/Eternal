@@ -43,60 +43,63 @@ namespace EGE
             }
         }
 
-        public void Load(World currentWorld, string filePath)
+        public void Load(string filePath)
         {
             FilePath = filePath;
-            // Open terrain file
-            using (ZipArchive archive = ZipFile.Open(FilePath, ZipArchiveMode.Read, Global.Encoding))
+            if (File.Exists(FilePath))
             {
-                // Load terrain descriptor
-                Stream entryStream = archive.GetEntry("TerrainDescriptor.json").Open();
-                JsonConvert.PopulateObject(Misc.StreamToString(entryStream), this, Global.SerializerSettings);
-                entryStream.Close();
-
-                // Load ground texture
-                if (archive.GetEntry("GroundTexture.bmp") != null)
+                // Open terrain file
+                using (ZipArchive archive = ZipFile.Open(FilePath, ZipArchiveMode.Read, Global.Encoding))
                 {
-                    entryStream = archive.GetEntry("GroundTexture.bmp").Open();
-                    GroundTexture = Misc.LoadTexture(new Bitmap(entryStream), 1);
+                    // Load terrain descriptor
+                    Stream entryStream = archive.GetEntry("TerrainDescriptor.json").Open();
+                    JsonConvert.PopulateObject(Misc.StreamToString(entryStream), this, Global.SerializerSettings);
                     entryStream.Close();
-                }
 
-                // Load heightfield data
-                if (archive.GetEntry("Heightfield.raw") != null)
-                {
-                    entryStream = archive.GetEntry("Heightfield.raw").Open();
-                    HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -3000, 3000, 1, PhyScalarType.PhyFloat, false);
-                    heightfield.LocalScaling = Scale;
-                    //currentWorld.CreateRigidBody(0, Matrix4.CreateTranslation(Vector3.Zero), heightfield); //TODO: uncomment
-                    
-                    // Generate heightfield mesh
-                    Vector3[] points = new Vector3[Size * Size];
-                    entryStream.Position = 0;
-                    byte[] b = new byte[4];
-                    Vector2[] texturecoords = new Vector2[Size * Size];
-                    for (int i = 0; i < entryStream.Length; i += 4)
+                    // Load ground texture
+                    if (archive.GetEntry("GroundTexture.bmp") != null)
                     {
-                        entryStream.Read(b, 0, 4);
-                        points[i / 4] = new Vector3((i / 4) % Size, BitConverter.ToSingle(b, 0), ((i / 4) / Size)) * Scale;
-                        texturecoords[i / 4] = new Vector2((i / 4) % Size, ((i / 4) / Size)) * Scale.Xz;
+                        entryStream = archive.GetEntry("GroundTexture.bmp").Open();
+                        GroundTexture = Misc.LoadTexture(new Bitmap(entryStream), 1);
+                        entryStream.Close();
                     }
-                    int[] indicies = new int[(Size - 1) * (Size - 1) * 6];
-                    int c = 0;
-                    for (int i = 0; i < points.Length - Size; i++)
+
+                    // Load heightfield data
+                    if (archive.GetEntry("Heightfield.raw") != null)
                     {
-                        if ((i % Size) < Size - 1)
+                        entryStream = archive.GetEntry("Heightfield.raw").Open();
+                        HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -3000, 3000, 1, PhyScalarType.PhyFloat, false);
+                        heightfield.LocalScaling = Scale;
+                        //currentWorld.CreateRigidBody(0, Matrix4.CreateTranslation(Vector3.Zero), heightfield); //TODO: uncomment
+
+                        // Generate heightfield mesh
+                        Vector3[] points = new Vector3[Size * Size];
+                        entryStream.Position = 0;
+                        byte[] b = new byte[4];
+                        Vector2[] texturecoords = new Vector2[Size * Size];
+                        for (int i = 0; i < entryStream.Length; i += 4)
                         {
-                            indicies[c++] = i;
-                            indicies[c++] = i + 1;
-                            indicies[c++] = i + 1 + Size;
-                            indicies[c++] = i + 1 + Size;
-                            indicies[c++] = i + Size;
-                            indicies[c++] = i;
+                            entryStream.Read(b, 0, 4);
+                            points[i / 4] = new Vector3((i / 4) % Size, BitConverter.ToSingle(b, 0), ((i / 4) / Size)) * Scale;
+                            texturecoords[i / 4] = new Vector2((i / 4) % Size, ((i / 4) / Size)) * Scale.Xz;
                         }
+                        int[] indicies = new int[(Size - 1) * (Size - 1) * 6];
+                        int c = 0;
+                        for (int i = 0; i < points.Length - Size; i++)
+                        {
+                            if ((i % Size) < Size - 1)
+                            {
+                                indicies[c++] = i;
+                                indicies[c++] = i + 1;
+                                indicies[c++] = i + 1 + Size;
+                                indicies[c++] = i + 1 + Size;
+                                indicies[c++] = i + Size;
+                                indicies[c++] = i;
+                            }
+                        }
+                        //HeightfieldMesh = new BufferedObject(points, indicies, texturecoords);
+                        entryStream.Close();
                     }
-                    //HeightfieldMesh = new BufferedObject(points, indicies, texturecoords);
-                    entryStream.Close();
                 }
             }
         }

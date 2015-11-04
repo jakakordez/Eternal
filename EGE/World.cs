@@ -54,8 +54,8 @@ namespace EGE
 
         public void LoadData(string Path)
         {
-            WorldDataPath = Path;
-            CurrentMap.Load(this, Path + "\\Map");
+            Tools.Contruction.Load(Path + "\\Map", CurrentMap);
+            Tools.TextureManager.LoadTextures(Path + "\\Map");
         }
 
         public void Build()
@@ -69,9 +69,8 @@ namespace EGE
 
         public void SaveData(string Path)
         {
-            WorldDataPath = Path;
             if (!Directory.Exists(Path + "\\Map")) Directory.CreateDirectory(Path + "\\Map");
-            CurrentMap.Save(Path + "\\Map");
+            Tools.Contruction.Save(Path + "\\Map", CurrentMap);
         }
 
         public void Update(bool focused, float elaspedTime)

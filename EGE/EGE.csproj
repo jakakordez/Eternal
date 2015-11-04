@@ -101,6 +101,7 @@
     <Compile Include="Environment\Paths\Path.cs" />
     <Compile Include="Environment\Paths\PathNode.cs" />
     <Compile Include="Environment\Paths\Road.cs" />
+    <Compile Include="Tools\Contruction.cs" />
     <Compile Include="Tools\Global.cs" />
     <Compile Include="Environment\Map.cs" />
     <Compile Include="Meshes\BufferedObject.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Tools\Graphics.cs" />
     <Compile Include="Tools\Misc.cs" />
     <Compile Include="Tools\Settings.cs" />
+    <Compile Include="Tools\TextureManager.cs" />
     <Compile Include="Tools\Vector3Serializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Environment\Terrain.cs" />

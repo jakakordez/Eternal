@@ -21,15 +21,13 @@ namespace EGE.Environment.Paths
 
         BufferedObject RoadMesh;
 
-        int RoadTexture;
-
         public Road()
         {
             RoadPath = new Path();
             Lanes = new List<Path>();
             RoadMesh = new BufferedObject();
             RoadWidth = 2;
-            TextureName = "";
+            TextureName = "road.jpg";
         }
 
         public void Draw()
@@ -45,8 +43,7 @@ namespace EGE.Environment.Paths
             }
             else
             {
-                GL.Color4(Color.White);
-                GL.BindTexture(TextureTarget.Texture2D, RoadTexture);
+                Tools.TextureManager.BindTexture(TextureName);
                 RoadMesh.Draw();
             }
         }
@@ -112,7 +109,6 @@ namespace EGE.Environment.Paths
                 }
                 RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureCoordinates);
             }
-            RoadTexture = Misc.LoadTexture((Bitmap)Image.FromFile("road.jpg"), 1);
             //catch { }
         }
     }

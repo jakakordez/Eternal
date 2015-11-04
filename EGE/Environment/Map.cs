@@ -9,23 +9,20 @@ namespace EGE
     public class Map
     {
         public Terrain CurrentTerrain { get; set; }
-        string MapPath;
 
         public Map()
         {
             CurrentTerrain = new Terrain();
         }
 
-        public void Load(World world, string mapPath)
+        public void Load()
         {
-            MapPath = mapPath;
-            CurrentTerrain.Load(world, mapPath + "\\Terrain.ege");
+            CurrentTerrain.Load(Tools.Contruction.MapPath + "\\Terrain.ege");
         }
 
-        public void Save(string mapPath)
+        public void Save()
         {
-            MapPath = mapPath;
-            CurrentTerrain.Save(mapPath + "\\Terrain.ege");
+            CurrentTerrain.Save(Tools.Contruction.MapPath + "\\Terrain.ege");
         }
 
         public override string ToString()

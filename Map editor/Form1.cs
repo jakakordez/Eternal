@@ -30,7 +30,7 @@ namespace Map_editor
             dataTypes.Add(typeof(Vector2), 2);
             dataTypes.Add(typeof(Vector3), 3);
             currentWorld = new World();
-            LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
+            
             //setWorldValue("CurrentMap/CurrentTerrain/Roads/0", currentWorld, null);
         }
 
@@ -93,6 +93,8 @@ namespace Map_editor
             treeView1.Nodes.Clear();
             AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
             mapView1.UpdateWorld();
+            currentWorld.Init();
+            currentWorld.Build();
         }
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -187,8 +189,7 @@ namespace Map_editor
             OpenGLLoaded = true;
             currentWorld.Resize(glControl1.Width, glControl1.Height);
             tmrPreview.Start();
-            currentWorld.Init();
-            currentWorld.Build();
+            
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)
@@ -269,8 +270,11 @@ namespace Map_editor
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            tabPage2.Show(); // Switch to page 2 for OpenGL control load
+            tabPage1.Show(); // Switch back to page 1
             mapView1.UpdateLocation += MapView1_UpdateLocation;
             mapView1.MoveNode += MapView1_MoveNode;
+            LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
         }
 
         private void MapView1_MoveNode(double X, double Y, object argument)
@@ -307,6 +311,11 @@ namespace Map_editor
             TreeNode parent = nod.Parent;
             parent.Nodes.Remove(nod);
             AddNode(getWorldValue(path), parent.Nodes, nod.Name, path);
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            new TextureCollection().Show();
         }
     }
 }

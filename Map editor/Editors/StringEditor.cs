@@ -26,12 +26,14 @@ namespace Map_editor.Editors
             ToolStrip tlsInsert = new ToolStrip();
             insertButton = new ToolStripSplitButton();            
 
-            ToolStripMenuItem tsmTexture = new ToolStripMenuItem();
-            tsmTexture.Text = "Texture";
+            ToolStripMenuItem tsmTexture = new ToolStripMenuItem("Texture");
             tsmTexture.Click += TsmTexture_Click;
 
+            ToolStripMenuItem tsmHeightfield = new ToolStripMenuItem("Heightfield");
+            tsmHeightfield.Click += TsmTexture_Click;
+
             insertButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            insertButton.DropDownItems.Add(tsmTexture);
+            insertButton.DropDownItems.AddRange(new ToolStripItem[] { tsmTexture, tsmHeightfield });
             insertButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
             insertButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             insertButton.Size = new System.Drawing.Size(32, 22);

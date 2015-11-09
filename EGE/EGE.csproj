@@ -110,6 +110,7 @@
     <Compile Include="Meshes\MeshCollector.cs" />
     <Compile Include="Tools\Graphics.cs" />
     <Compile Include="Tools\Misc.cs" />
+    <Compile Include="Tools\ResourceManager.cs" />
     <Compile Include="Tools\Settings.cs" />
     <Compile Include="Tools\TextureManager.cs" />
     <Compile Include="Tools\Vector3Serializer.cs" />

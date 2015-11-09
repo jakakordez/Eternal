@@ -317,7 +317,7 @@ namespace Map_editor
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            new TextureCollection().Show();
+            new ResourceCollector().Show();
         }
     }
 }

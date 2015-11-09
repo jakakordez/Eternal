@@ -143,5 +143,12 @@ namespace EGE
             }
         }
 
+        public static string sizeToString(long bytes)
+        {
+            if (bytes > 1000000000) return Math.Round(bytes / 1000000000f, 2) + " GB";
+            if (bytes > 1000000) return Math.Round(bytes / 1000000f, 2) + " MB";
+            if (bytes > 1000) return Math.Round(bytes / 1000f, 2) + " kB";
+            else return bytes + " b";
+        }
     }
 }

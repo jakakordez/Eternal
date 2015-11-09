@@ -47,11 +47,11 @@ namespace Map_editor.Editors
 
         private void TsmTexture_Click(object sender, EventArgs e)
         {
-            TextureCollection tc = new TextureCollection();
+            ResourceCollector tc = new ResourceCollector();
             if (tc.ShowDialog() == DialogResult.OK)
             {
-                txtText.Text = tc.TextureResult;
-                base.SetValue(tc.TextureResult);
+                txtText.Text = tc.CollectionResult;
+                base.SetValue(tc.CollectionResult);
             }
         }
 

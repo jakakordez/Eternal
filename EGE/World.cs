@@ -56,6 +56,7 @@ namespace EGE
         {
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
             Tools.TextureManager.LoadTextures(Path + "\\Map");
+            Tools.ResourceManager.LoadResources(Path + "\\Map");
         }
 
         public void Build()

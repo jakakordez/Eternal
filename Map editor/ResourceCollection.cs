@@ -76,18 +76,24 @@ namespace Map_editor
 
         private void removeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (lstTextures.SelectedItems.Count > 0)
+            if (tabControl1.SelectedIndex == 0)
             {
-                if (MessageBox.Show("Do you want to remove the file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                    if (tabControl1.SelectedIndex == 0)
+                if (lstTextures.SelectedItems.Count > 0)
+                {
+                    if (MessageBox.Show("Do you want to remove the file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         images.Remove(lstTextures.SelectedItems[0].Text);
                         EGE.Tools.TextureManager.RemoveTexture(lstTextures.SelectedItems[0].Text);
                         lstTextures.SelectedItems[0].Remove();
                     }
-                    else EGE.Tools.ResourceManager.RemoveFile(lstFiles.SelectedItems[0].Text);
                 }
             }
+            else if (lstFiles.SelectedItems.Count > 0 && MessageBox.Show("Do you want to remove the file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                EGE.Tools.ResourceManager.RemoveFile(lstFiles.SelectedItems[0].Text);
+                lstFiles.SelectedItems[0].Remove();
+            }
+
         }
 
         private void lstTextures_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -97,7 +103,7 @@ namespace Map_editor
             else lst = lstFiles;
             if (lst.SelectedItems.Count > 0 && e.Button == MouseButtons.Left)
             {
-                CollectionResult = lstTextures.SelectedItems[0].Text;
+                CollectionResult = lst.SelectedItems[0].Text;
                 DialogResult = DialogResult.OK;
                 Close();
             }

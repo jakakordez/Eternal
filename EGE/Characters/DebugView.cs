@@ -37,10 +37,10 @@ namespace EGE.Characters
         public override void Update(float elaspedTime, KeyboardState keyboardState)
         {
             Matrix4 Movement = Matrix4.Identity;
-            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.In(Func.Acceleration) * 0.1f, 0, 0));
-            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.In(Func.Brake) * -0.1f, 0, 0));
-            Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.In(Func.Left) * -0.1f));
-            Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.In(Func.Right) * 0.1f));
+            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.In(Func.Acceleration) * 0.5f, 0, 0));
+            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.In(Func.Brake) * -0.5f, 0, 0));
+            Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.In(Func.Left) * -0.5f));
+            Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.In(Func.Right) * 0.5f));
             Movement *= Matrix4.CreateRotationY(orientation.Y);
             centerPoint += Movement.ExtractTranslation();
 

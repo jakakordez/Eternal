@@ -37,15 +37,29 @@ namespace EGE.Tools
 
         public static byte[] GetResource(string Name)
         {
-            byte[] data;
-            using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Read, Global.Encoding))
-            {
+            try {
+                byte[] data;
+                using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Read, Global.Encoding))
+                {
+                    ZipArchiveEntry e = archive.GetEntry(Name);
+                    Stream s = e.Open();
+                    data = new byte[e.Length];
+                    s.Read(data, 0, data.Length);
+                }
+                return data;
+            }
+            catch { return new byte[0]; }
+        }
+
+        public static Stream GetStream(string Name)
+        {
+            try {
+                ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Read, Global.Encoding);
                 ZipArchiveEntry e = archive.GetEntry(Name);
                 Stream s = e.Open();
-                data = new byte[e.Length];
-                s.Read(data, 0, data.Length);
+                return s;
             }
-            return data;
+            catch { return null; }
         }
 
         public static void AddFile(string path)

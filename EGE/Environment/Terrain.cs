@@ -35,6 +35,7 @@ namespace EGE
             {
                 road.Draw();
             }
+            TerrainHeightfield.Draw();
         }
 
         public void Load(string filePath)
@@ -59,12 +60,13 @@ namespace EGE
                     }*/
 
                     // Load heightfield data
-                    if (archive.GetEntry("Heightfield.raw") != null)
+                    /*if (archive.GetEntry("Heightfield.raw") != null)
                     {
                         TerrainHeightfield.Load(archive.GetEntry("Heightfield.raw").Open());
-                    }
+                    }*/
                 }
             }
+            
         }
 
         public void Save(string filePath)

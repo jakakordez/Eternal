@@ -54,9 +54,10 @@ namespace EGE
 
         public void LoadData(string Path)
         {
-            Tools.Contruction.Load(Path + "\\Map", CurrentMap);
+            
             Tools.TextureManager.LoadTextures(Path + "\\Map");
             Tools.ResourceManager.LoadResources(Path + "\\Map");
+            Tools.Contruction.Load(Path + "\\Map", CurrentMap);
         }
 
         public void Build()
@@ -66,6 +67,7 @@ namespace EGE
             {
                 r.Build();
             }
+            CurrentMap.CurrentTerrain.TerrainHeightfield.Load();
         }
 
         public void SaveData(string Path)

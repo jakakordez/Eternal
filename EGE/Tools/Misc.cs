@@ -150,5 +150,10 @@ namespace EGE
             if (bytes > 1000) return Math.Round(bytes / 1000f, 2) + " kB";
             else return bytes + " b";
         }
+
+        public static float lerp(float v0, float v1, float t)
+        {
+            return (1 - t) * v0 + t * v1;
+        }
     }
 }

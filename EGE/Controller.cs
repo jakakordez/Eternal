@@ -14,6 +14,8 @@ namespace EGE
         Brake,
         Left,
         Right,
+        Up,
+        Down,
         CruiseControl,
         EngineStart,
         Forward,
@@ -41,6 +43,8 @@ namespace EGE
             ControllerMapping.Add(Func.Brake, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.S });
             ControllerMapping.Add(Func.Left, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.A });
             ControllerMapping.Add(Func.Right, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.D });
+            ControllerMapping.Add(Func.Up, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.E });
+            ControllerMapping.Add(Func.Down, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Q });
         }
 
         public static void Update()

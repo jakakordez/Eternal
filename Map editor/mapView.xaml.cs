@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EGE;
 using EGE.Environment;
+using System.IO;
 
 namespace Map_editor
 {
@@ -30,7 +31,9 @@ namespace Map_editor
         public event LocationUpdate UpdateLocation;
         public event LocationUpdate MoveNode;
         public Dictionary<string, UIElement> MapObjects;
-        Canvas lineCanvas = new Canvas();     
+        Canvas lineCanvas = new Canvas();
+        Canvas heightfieldCanvas = new Canvas();
+        Image heightfieldBitmap;
         public mapView()
         {
             InitializeComponent();
@@ -51,6 +54,7 @@ namespace Map_editor
             map.Children.Add(unitZ);
 
             map.Children.Add(lineCanvas);
+            map.Children.Add(heightfieldCanvas);
         }
 
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -115,6 +119,25 @@ namespace Map_editor
                     prevNode = n;
                 }
             }
+
+            if(heightfieldBitmap == null)
+            {
+                heightfieldBitmap = new Image();
+                heightfieldBitmap.Height = Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.Size * PixelScale;
+                heightfieldBitmap.Width = heightfieldBitmap.Height;
+                heightfieldBitmap.HorizontalAlignment = HorizontalAlignment.Left;
+                heightfieldBitmap.VerticalAlignment = VerticalAlignment.Top;
+                map.Children.Add(heightfieldBitmap);
+            }
+            
+            var bmp = Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.GetBitmap();
+            System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
+            BitmapImage bmpi = new BitmapImage();
+            bmpi.BeginInit();
+            bmpi.StreamSource = new MemoryStream((byte[])converter.ConvertTo(bmp, typeof(byte[])));
+            bmpi.EndInit();
+            heightfieldBitmap.Source = bmpi;
+            Canvas.SetZIndex(heightfieldBitmap, -5);
         }
 
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)

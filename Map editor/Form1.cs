@@ -93,9 +93,10 @@ namespace Map_editor
             currentWorld.LoadData(path);
             treeView1.Nodes.Clear();
             AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
-            mapView1.UpdateWorld();
+            
             currentWorld.Init();
             currentWorld.Build();
+            mapView1.UpdateWorld();
         }
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)

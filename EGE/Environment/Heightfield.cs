@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BulletSharp;
 using OpenTK;
 using System.IO;
+using System.Drawing;
 
 namespace EGE.Environment
 {
@@ -23,12 +24,16 @@ namespace EGE.Environment
 
         BufferedObject HeightfieldMesh;
 
+        float Maximum, Minimum;
+
         public Heightfield()
         {
             Scale = Vector3.Zero;
             GroundTextureName = "";
             HeightfieldName = "";
             HeightfieldMesh = new BufferedObject();
+            Maximum = float.MinValue;
+            Minimum = float.MaxValue;
         }
 
         public void Load()
@@ -48,8 +53,11 @@ namespace EGE.Environment
                 for (int i = 0; i < entryStream.Length; i += 4)
                 {
                     entryStream.Read(b, 0, 4);
-                    points[i / 4] = new Vector3((i / 4) % Size, BitConverter.ToSingle(b, 0), ((i / 4) / Size)) * Scale;
+                    float h = BitConverter.ToSingle(b, 0);
+                    points[i / 4] = new Vector3((i / 4) % Size, h, ((i / 4) / Size)) * Scale;
                     texturecoords[i / 4] = new Vector2((i / 4) % Size, ((i / 4) / Size)) * Scale.Xz;
+                    if (h > Maximum) Maximum = h;
+                    if (h < Minimum) Minimum = h;
                 }
                 int[] indicies = new int[(Size - 1) * (Size - 1) * 6];
                 int c = 0;
@@ -68,6 +76,50 @@ namespace EGE.Environment
                 HeightfieldMesh.Load(points, indicies, texturecoords);
                 entryStream.Close();
             }
+        }
+
+        public Bitmap GetBitmap()
+        {
+            Bitmap result = new Bitmap(Size, Size);
+            Graphics g = Graphics.FromImage(result);
+            g.Clear(Color.Black);
+            Stream entryStream = new MemoryStream(Tools.ResourceManager.GetResource(HeightfieldName));
+            if (entryStream != null)
+            {
+                byte[] b = new byte[4];
+                for (int i = 0; i < entryStream.Length; i += 4)
+                {
+                    entryStream.Read(b, 0, 4);
+                    int argb = (int)(255*(BitConverter.ToSingle(b, 0) - Minimum)/ (Maximum - Minimum));
+                    result.SetPixel((i/4) % Size, (int)((i/4) / Size), GetColor(BitConverter.ToSingle(b, 0)));
+                }
+            }
+            return result;
+        }
+
+        private static Color GetColor(float Height)
+        {
+            int[,] ControlPoints = new int[,]
+            {
+                { -10, 32, 41, 159 },
+                { -5, 66, 129, 63 },
+                { 0, 56, 135, 133 },
+                { 1, 223, 219, 55 },
+                { 2, 105, 201, 78},
+                { 500, 61, 130, 40},
+            };
+            for (int i = 0; i < ControlPoints.GetLength(0)-1; i++)
+            {
+                if(Height >= ControlPoints[i, 0] && Height < ControlPoints[i+1, 0])
+                {
+                    float controlPoint = (Height - ControlPoints[i, 0]) / (float)(ControlPoints[i + 1, 0] - ControlPoints[i, 0]);
+                    int r = (int)Misc.lerp(ControlPoints[i, 1], ControlPoints[i + 1, 1], controlPoint);
+                    int g = (int)Misc.lerp(ControlPoints[i, 2], ControlPoints[i + 1, 2], controlPoint);
+                    int b = (int)Misc.lerp(ControlPoints[i, 3], ControlPoints[i + 1, 3], controlPoint);
+                    return Color.FromArgb(r, g, b);
+                }
+            }
+            return Color.Black;
         }
 
         public void Draw()

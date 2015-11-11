@@ -76,12 +76,13 @@ namespace EGE.Tools
             {
                 archive.GetEntry(textureName).Delete();
             }
+            TextureMap.Remove(textureName);
         }
 
         public static void BindTexture(string textureName)
         {
             GL.Color4(Color.White);
-            GL.BindTexture(TextureTarget.Texture2D, TextureMap[textureName]);
+            if (TextureMap.ContainsKey(textureName)) GL.BindTexture(TextureTarget.Texture2D, TextureMap[textureName]);
         }
 
         public static Dictionary<string, Bitmap> GetTextures()
@@ -97,6 +98,16 @@ namespace EGE.Tools
                 }
             }
             return images;
+        }
+
+        public static Image getTexture(string TextureName)
+        {
+            Bitmap result;
+            using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Read, Global.Encoding))
+            {
+                result = (Bitmap)Image.FromStream(archive.GetEntry(TextureName).Open());
+            }
+            return result;
         }
     }
 }

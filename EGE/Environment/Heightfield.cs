@@ -16,20 +16,19 @@ namespace EGE.Environment
 
         public Vector3 Offset { get; set; }
 
-        public string GroundTextureName { get; set; }
-
         public string HeightfieldName { get; set; }
 
         public int Size { get; set; }
 
-        BufferedObject HeightfieldMesh;
+        public Vector2 TextureScale { get;  set; }
+
+        public BufferedObject HeightfieldMesh { get; set;  }
 
         float Maximum, Minimum;
 
         public Heightfield()
         {
             Scale = Vector3.Zero;
-            GroundTextureName = "";
             HeightfieldName = "";
             HeightfieldMesh = new BufferedObject();
             Maximum = float.MinValue;
@@ -56,6 +55,8 @@ namespace EGE.Environment
                     float h = BitConverter.ToSingle(b, 0);
                     points[i / 4] = new Vector3((i / 4) % Size, h, ((i / 4) / Size)) * Scale;
                     texturecoords[i / 4] = new Vector2((i / 4) % Size, ((i / 4) / Size)) * Scale.Xz;
+                    texturecoords[i / 4].X /= TextureScale.X;
+                    texturecoords[i / 4].Y /= TextureScale.Y;
                     if (h > Maximum) Maximum = h;
                     if (h < Minimum) Minimum = h;
                 }
@@ -124,7 +125,6 @@ namespace EGE.Environment
 
         public void Draw()
         {
-            Tools.TextureManager.BindTexture(GroundTextureName);
             HeightfieldMesh.Draw();
         }
     }

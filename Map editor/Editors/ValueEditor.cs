@@ -18,7 +18,8 @@ namespace Map_editor.Editors
             {typeof(int), new NumberEditor() },
             {typeof(float), new NumberEditor() },
             {typeof(string), new StringEditor() },
-            {typeof(Vector3), new Vector3Editor() }
+            {typeof(Vector3), new Vector3Editor() },
+            {typeof(Vector2), new Vector2Editor() }
         };
         public static ValueEditor GetAppropriateEditor(object Value)
         {

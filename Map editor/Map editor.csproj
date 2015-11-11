@@ -78,6 +78,9 @@
     <Compile Include="Editors\ValueEditor.Designer.cs">
       <DependentUpon>ValueEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\Vector2Editor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Editors\Vector3Editor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -106,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\ValueEditor.resx">
       <DependentUpon>ValueEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\Vector2Editor.resx">
+      <DependentUpon>Vector2Editor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\Vector3Editor.resx">
       <DependentUpon>Vector3Editor.cs</DependentUpon>

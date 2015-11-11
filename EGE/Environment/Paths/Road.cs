@@ -53,7 +53,7 @@ namespace EGE.Environment.Paths
             float Sharpness = 2;
                 
             Vector3[] BezierControlPoints = new Vector3[4];
-            float angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[1].NodeLocation.Xz - RoadPath.PathNodes[0].NodeLocation.Xz));
+            float angle = (Misc.getAngle(RoadPath.PathNodes[1].NodeLocation.Xz - RoadPath.PathNodes[0].NodeLocation.Xz));
             Vector2 l = Misc.getCartesian(angle) * Sharpness;
 
             for (int i = 0; i < RoadPath.PathNodes.Length - 1; i++)
@@ -61,12 +61,12 @@ namespace EGE.Environment.Paths
                 BezierControlPoints[0] = RoadPath.PathNodes[i].NodeLocation;
                 BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
 
-                angle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz));
+                angle = (Misc.getAngle(RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz));
                 if (i < RoadPath.PathNodes.Length - 2)
                 {
-                    float nextAngle = Misc.halfNormalizeAngle(Misc.getAngle(RoadPath.PathNodes[i + 2].NodeLocation.Xz - RoadPath.PathNodes[i + 1].NodeLocation.Xz));
+                    float nextAngle = (Misc.getAngle(RoadPath.PathNodes[i + 2].NodeLocation.Xz - RoadPath.PathNodes[i + 1].NodeLocation.Xz));
 
-                    angle = (Misc.halfNormalizeAngle(angle + nextAngle) / 2);
+                    angle = ((angle + nextAngle) / 2);
                 }
                 float segments = (RoadPath.PathNodes[i + 1].NodeLocation.Xz - RoadPath.PathNodes[i].NodeLocation.Xz).Length * 1;
                 l = Misc.getCartesian(angle) * (segments / 2);

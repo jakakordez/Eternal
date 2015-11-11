@@ -24,7 +24,7 @@ namespace Map_editor
     public partial class mapView : UserControl
     {
         ScaleTransform zoom = new ScaleTransform(10, 10);
-        double Thickness = 1;
+        double Thickness = 10;
         Double PixelScale = 20;
 
         public delegate void LocationUpdate(double X, double Y, object argument);
@@ -104,7 +104,7 @@ namespace Map_editor
                         {
                             Line l = new Line();
                             l.StrokeThickness = Thickness;
-                            l.Stroke = Brushes.Black;
+                            l.Stroke = Brushes.DarkGray;
                             
                             map.Children.Add(l);
                             MapObjects.Add(path, l);
@@ -127,16 +127,17 @@ namespace Map_editor
                 heightfieldBitmap.Width = heightfieldBitmap.Height;
                 heightfieldBitmap.HorizontalAlignment = HorizontalAlignment.Left;
                 heightfieldBitmap.VerticalAlignment = VerticalAlignment.Top;
+                var bmp = EGE.Tools.TextureManager.getTexture(Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.HeightfieldMesh.TextureName);
+                bmp.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+                System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
+                BitmapImage bmpi = new BitmapImage();
+                bmpi.BeginInit();
+                bmpi.StreamSource = new MemoryStream((byte[])converter.ConvertTo(bmp, typeof(byte[])));
+                bmpi.EndInit();
+                heightfieldBitmap.Source = bmpi;
                 map.Children.Add(heightfieldBitmap);
             }
             
-            var bmp = Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.GetBitmap();
-            System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
-            BitmapImage bmpi = new BitmapImage();
-            bmpi.BeginInit();
-            bmpi.StreamSource = new MemoryStream((byte[])converter.ConvertTo(bmp, typeof(byte[])));
-            bmpi.EndInit();
-            heightfieldBitmap.Source = bmpi;
             Canvas.SetZIndex(heightfieldBitmap, -5);
         }
 

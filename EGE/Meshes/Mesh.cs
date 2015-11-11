@@ -9,6 +9,11 @@ namespace EGE
 {
     class Mesh
     {
+        BufferedObject[] Parts;
 
+        public Mesh()
+        {
+            Parts = new BufferedObject[0];
+        }
     }
 }

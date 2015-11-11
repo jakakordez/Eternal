@@ -14,7 +14,7 @@ namespace EGE
 
         public static JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()
         {
-            Converters = new List<JsonConverter> { new Tools.Vector3Serializer() },
+            Converters = new List<JsonConverter> { new Tools.VectorSerializer() },
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
             Culture = System.Globalization.CultureInfo.InvariantCulture

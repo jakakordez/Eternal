@@ -50,20 +50,6 @@ namespace EGE
                     Stream entryStream = archive.GetEntry("TerrainDescriptor.json").Open();
                     JsonConvert.PopulateObject(Misc.StreamToString(entryStream), this, Global.SerializerSettings);
                     entryStream.Close();
-
-                    // Load ground texture
-                    /*if (archive.GetEntry("GroundTexture.bmp") != null)
-                    {
-                        entryStream = archive.GetEntry("GroundTexture.bmp").Open();
-                        GroundTexture = Misc.LoadTexture(new Bitmap(entryStream), 1);
-                        entryStream.Close();
-                    }*/
-
-                    // Load heightfield data
-                    /*if (archive.GetEntry("Heightfield.raw") != null)
-                    {
-                        TerrainHeightfield.Load(archive.GetEntry("Heightfield.raw").Open());
-                    }*/
                 }
             }
             
@@ -82,26 +68,6 @@ namespace EGE
                 byte[] entryBytes = Global.Encoding.GetBytes(JsonConvert.SerializeObject(this, Global.SerializerSettings));
                 entryStream.Write(entryBytes, 0, entryBytes.Length);
                 entryStream.Close();
-
-                // Load ground texture
-               /* if (File.Exists(GroundTextureName))
-                {
-                    entryStream = archive.CreateEntry("GroundTexture.bmp").Open();
-                    entryBytes = File.ReadAllBytes(GroundTextureName);
-                    entryStream.Write(entryBytes, 0, entryBytes.Length);
-                    entryStream.Close();
-                }*/
-
-
-                // Load heightfield data
-                /*if (File.Exists(HeightfieldName))
-                {
-                    entryStream = archive.CreateEntry("Heightfield.raw").Open();
-                    entryBytes = File.ReadAllBytes(HeightfieldName);
-                    entryStream.Write(entryBytes, 0, entryBytes.Length);
-                    entryStream.Close();
-                }*/
-                
             }
             if (File.Exists(filePath+"bkp")) File.Delete(filePath+"bkp");
         }

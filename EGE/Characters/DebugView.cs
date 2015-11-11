@@ -11,7 +11,7 @@ namespace EGE.Characters
 {
     class DebugView:Character
     {
-        Vector3 centerPoint = new Vector3(25, 2, 10);
+        Vector3 centerPoint = new Vector3(800, 1, 200);
         Vector3 orientation;
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
@@ -23,7 +23,6 @@ namespace EGE.Characters
         };
 
         float X = 200, Y;
-        Matrix4 position = Matrix4.CreateTranslation(new Vector3(1, 1, 1));
 
         public override CameraDefinition CurrentCameraDefinition
         {

@@ -80,12 +80,13 @@ namespace EGE
         {
             /*if (k[OpenTK.Input.Key.Enter] && !e) Addball();
             e = k[OpenTK.Input.Key.Enter];
-            DynamicsWorld.StepSimulation(elaspedTime);
+            
             Player.Update(elaspedTime, new Controller(k), CurrentMap, Player);
             for (int i = 0; i < Vehicles.Length; i++)
             {
                 Vehicles[i].Update(elaspedTime, null, CurrentMap, Player);
             }*/
+            DynamicsWorld.StepSimulation(elaspedTime);
             if (focused)
             {
                 Controller.Update();

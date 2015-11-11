@@ -8,9 +8,15 @@ using OpenTK.Graphics.OpenGL;
 
 namespace EGE
 {
-    class BufferedObject
+    public class BufferedObject
     {
         int VertexBuffer, ElementArray, TextureCoordinateBuffer, ElementArraySize;
+        public string TextureName { get; set; }
+
+        public BufferedObject()
+        {
+            TextureName = "";
+        }
 
         public void Load(Vector3[] Vertices, int[] indicies, Vector2[] TextureCoordinates)
         {
@@ -92,6 +98,8 @@ namespace EGE
                     GL.PopClientAttrib();
                     break;
                 case Settings.DrawingModes.Textured:
+                    Tools.TextureManager.BindTexture(TextureName);
+
                     GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
                     // Set the Pointer to the current bound array describing how the data ia stored

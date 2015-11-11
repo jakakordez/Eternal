@@ -11,6 +11,6 @@
             <Grid x:Name="map" RenderTransformOrigin="0,0" ClipToBounds="False" VerticalAlignment="Top" HorizontalAlignment="Left">
             </Grid>
         </Grid>
-        <Slider x:Name="slider" Margin="10,0,0,10" ValueChanged="slider_ValueChanged" Maximum="2" SmallChange="0.01" Minimum="0.1" Value="1" HorizontalAlignment="Left" Width="200" Height="25" VerticalAlignment="Bottom"/>
+        <Slider x:Name="slider" Margin="10,0,0,10" ValueChanged="slider_ValueChanged" Maximum="8" SmallChange="0.01" Minimum="0.1" Value="1" HorizontalAlignment="Left" Width="400" Height="25" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>

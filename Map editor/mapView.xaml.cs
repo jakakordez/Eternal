@@ -44,12 +44,12 @@ namespace Map_editor
             
             Line unitX = new Line();
             unitX.X2 = 10;
-            unitX.StrokeThickness = Thickness;
+            unitX.StrokeThickness = 1;
             unitX.Stroke = Brushes.Red;
             map.Children.Add(unitX);
             Line unitZ = new Line();
             unitZ.Y2 = 10;
-            unitZ.StrokeThickness = Thickness;
+            unitZ.StrokeThickness = 1;
             unitZ.Stroke = Brushes.LimeGreen;
             map.Children.Add(unitZ);
 
@@ -85,7 +85,7 @@ namespace Map_editor
                         nodeBtn.Width = 20;
                         nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
                         nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-                        nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
+
                         nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
                         nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
                         map.Children.Add(nodeBtn);
@@ -127,7 +127,7 @@ namespace Map_editor
                 heightfieldBitmap.Width = heightfieldBitmap.Height;
                 heightfieldBitmap.HorizontalAlignment = HorizontalAlignment.Left;
                 heightfieldBitmap.VerticalAlignment = VerticalAlignment.Top;
-                var bmp = EGE.Tools.TextureManager.getTexture(Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.HeightfieldMesh.TextureName);
+                var bmp = EGE.Tools.TextureManager.getTexture(Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.TextureName);
                 bmp.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
                 System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
                 BitmapImage bmpi = new BitmapImage();
@@ -155,10 +155,6 @@ namespace Map_editor
             }
             UpdateWorld();
 
-        }
-
-        private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
         }
 
         private void NodeBtn_PreviewMouseMove(object sender, MouseEventArgs e)

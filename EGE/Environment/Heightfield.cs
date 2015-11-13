@@ -7,6 +7,7 @@ using BulletSharp;
 using OpenTK;
 using System.IO;
 using System.Drawing;
+using EGE.Meshes;
 
 namespace EGE.Environment
 {
@@ -18,11 +19,13 @@ namespace EGE.Environment
 
         public string HeightfieldName { get; set; }
 
+        public string TextureName { get; set; }
+
         public int Size { get; set; }
 
         public Vector2 TextureScale { get;  set; }
 
-        public BufferedObject HeightfieldMesh { get; set;  }
+        BufferedObject HeightfieldMesh;
 
         float Maximum, Minimum;
 
@@ -125,6 +128,7 @@ namespace EGE.Environment
 
         public void Draw()
         {
+            Tools.TextureManager.BindTexture(TextureName);
             HeightfieldMesh.Draw();
         }
     }

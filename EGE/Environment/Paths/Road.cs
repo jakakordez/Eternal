@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using EGE.Meshes;
 
 namespace EGE.Environment.Paths
 {

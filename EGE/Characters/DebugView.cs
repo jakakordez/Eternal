@@ -57,8 +57,8 @@ namespace EGE.Characters
         public override void Draw()
         {
             GL.MatrixMode(MatrixMode.Modelview);
-            Matrix4 WorldMatrix = Camera.GenerateLookAt(centerPoint, orientation, CurrentCameraDefinition);
-            GL.LoadMatrix(ref WorldMatrix);
+            World.WorldMatrix = Camera.GenerateLookAt(centerPoint, orientation, CurrentCameraDefinition);
+            GL.LoadMatrix(ref World.WorldMatrix);
         }
     }
 }

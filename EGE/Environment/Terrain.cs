@@ -12,12 +12,15 @@ using System.Drawing;
 using System.ComponentModel;
 using EGE.Environment.Paths;
 using EGE.Environment;
+using EGE.Meshes;
 
 namespace EGE
 {
     public class Terrain
     {
         public Road[] Roads { get; set; }
+
+        public Mesh[] Meshes { get; set; }
 
         public Heightfield TerrainHeightfield { get; set; }
 
@@ -26,15 +29,26 @@ namespace EGE
         public Terrain()
         {
             Roads = new Road[0];
+            Meshes = new Mesh[0];
             TerrainHeightfield = new Heightfield();
         }
 
         public void Draw()
         {
+            Matrix4 trans = World.WorldMatrix;
             foreach (Road road in Roads)
             {
                 road.Draw();
             }
+            
+            foreach (Mesh m in Meshes)
+            {
+                trans = Matrix4.CreateTranslation(m.Location)* World.WorldMatrix;
+                GL.LoadMatrix(ref trans);
+                m.Draw();
+            }
+            trans = World.WorldMatrix;
+            GL.LoadMatrix(ref trans);
             TerrainHeightfield.Draw();
         }
 

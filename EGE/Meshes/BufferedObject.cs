@@ -6,17 +6,11 @@ using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EGE
+namespace EGE.Meshes
 {
     public class BufferedObject
     {
         int VertexBuffer, ElementArray, TextureCoordinateBuffer, ElementArraySize;
-        public string TextureName { get; set; }
-
-        public BufferedObject()
-        {
-            TextureName = "";
-        }
 
         public void Load(Vector3[] Vertices, int[] indicies, Vector2[] TextureCoordinates)
         {
@@ -98,7 +92,6 @@ namespace EGE
                     GL.PopClientAttrib();
                     break;
                 case Settings.DrawingModes.Textured:
-                    Tools.TextureManager.BindTexture(TextureName);
 
                     GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);

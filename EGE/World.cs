@@ -19,14 +19,13 @@ namespace EGE
         public Map CurrentMap { get; set;}
         public Camera PrimaryCamera;
         Characters.Character MainCharacter;
+        public static Matrix4 WorldMatrix;
         
         private DiscreteDynamicsWorld DynamicsWorld;
 
         CollisionDispatcher dispatcher;
         DbvtBroadphase broadphase;
         CollisionConfiguration collisionConf;
-
-        string WorldDataPath;
 
         public World()
         {
@@ -54,7 +53,6 @@ namespace EGE
 
         public void LoadData(string Path)
         {
-            
             Tools.TextureManager.LoadTextures(Path + "\\Map");
             Tools.ResourceManager.LoadResources(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
@@ -66,6 +64,10 @@ namespace EGE
             foreach (EGE.Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
                 r.Build();
+            }
+            foreach (var item in CurrentMap.CurrentTerrain.Meshes)
+            {
+                item.LoadOBJ();
             }
             CurrentMap.CurrentTerrain.TerrainHeightfield.Load();
         }
@@ -110,18 +112,6 @@ namespace EGE
 
             MainCharacter.Draw();
 
-            GL.Color3(0, 0, 0);
-            //obj.Draw();
-            /*foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
-            {
-                GL.LineWidth(r.RoadPath.Width);
-                GL.Begin(PrimitiveType.LineStrip);
-                foreach (Environment.Paths.PathNode p in r.RoadPath.PathNodes)
-                {
-                    GL.Vertex3(p.NodeLocation);
-                }
-                GL.End();
-            }*/
             CurrentMap.CurrentTerrain.Draw();
 
             //    if (Focused) camera.Update(mouse);

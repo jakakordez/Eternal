@@ -83,6 +83,7 @@ namespace EGE.Tools
         {
             GL.Color4(Color.White);
             if (TextureMap.ContainsKey(textureName)) GL.BindTexture(TextureTarget.Texture2D, TextureMap[textureName]);
+            //GL.Color4(Color.Navy);
         }
 
         public static Dictionary<string, Bitmap> GetTextures()

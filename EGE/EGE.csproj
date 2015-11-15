@@ -106,7 +106,6 @@
     <Compile Include="Tools\Contruction.cs" />
     <Compile Include="Tools\Global.cs" />
     <Compile Include="Environment\Map.cs" />
-    <Compile Include="Meshes\BufferedObject.cs" />
     <Compile Include="Meshes\Mesh.cs" />
     <Compile Include="Meshes\MeshCollector.cs" />
     <Compile Include="Tools\Graphics.cs" />

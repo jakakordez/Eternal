@@ -20,13 +20,13 @@ namespace EGE.Environment.Paths
 
         List<Path> Lanes;
 
-        BufferedObject RoadMesh;
+        Mesh RoadMesh;
 
         public Road()
         {
             RoadPath = new Path();
             Lanes = new List<Path>();
-            RoadMesh = new BufferedObject();
+            RoadMesh = new Mesh();
             TextureName = "";
         }
 
@@ -105,7 +105,7 @@ namespace EGE.Environment.Paths
                 TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.2f);
                 TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
             }
-            RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureCoordinates);
+            RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureName, TextureCoordinates);
         }
     }
 }

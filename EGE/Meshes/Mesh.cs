@@ -12,7 +12,6 @@ namespace EGE.Meshes
 {
     public class Mesh
     {
-        BufferedObject[] Parts;
         Material[] Materials;
         uint[] ElementArrays;
         int[] ElementArraySizes;
@@ -24,7 +23,6 @@ namespace EGE.Meshes
         public Mesh()
         {
             ObjectFileName = "";
-            Parts = new BufferedObject[0];
             Materials = new Material[0];
             Location = new Vector3();
         }
@@ -44,25 +42,48 @@ namespace EGE.Meshes
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.Color4(Materials[i].Brush);
                 }
-                GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
-                // Set the Pointer to the current bound array describing how the data ia stored
-                GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
-                // Enable the client state so it will use this array buffer pointer
-                GL.EnableClientState(ArrayCap.TextureCoordArray);
 
+                GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
                 // Vertex Array Buffer
                 GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
-                // Set the Pointer to the current bound array describing how the data ia stored
+                                                                       // Set the Pointer to the current bound array describing how the data ia stored
                 GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
                 // Enable the client state so it will use this array buffer pointer
                 GL.EnableClientState(ArrayCap.VertexArray);
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArrays[i]);
-                GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
-                GL.BindTexture(TextureTarget.Texture2D, 0);
+
+                switch (Settings.CurrentDrawingMode)
+                {
+                    case Settings.DrawingModes.Wireframe:
+                        GL.DrawElements(PrimitiveType.LineStrip, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        break;
+                    case Settings.DrawingModes.Full:
+                        GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        break;
+                    case Settings.DrawingModes.Textured:
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
+                        // Set the Pointer to the current bound array describing how the data ia stored
+                        GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
+                        // Enable the client state so it will use this array buffer pointer
+                        GL.EnableClientState(ArrayCap.TextureCoordArray);
+
+                        GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.BindTexture(TextureTarget.Texture2D, 0);
+                        break;
+                }
                 // Restore the state
                 GL.PopClientAttrib();
             }
+        }
+
+        public void Load(Vector3[] Vertices, int[] Indicies, string TextureName, Vector2[] TextureCoordinates)
+        {
+            Materials = new Material[] { new Material("texture") { Texture = TextureName } };
+            VertexBuffer = AddVertexBuffer(Vertices);
+            TextureCoordinateBuffer = AddTextureCoordsBuffer(TextureCoordinates);
+            ElementArrays = new uint[1];
+            GL.GenBuffers(1, ElementArrays);
+            ElementArraySizes = new int[] { FillIndexBuffer(Indicies, ElementArrays[0]) };
         }
 
         public void LoadOBJ()
@@ -127,22 +148,14 @@ namespace EGE.Meshes
             ElementArrays = new uint[Materials.Length];
             GL.GenBuffers(Materials.Length, ElementArrays);
             int[] currentElements = new int[0];
-            List<int[]> faces = new List<int[]>(Materials.Length);
             ElementArraySizes = new int[0];
             int set = 0;
-            long bufferSize;
             for (int i = 0; i < Faces.Length; i++)
             {
                 Misc.Push<int>(Faces[i].vertices, ref currentElements);
                 if (Faces.Length - 1 == i || currentMaterial != Faces[i + 1].mtl)
                 {
-                    Misc.Push<int>(currentElements.Length, ref ElementArraySizes);
-                        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArrays[set]);
-                        GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(currentElements.Length * sizeof(int)), currentElements, BufferUsageHint.StaticDraw);
-                        GL.GetBufferParameter(BufferTarget.ElementArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
-                        if (currentElements.Length * sizeof(int) != bufferSize)
-                            throw new ApplicationException("Element array not uploaded correctly");
-                        GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+                    Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
                     if (Faces.Length - 1 > i)
                     {
                         set++;
@@ -153,8 +166,8 @@ namespace EGE.Meshes
                 }
 
             }
-            VertexBuffer = BufferedObject.AddVertexBuffer(SortedVertices);
-            TextureCoordinateBuffer = BufferedObject.AddTextureCoordsBuffer(SortedTextureCoordinates);
+            VertexBuffer = AddVertexBuffer(SortedVertices);
+            TextureCoordinateBuffer = AddTextureCoordsBuffer(SortedTextureCoordinates);
         }
 
         private void LoadMTL(string name)
@@ -187,6 +200,64 @@ namespace EGE.Meshes
                 }
             }
             if (currentMaterial != null) Misc.Push<Material>(currentMaterial, ref Materials);
+        }
+
+        public static int AddVertexBuffer(Vector3[] Vertices)
+        {
+            int VertexBuffer = GL.GenBuffer();
+            long bufferSize;
+            // Vertex Array Buffer
+            {
+                // Bind current context to Array Buffer ID
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer);
+
+                // Send data to buffer
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertices.Length * Vector3.SizeInBytes), Vertices, BufferUsageHint.StaticDraw);
+
+                // Validate that the buffer is the correct size
+
+                GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
+                if (Vertices.Length * Vector3.SizeInBytes != bufferSize)
+                    throw new ApplicationException("Vertex array not uploaded correctly");
+
+                // Clear the buffer Binding
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            }
+            return VertexBuffer;
+        }
+
+        public static int AddTextureCoordsBuffer(Vector2[] TextureCoordinates)
+        {
+            int TextureCoordinateBuffer = GL.GenBuffer();
+            long bufferSize;
+            {
+                // Bind current context to Array Buffer ID
+                GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
+
+                // Send data to buffer
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(TextureCoordinates.Length * 8), TextureCoordinates, BufferUsageHint.StaticDraw);
+
+                // Validate that the buffer is the correct size
+                GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
+                if (TextureCoordinates.Length * 8 != bufferSize)
+                    throw new ApplicationException("TexCoord array not uploaded correctly");
+
+                // Clear the buffer Binding
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            }
+            return TextureCoordinateBuffer;
+        }
+
+        static int FillIndexBuffer(int[] Indicies, uint Buffer)
+        {
+            long bufferSize;
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, Buffer);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(Indicies.Length * sizeof(int)), Indicies, BufferUsageHint.StaticDraw);
+            GL.GetBufferParameter(BufferTarget.ElementArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
+            if (Indicies.Length * sizeof(int) != bufferSize)
+                throw new ApplicationException("Element array not uploaded correctly");
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            return Indicies.Length;
         }
     }
     public class Face

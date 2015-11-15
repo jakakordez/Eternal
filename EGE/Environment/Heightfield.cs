@@ -25,7 +25,7 @@ namespace EGE.Environment
 
         public Vector2 TextureScale { get;  set; }
 
-        BufferedObject HeightfieldMesh;
+        Mesh HeightfieldMesh;
 
         float Maximum, Minimum;
 
@@ -33,7 +33,7 @@ namespace EGE.Environment
         {
             Scale = Vector3.Zero;
             HeightfieldName = "";
-            HeightfieldMesh = new BufferedObject();
+            HeightfieldMesh = new Mesh();
             Maximum = float.MinValue;
             Minimum = float.MaxValue;
         }
@@ -77,7 +77,7 @@ namespace EGE.Environment
                         indicies[c++] = i;
                     }
                 }
-                HeightfieldMesh.Load(points, indicies, texturecoords);
+                HeightfieldMesh.Load(points, indicies, TextureName, texturecoords);
                 entryStream.Close();
             }
         }

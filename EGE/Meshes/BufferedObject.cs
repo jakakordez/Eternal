@@ -14,9 +14,7 @@ namespace EGE.Meshes
 
         public void Load(Vector3[] Vertices, int[] indicies, Vector2[] TextureCoordinates)
         {
-            VertexBuffer = GL.GenBuffer();
             ElementArray = GL.GenBuffer();
-            TextureCoordinateBuffer = GL.GenBuffer();
             ElementArraySize = indicies.Length;
             long bufferSize;
                 
@@ -27,6 +25,14 @@ namespace EGE.Meshes
                 throw new ApplicationException("Element array not uploaded correctly");
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
+            VertexBuffer = AddVertexBuffer(Vertices);
+            TextureCoordinateBuffer = AddTextureCoordsBuffer(TextureCoordinates);
+        }
+
+        public static int AddVertexBuffer(Vector3[] Vertices)
+        {
+            int VertexBuffer = GL.GenBuffer();
+            long bufferSize;
             // Vertex Array Buffer
             {
                 // Bind current context to Array Buffer ID
@@ -44,6 +50,13 @@ namespace EGE.Meshes
                 // Clear the buffer Binding
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             }
+            return VertexBuffer;
+        }
+
+        public static int AddTextureCoordsBuffer(Vector2[] TextureCoordinates)
+        {
+            int TextureCoordinateBuffer = GL.GenBuffer();
+            long bufferSize;
             {
                 // Bind current context to Array Buffer ID
                 GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
@@ -59,6 +72,7 @@ namespace EGE.Meshes
                 // Clear the buffer Binding
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             }
+            return TextureCoordinateBuffer;
         }
 
         public void Draw()

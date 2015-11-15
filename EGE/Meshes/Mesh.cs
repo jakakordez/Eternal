@@ -27,16 +27,13 @@ namespace EGE.Meshes
             Parts = new BufferedObject[0];
             Materials = new Material[0];
             Location = new Vector3();
-            VertexBuffer = GL.GenBuffer();
-            TextureCoordinateBuffer = GL.GenBuffer();
         }
 
         public void Draw()
         {
-            
             for (int i = 0; i < ElementArraySizes.Length; i++)
             {
-
+                if (Materials[i].Brush== Color4.Black) System.Diagnostics.Debugger.Break(); ;
                 if (Materials[i].Texture != "")
                 {
                     GL.Color4(Color.White);
@@ -126,7 +123,7 @@ namespace EGE.Meshes
 
             Array.Sort<Face>(Faces, delegate (Face x, Face y) { return x.mtl.CompareTo(y.mtl); });
             currentMaterial = Faces[0].mtl;
-            //Misc.Push<Material>(Materials[currentMaterial].Brush, ref Materials);
+            //  Misc.Push<Material>(Materials[currentMaterial].Brush, ref Materials);
             ElementArrays = new uint[Materials.Length];
             GL.GenBuffers(Materials.Length, ElementArrays);
             int[] currentElements = new int[0];
@@ -156,38 +153,8 @@ namespace EGE.Meshes
                 }
 
             }
-            // Vertex Array Buffer
-            {
-                // Bind current context to Array Buffer ID
-                GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer);
-
-                // Send data to buffer
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(SortedVertices.Length * Vector3.SizeInBytes), SortedVertices, BufferUsageHint.StaticDraw);
-
-                // Validate that the buffer is the correct size
-
-                GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
-                if (SortedVertices.Length * Vector3.SizeInBytes != bufferSize)
-                    throw new ApplicationException("Vertex array not uploaded correctly");
-
-                // Clear the buffer Binding
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            }
-            {
-                // Bind current context to Array Buffer ID
-                GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
-
-                // Send data to buffer
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(SortedTextureCoordinates.Length * 8), SortedTextureCoordinates, BufferUsageHint.StaticDraw);
-
-                // Validate that the buffer is the correct size
-                GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
-                if (SortedTextureCoordinates.Length * 8 != bufferSize)
-                    throw new ApplicationException("TexCoord array not uploaded correctly");
-
-                // Clear the buffer Binding
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            }
+            VertexBuffer = BufferedObject.AddVertexBuffer(SortedVertices);
+            TextureCoordinateBuffer = BufferedObject.AddTextureCoordsBuffer(SortedTextureCoordinates);
         }
 
         private void LoadMTL(string name)

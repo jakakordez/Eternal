@@ -35,6 +35,15 @@ namespace EGE.Tools
             }
         }
 
+        static void AddEntry(string Name)
+        {
+            using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Update, Global.Encoding))
+            {
+                Stream s = archive.CreateEntry(Name).Open();
+                
+            }
+        }
+
         public static byte[] GetResource(string Name)
         {
             try {

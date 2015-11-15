@@ -7,6 +7,8 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System.IO.Compression;
+using System.IO;
 
 namespace EGE.Meshes
 {
@@ -18,13 +20,27 @@ namespace EGE.Meshes
         int VertexBuffer;
         int TextureCoordinateBuffer;
         public Vector3 Location { get;set; }
-        public string ObjectFileName { get; set; }
+        public string Name { get; set; }
 
         public Mesh()
         {
-            ObjectFileName = "";
+            Name = "";
             Materials = new Material[0];
             Location = new Vector3();
+        }
+
+        public Mesh(String name)
+        {
+            Name = name;
+            Materials = new Material[0];
+            Location = new Vector3();
+        }
+
+        public void SaveToMesh()
+        {
+            LoadMTL(Name + ".mtl");
+            LoadOBJ();
+
         }
 
         public void Draw()
@@ -86,9 +102,66 @@ namespace EGE.Meshes
             ElementArraySizes = new int[] { FillIndexBuffer(Indicies, ElementArrays[0]) };
         }
 
+        public void LoadMesh(ZipArchive MeshArchive, string MaterialFile)
+        {
+            LoadMTL(MaterialFile);
+            ElementArrays = new uint[MeshArchive.Entries.Count-2];
+            GL.GenBuffers(ElementArrays.Length, ElementArrays);
+            ElementArraySizes = new int[ElementArrays.Length];
+            foreach (var item in MeshArchive.Entries)
+            {
+                Stream s = item.Open();
+                if(item.Name == "Vertices.raw") {
+                    Vector3[] Vertices = new Vector3[item.Length / 12];
+                    for (int i = 0; i < item.Length / 12; i++)
+                    {
+                        Vertices[i] = new Vector3();
+                        byte[] input = new byte[12];
+                        s.Read(input, 0, 12);
+                        Vertices[i].X = BitConverter.ToSingle(input, 0);
+                        Vertices[i].Y = BitConverter.ToSingle(input, 4);
+                        Vertices[i].Z = BitConverter.ToSingle(input, 8);
+                    }
+                    VertexBuffer = AddVertexBuffer(Vertices);
+                }
+                else if(item.Name == "TextureCoordinates.raw")
+                {
+                    Vector2[] TextureCoordinates = new Vector2[item.Length / 8];
+                    for (int i = 0; i < item.Length / 8; i++)
+                    {
+                        TextureCoordinates[i] = new Vector2();
+                        byte[] input = new byte[8];
+                        s.Read(input, 0, 8);
+                        TextureCoordinates[i].X = BitConverter.ToSingle(input, 0);
+                        TextureCoordinates[i].Y = BitConverter.ToSingle(input, 4);
+                    }
+                    TextureCoordinateBuffer = AddTextureCoordsBuffer(TextureCoordinates);
+                }
+                else
+                {
+                    int mat = Convert.ToInt32(item.Name.Split('.')[0]);
+                    int[] Indices = new int[item.Length/4];
+                    for (int i = 0; i < item.Length / 4; i++)
+                    {
+                        
+                        byte[] input = new byte[4];
+                        s.Read(input, 0, 4);
+                        Indices[i] = BitConverter.ToInt32(input, 0);
+                    }
+                    ElementArraySizes[mat] = FillIndexBuffer(Indices, ElementArrays[mat]);
+                }
+                s.Close();
+            }
+        }
+
         public void LoadOBJ()
         {
-            string name = ObjectFileName;
+            LoadOBJ(null);
+        }
+
+        public void LoadOBJ(ZipArchive MeshOutput)
+        {
+            string name = Name+".obj";
             Face[] Faces = new Face[0];
             Vector3[] OriginalVertices = new Vector3[0];
             Vector2[] OriginalTextureCoordinates = new Vector2[0];
@@ -150,17 +223,28 @@ namespace EGE.Meshes
             int[] currentElements = new int[0];
             ElementArraySizes = new int[0];
             int set = 0;
+            //Materials = new Material[0];
             for (int i = 0; i < Faces.Length; i++)
             {
                 Misc.Push<int>(Faces[i].vertices, ref currentElements);
                 if (Faces.Length - 1 == i || currentMaterial != Faces[i + 1].mtl)
                 {
                     Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
+                    if(MeshOutput != null)
+                    {
+                        Stream s = MeshOutput.CreateEntry(set+".raw").Open();
+                        for (int j = 0; j < currentElements.Length; j++)
+                        {
+                            byte[] output = BitConverter.GetBytes(currentElements[j]);
+                            s.Write(output, 0, output.Length);
+                        }
+                        s.Close();
+                    }
                     if (Faces.Length - 1 > i)
                     {
                         set++;
                         currentMaterial = Faces[i + 1].mtl;
-                        Misc.Push<Material>(Materials[currentMaterial], ref Materials);
+                        //Misc.Push<Material>(Materials[currentMaterial], ref Materials);
                         currentElements = new int[0];
                     }
                 }
@@ -168,6 +252,29 @@ namespace EGE.Meshes
             }
             VertexBuffer = AddVertexBuffer(SortedVertices);
             TextureCoordinateBuffer = AddTextureCoordsBuffer(SortedTextureCoordinates);
+
+            if(MeshOutput != null)
+            {
+                Stream s = MeshOutput.CreateEntry("Vertices.raw").Open();
+                foreach (var item in SortedVertices)
+                {
+                    byte[] Output = new byte[4 * 3];
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.Z), 0, Output, 8, 4);
+                    s.Write(Output, 0, 12);
+                }
+                s.Close();
+                s = MeshOutput.CreateEntry("TextureCoordinates.raw").Open();
+                foreach (var item in SortedTextureCoordinates)
+                {
+                    byte[] Output = new byte[4 * 2];
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
+                    s.Write(Output, 0, 8);
+                }
+                s.Close();
+            }
         }
 
         private void LoadMTL(string name)

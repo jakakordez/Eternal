@@ -20,7 +20,7 @@ namespace EGE
     {
         public Road[] Roads { get; set; }
 
-        public Mesh[] Meshes { get; set; }
+        public Model[] StaticModels { get; set; }
 
         public Heightfield TerrainHeightfield { get; set; }
 
@@ -29,7 +29,7 @@ namespace EGE
         public Terrain()
         {
             Roads = new Road[0];
-            Meshes = new Mesh[0];
+            StaticModels = new Model[0];
             TerrainHeightfield = new Heightfield();
         }
 
@@ -41,10 +41,8 @@ namespace EGE
                 road.Draw();
             }
             
-            foreach (Mesh m in Meshes)
+            foreach (var m in StaticModels)
             {
-                trans = Matrix4.CreateTranslation(m.Location)* World.WorldMatrix;
-                GL.LoadMatrix(ref trans);
                 m.Draw();
             }
             trans = World.WorldMatrix;

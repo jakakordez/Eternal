@@ -55,6 +55,7 @@ namespace EGE
         {
             Tools.TextureManager.LoadTextures(Path + "\\Map");
             Tools.ResourceManager.LoadResources(Path + "\\Map");
+            Tools.MeshManager.LoadMeshes(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
         }
 
@@ -65,9 +66,9 @@ namespace EGE
             {
                 r.Build();
             }
-            foreach (var item in CurrentMap.CurrentTerrain.Meshes)
+            foreach (var item in CurrentMap.CurrentTerrain.StaticModels)
             {
-                item.LoadOBJ();
+                item.Load();
             }
             CurrentMap.CurrentTerrain.TerrainHeightfield.Load();
         }

@@ -11,7 +11,7 @@ namespace EGE.Characters
 {
     class DebugView:Character
     {
-        Vector3 centerPoint = new Vector3(800, 1, 200);
+        Vector3 centerPoint = new Vector3(800, 5, 200);
         Vector3 orientation;
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {

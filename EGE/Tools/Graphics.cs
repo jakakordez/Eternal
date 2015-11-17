@@ -35,7 +35,7 @@ namespace EGE.Tools
         public static void SetProjection()
         {
             GL.MatrixMode(MatrixMode.Projection);
-            Matrix4 ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90), AspectRatio, 0.1f, 500);
+            Matrix4 ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(70), AspectRatio, 0.1f, 500);
             GL.LoadMatrix(ref ProjectionMatrix);
         }
     }

@@ -141,7 +141,7 @@ namespace Map_editor
                 t.ContextMenuStrip = ctxArray;
                 for (int i = 0; i < objectArray.Length; i++)
                 {
-                    AddNode(objectArray.GetValue(i), t.Nodes, i.ToString(), path+"/"+i);
+                    AddNode(objectArray.GetValue(i), t.Nodes, i.ToString(), path + "/" + i);
                     t.Nodes[i].ContextMenuStrip = ctxNode;
                 }
             }
@@ -296,7 +296,11 @@ namespace Map_editor
             Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length + 1);
             Array.Copy(arrayObject, 0, copyArray, 0, arrayObject.Length);
             
-            copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), arrayObject.Length);
+            if(arr.GetType().GetElementType() == typeof(EGE.Environment.NodeReference))
+            {
+                copyArray.SetValue(new EGE.Environment.NodeReference(Vector3.Zero), arrayObject.Length);
+            }
+            else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), arrayObject.Length);
             setWorldValue(treeView1.SelectedNode.Tag.ToString(), currentWorld, copyArray);
             UpdateArray(treeView1.SelectedNode.Tag.ToString());
         }

@@ -97,10 +97,13 @@
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\DebugView.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="Environment\Buildable.cs" />
     <Compile Include="Environment\Heightfield.cs" />
     <Compile Include="Environment\Node.cs" />
+    <Compile Include="Environment\NodeReference.cs" />
+    <Compile Include="Environment\Nodes.cs" />
     <Compile Include="Environment\Paths\Path.cs" />
-    <Compile Include="Environment\Paths\PathNode.cs" />
+    <Compile Include="Environment\Paths\RoadNode.cs" />
     <Compile Include="Environment\Paths\Road.cs" />
     <Compile Include="Meshes\Material.cs" />
     <Compile Include="Model.cs" />

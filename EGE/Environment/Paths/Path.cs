@@ -7,19 +7,12 @@ using OpenTK;
 
 namespace EGE.Environment.Paths
 {
-    public class Path
+    public class Curve
     {
-        public PathNode[] PathNodes { get; set; }
-
-        public Path()
-        {
-            PathNodes = new PathNode[0];
-        }
-
-        public Path(Vector2[] roadLine, int Segments, float Offset, float Height, bool Invert)
+        public static Vector3[] CreateCurve(Vector2[] roadLine, int Segments, float Offset, float Height, bool Invert)
         {
             Vector2[] roadCurve = Misc.GetBezierApproximation(roadLine, Segments);
-            PathNodes = new PathNode[Segments + 1];
+            Vector3[] PathNodes = new Vector3[Segments + 1];
             float kot = 0;
             for (int i = 0; i < Segments + 1; i++)
             {
@@ -33,11 +26,12 @@ namespace EGE.Environment.Paths
                 else kot = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
                 float y = (Offset + Offset) * (float)Math.Sin(kot);
                 float x = (Offset + Offset) * (float)Math.Cos(kot);
-                PathNodes[(Invert) ? Segments - i : i] = new PathNode(new Vector3(roadCurve[i].X + x, Height, roadCurve[i].Y + y));
+                PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + x, Height, roadCurve[i].Y + y);
             }
+            return PathNodes;
         }
 
-        public Path(Vector3[] roadLine, int Segments, float Offset, bool Invert)
+        public static Vector3[] CreateCurve(Vector3[] roadLine, int Segments, float Offset, bool Invert)
         {
             Vector2[] roadCurve = Misc.GetBezierApproximation(roadLine.Select(p=>p.Xz).ToArray(), Segments);
             Vector2[] heightLine = new Vector2[roadLine.Length];
@@ -48,7 +42,7 @@ namespace EGE.Environment.Paths
                 prevPoint = roadLine[i].Xz;
             }
             Vector2[] heightCurve = Misc.GetBezierApproximation(heightLine, Segments);
-            PathNodes = new PathNode[Segments + 1];
+            Vector3[] PathNodes = new Vector3[Segments + 1];
             float kot = 0;
             for (int i = 0; i < Segments + 1; i++)
             {
@@ -62,8 +56,9 @@ namespace EGE.Environment.Paths
                 else kot = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
                 float y = (Offset + Offset) * (float)Math.Sin(kot);
                 float x = (Offset + Offset) * (float)Math.Cos(kot);
-                PathNodes[(Invert) ? Segments - i : i] = new PathNode(new Vector3(roadCurve[i].X + x, heightCurve[i].Y, roadCurve[i].Y + y));
+                PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + x, heightCurve[i].Y, roadCurve[i].Y + y);
             }
+            return PathNodes;
         }
     }
 }

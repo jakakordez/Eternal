@@ -62,9 +62,9 @@ namespace EGE
         public void Build()
         {
             //CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
-            foreach (EGE.Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
+            foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
-                r.Build();
+                if(r.RoadPath.Length > 1) r.Build();
             }
             foreach (var item in CurrentMap.CurrentTerrain.StaticModels)
             {

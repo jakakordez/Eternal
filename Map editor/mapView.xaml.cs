@@ -71,9 +71,9 @@ namespace Map_editor
 
         public void UpdateWorld()
         {
-            for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.StaticModels.Length; i++)
+            /*for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.StaticModels.Length; i++)
             {
-                string path = "CurrentMap/CurrentTerrain/StaticModels/"+i+"/Location";
+                string path = "CurrentMap/CurrentTerrain/StaticModels/"+i+"/Center/Ref/Location";
                 if (!MapObjects.Keys.Contains(path))
                 {
                     Button nodeBtn = new Button();
@@ -93,15 +93,41 @@ namespace Map_editor
                 double Left = (n.X * PixelScale) - 10;
                 ((Button)MapObjects[path]).Tag = path;
                 ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
+            }*/
+            foreach (var item in Nodes.NodeList)
+            {
+                if(item.Value.RelativeTo == 0)
+                {
+                    string path = "Nodes/" + item.Key;
+                    if (!MapObjects.Keys.Contains(path))
+                    {
+                        Button nodeBtn = new Button();
+                        nodeBtn.Height = 20;
+                        nodeBtn.Width = 20;
+                        nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+                        nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+                        nodeBtn.BorderBrush = Brushes.Green;
+
+                        nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+                        nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
+                        map.Children.Add(nodeBtn);
+                        MapObjects.Add(path, nodeBtn);
+                    }
+                    OpenTK.Vector3 n = (OpenTK.Vector3)item.Value.Location;
+                    double Top = (n.Z * PixelScale) - 10;
+                    double Left = (n.X * PixelScale) - 10;
+                    ((Button)MapObjects[path]).Tag = path;
+                    ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
+                }    
             }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.Roads.Length; i++)
             {
                 OpenTK.Vector3 prevNode = new OpenTK.Vector3();
                 EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i];
-                for (int j = 0; j < r.RoadPath.PathNodes.Length; j++)
+                for (int j = 0; j < r.RoadPath.Length; j++)
                 {
-                    string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/RoadPath/PathNodes/" + j+ "/NodeLocation";
-                    if (!MapObjects.Keys.Contains(path))
+                    string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/RoadPath/" + j+ "/Ref/Location";
+                    /*if (!MapObjects.Keys.Contains(path))
                     {
                         Button nodeBtn = new Button();
                         nodeBtn.Height = 20;
@@ -113,12 +139,12 @@ namespace Map_editor
                         nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
                         map.Children.Add(nodeBtn);
                         MapObjects.Add(path, nodeBtn);
-                    }
+                    }*/
                     OpenTK.Vector3 n = (OpenTK.Vector3)Form1.getWorldValue(path);
-                    double Top = (n.Z * PixelScale) - 10;
+                    /*double Top = (n.Z * PixelScale) - 10;
                     double Left = (n.X * PixelScale) - 10;
                     ((Button)MapObjects[path]).Tag = path;
-                    ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
+                    ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);*/
 
                     if (j > 0)
                     {
@@ -168,14 +194,28 @@ namespace Map_editor
         {
             Point p = Mouse.GetPosition(mainGrid);
             p = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
-            Form1.setWorldValue(((Button)sender).Tag+"/X", Form1.currentWorld, (float)p.X);
-            Form1.setWorldValue(((Button)sender).Tag + "/Z", Form1.currentWorld, (float)p.Y);
+            OpenTK.Vector3 Location = new OpenTK.Vector3((float)p.X, Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location.Y, (float)p.Y);
+            Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location = Location;
+            //Form1.setWorldValue(((Button)sender).Tag+"/X", Form1.currentWorld, (float)p.X);
+            //Form1.setWorldValue(((Button)sender).Tag + "/Z", Form1.currentWorld, (float)p.Y);
             string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
-            if (MapObjects.ContainsKey(Misc.pathUp(Misc.pathUp(((Button)sender).Tag.ToString())) + "/1/NodeLocation")) // Update only if road contains at least two nodes
+            foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
+            {
+                foreach (var point in road.RoadPath)
+                {
+                    if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
+                    {
+                        road.Build();
+                        break;
+                    }
+                }
+            }
+            
+           /* if (MapObjects.ContainsKey(Misc.pathUp(Misc.pathUp(((Button)sender).Tag.ToString())) + "/1/NodeLocation")) // Update only if road contains at least two nodes
             {
                 string road = "CurrentMap/" + String.Join("/", pathParts, 1, pathParts.Length - 5);
                 Form1.invokeWorldMethod(road + "/Build");
-            }
+            }*/
             UpdateWorld();
 
         }

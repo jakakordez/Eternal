@@ -22,6 +22,7 @@ namespace EGE
 
         public Model[] StaticModels { get; set; }
 
+
         public Heightfield TerrainHeightfield { get; set; }
 
         string FilePath;

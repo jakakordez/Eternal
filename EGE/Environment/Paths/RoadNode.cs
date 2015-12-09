@@ -7,11 +7,11 @@ using OpenTK;
 
 namespace EGE.Environment.Paths
 {
-    public class PathNode:Node
+    public class RoadNode:Node
     {
-        public PathNode(Vector3 Location) : base(Location) { }
+        public RoadNode(Vector3 Location) : base(Location) { }
 
-        public PathNode() : base() { }
+        public RoadNode() : base() { }
 
     }
 }

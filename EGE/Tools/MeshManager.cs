@@ -26,7 +26,8 @@ namespace EGE.Tools
             if (MeshCollection.ContainsKey(Name)) return;
                 using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Update, Global.Encoding))
                 {
-                    //archive.GetEntry(Name+".mesh").Delete();
+                int a = 0;
+                    if (a==1)archive.GetEntry(Name+".mesh").Delete();
                     ZipArchiveEntry e = archive.GetEntry(Name+".mesh");
                     Mesh m = new Mesh(Name);
                     

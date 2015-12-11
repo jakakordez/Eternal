@@ -19,7 +19,8 @@ namespace EGE
         CruiseControl,
         EngineStart,
         Forward,
-        Reverse
+        Reverse,
+        View
     }
     class Controller
     {
@@ -45,6 +46,7 @@ namespace EGE
             ControllerMapping.Add(Func.Right, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.D });
             ControllerMapping.Add(Func.Up, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.E });
             ControllerMapping.Add(Func.Down, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Q });
+            ControllerMapping.Add(Func.View, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
         }
 
         public static void Update()

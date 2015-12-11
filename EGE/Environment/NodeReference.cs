@@ -29,7 +29,6 @@ namespace EGE.Environment
 
         public NodeReference()
         {
-            
         }
 
         public NodeReference(OpenTK.Vector3 FromLocation)

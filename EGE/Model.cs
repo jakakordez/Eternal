@@ -9,15 +9,20 @@ using OpenTK.Graphics.OpenGL;
 
 namespace EGE
 {
-    public class Model:Buildable
+    public class Model : Buildable
     {
         public string MeshName { get; set; }
-        public Environment.NodeReference Center { get;set; }
+        public Environment.NodeReference Center { get; set; }
 
         public Model()
         {
             MeshName = "";
-            Center = new NodeReference(new Node());
+        }
+
+        public static Model Create(){
+            Model n = new Model();
+            n.Center = new NodeReference(new Node());
+            return n;    
         }
 
         public void Load()

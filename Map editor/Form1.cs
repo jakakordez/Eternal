@@ -295,10 +295,16 @@ namespace Map_editor
             Array arrayObject = (Array)arr;
             Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length + 1);
             Array.Copy(arrayObject, 0, copyArray, 0, arrayObject.Length);
+
             
-            if(arr.GetType().GetElementType() == typeof(EGE.Environment.NodeReference))
+            if (arr.GetType().GetElementType() == typeof(EGE.Environment.NodeReference))
             {
                 copyArray.SetValue(new EGE.Environment.NodeReference(Vector3.Zero), arrayObject.Length);
+            }
+            else if(arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static) != null)
+            {
+                object newObj = arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
+                copyArray.SetValue(newObj, arrayObject.Length);
             }
             else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), arrayObject.Length);
             setWorldValue(treeView1.SelectedNode.Tag.ToString(), currentWorld, copyArray);

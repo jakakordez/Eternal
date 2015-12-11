@@ -11,8 +11,9 @@ namespace EGE.Characters
 {
     class DebugView:Character
     {
-        Vector3 centerPoint = new Vector3(800, 5, 200);
+        Vector3 centerPoint = new Vector3(0, 5, 0);//new Vector3(800, 5, 200);
         Vector3 orientation;
+        bool inn = false;
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
             Distance = 10,
@@ -52,6 +53,15 @@ namespace EGE.Characters
             Mouse.SetPosition(200, 200);
             orientation.Y -= X/500f;
             orientation.X -= Y / 500f;
+
+
+            if (Controller.In(Func.View)==1 && !inn)
+            {
+                inn = true;
+                if (Settings.CurrentDrawingMode == Settings.DrawingModes.Textured) Settings.CurrentDrawingMode = Settings.DrawingModes.Wireframe;
+                else Settings.CurrentDrawingMode = Settings.DrawingModes.Textured;
+            }
+            else if(Controller.In(Func.View) == 0) inn = false;
         }
 
         public override void Draw()

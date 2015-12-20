@@ -30,8 +30,6 @@ namespace Map_editor
             dataTypes.Add(typeof(Vector2), 2);
             dataTypes.Add(typeof(Vector3), 3);
             currentWorld = new World();
-            
-            //setWorldValue("CurrentMap/CurrentTerrain/Roads/0", currentWorld, null);
         }
 
         public static object getWorldValue(string path)
@@ -329,6 +327,11 @@ namespace Map_editor
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             new ResourceCollector().Show();
+        }
+
+        private void buildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            invokeWorldMethod(treeView1.SelectedNode.Tag+"/Build");
         }
     }
 }

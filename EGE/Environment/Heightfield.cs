@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Drawing;
 using EGE.Meshes;
@@ -130,6 +131,15 @@ namespace EGE.Environment
         {
             Tools.TextureManager.BindTexture(TextureName);
             HeightfieldMesh.Draw();
+            
+            GL.Begin(BeginMode.Quads);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.Color3(Color.Blue);
+            GL.Vertex3(new Vector3(0, 0, 0));
+            GL.Vertex3(new Vector3(0, 0, Size));
+            GL.Vertex3(new Vector3(Size, 0, Size));
+            GL.Vertex3(new Vector3(Size, 0, 0));
+            GL.End();
         }
     }
 }

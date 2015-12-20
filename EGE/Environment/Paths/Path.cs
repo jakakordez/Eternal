@@ -46,7 +46,7 @@ namespace EGE.Environment.Paths
             float kot = 0;
             for (int i = 0; i < Segments + 1; i++)
             {
-                if (i > 1 && i < roadLine.Length - 2)
+                /*if (i > 1 && i < roadCurve.Length - 2)
                 {
                     float kot1 = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
                     float kot2 = (float)Math.Atan((roadCurve[i + 1].Y - roadCurve[i].Y) / (roadCurve[i + 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
@@ -54,6 +54,18 @@ namespace EGE.Environment.Paths
                 }
                 else if (i < 2) kot = (float)Math.Atan((roadCurve[i + 1].Y - roadCurve[i].Y) / (roadCurve[i + 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
                 else kot = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
+                /*if (kot < MathHelper.PiOver2)
+                    kot -= MathHelper.Pi;
+                else if (kot > -MathHelper.PiOver2) kot += MathHelper.Pi;*/
+                if (i > 1 && i < roadCurve.Length - 2)
+                {
+                    float kot1 = Misc.getAngle(roadCurve[i - 1] - roadCurve[i]);
+                    float kot2 = Misc.getAngle(roadCurve[i] - roadCurve[i+1]);
+                    kot = (kot1 + kot2) / 2;
+                    kot -= MathHelper.PiOver2;
+                }
+                else if (i < 2) kot = Misc.getAngle(roadCurve[i] - roadCurve[i+1]) - MathHelper.PiOver2;
+                else kot = Misc.getAngle(roadCurve[i - 1] - roadCurve[i]) - MathHelper.PiOver2;
                 float y = (Offset + Offset) * (float)Math.Sin(kot);
                 float x = (Offset + Offset) * (float)Math.Cos(kot);
                 PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + x, heightCurve[i].Y, roadCurve[i].Y + y);

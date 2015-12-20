@@ -66,9 +66,11 @@ namespace EGE.Environment.Paths
                 if (i < RoadPath.Length - 2)
                 {
                     float nextAngle = (Misc.getAngle(RoadPath[i + 2].Ref.Location.Xz - RoadPath[i + 1].Ref.Location.Xz));
-                    if (nextAngle > MathHelper.Pi) nextAngle -= MathHelper.TwoPi;
+                    if (angle > MathHelper.Pi && nextAngle < MathHelper.PiOver2) angle -= MathHelper.TwoPi;
                     angle = ((angle + nextAngle) / 2);
+
                 }
+
                 float segments = (RoadPath[i + 1].Ref.Location.Xz - RoadPath[i].Ref.Location.Xz).Length * 0.5f;
                 l = Misc.getCartesian(angle) * (segments / 2);
                 BezierControlPoints[2] = RoadPath[i + 1].Ref.Location - new Vector3(l.X, 0, l.Y);

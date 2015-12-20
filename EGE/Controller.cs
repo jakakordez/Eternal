@@ -20,7 +20,8 @@ namespace EGE
         EngineStart,
         Forward,
         Reverse,
-        View
+        View,
+        FastMode
     }
     class Controller
     {
@@ -47,6 +48,7 @@ namespace EGE
             ControllerMapping.Add(Func.Up, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.E });
             ControllerMapping.Add(Func.Down, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Q });
             ControllerMapping.Add(Func.View, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
+            ControllerMapping.Add(Func.FastMode, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.LShift });
         }
 
         public static void Update()

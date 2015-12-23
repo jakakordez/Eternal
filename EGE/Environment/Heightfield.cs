@@ -52,7 +52,7 @@ namespace EGE.Environment
                 entryStream.Position = 0;
                 byte[] b = new byte[4];
                 Vector2[] texturecoords = new Vector2[Size * Size];
-                for (int i = 0; i < entryStream.Length; i += 4)
+                for (long i = 0; i < entryStream.Length; i += 4)
                 {
                     entryStream.Read(b, 0, 4);
                     float h = BitConverter.ToSingle(b, 0);
@@ -81,8 +81,9 @@ namespace EGE.Environment
                 if (!World.StaticView)
                 {
                     // Generate rigid body
-
-                    HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -3000, 3000, 1, PhyScalarType.PhyFloat, false);
+                    entryStream.Position = 0;
+                    float Extreme = (Math.Abs(Minimum) > Math.Abs(Maximum)) ? Math.Abs(Minimum) : Maximum;
+                    HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -Extreme, Extreme, 1, PhyScalarType.PhyFloat, true);
                     heightfield.LocalScaling = Scale;
                     World.CreateRigidBody(0, Matrix4.CreateTranslation(new Vector3(Size / 2, 0, Size / 2)), heightfield);
                 }

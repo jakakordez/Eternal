@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGE", "EGE\EGE.csproj", "{0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Map editor", "Map editor\Map editor.csproj", "{DF5DA9FD-C509-4A20-A06C-6B8CF457B2E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eternal", "Eternal\Eternal.csproj", "{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,18 @@ Global
 		{DF5DA9FD-C509-4A20-A06C-6B8CF457B2E7}.Release|x64.Build.0 = Release|Any CPU
 		{DF5DA9FD-C509-4A20-A06C-6B8CF457B2E7}.Release|x86.ActiveCfg = Release|Any CPU
 		{DF5DA9FD-C509-4A20-A06C-6B8CF457B2E7}.Release|x86.Build.0 = Release|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Debug|x64.Build.0 = Debug|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Debug|x86.Build.0 = Debug|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Release|x64.ActiveCfg = Release|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Release|x64.Build.0 = Release|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDFB7482-8158-40DA-8FA0-4A9084C2DF2B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

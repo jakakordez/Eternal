@@ -28,6 +28,8 @@ namespace EGE.Environment
 
         Mesh HeightfieldMesh;
 
+        RigidBody GroundBody;
+
         float Maximum, Minimum;
 
         public Heightfield()
@@ -44,10 +46,7 @@ namespace EGE.Environment
             Stream entryStream = new MemoryStream(Tools.ResourceManager.GetResource(HeightfieldName));
             if (entryStream  != null)
             {
-                HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -3000, 3000, 1, PhyScalarType.PhyFloat, false);
-                heightfield.LocalScaling = Scale;
-                //currentWorld.CreateRigidBody(0, Matrix4.CreateTranslation(Vector3.Zero), heightfield); //TODO: uncomment
-
+                
                 // Generate heightfield mesh
                 Vector3[] points = new Vector3[Size * Size];
                 entryStream.Position = 0;
@@ -79,6 +78,15 @@ namespace EGE.Environment
                     }
                 }
                 HeightfieldMesh.Load(points, indicies, TextureName, texturecoords);
+                if (!World.StaticView)
+                {
+                    // Generate rigid body
+
+                    HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -3000, 3000, 1, PhyScalarType.PhyFloat, false);
+                    heightfield.LocalScaling = Scale;
+                    World.CreateRigidBody(0, Matrix4.CreateTranslation(new Vector3(Size / 2, 0, Size / 2)), heightfield);
+                }
+
                 entryStream.Close();
             }
         }

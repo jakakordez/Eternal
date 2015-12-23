@@ -25,17 +25,18 @@ namespace EGE
     }
     public class Camera
     {
-        float ScreenHeight, ScreenWidth, X, Y;
+        public Vector3 Orientation;
+
+        protected float ScreenHeight, ScreenWidth, X, Y;
         public Camera()
         {
             ScreenHeight = Screen.PrimaryScreen.Bounds.Size.Height;
             ScreenWidth = Screen.PrimaryScreen.Bounds.Size.Width;
         }
 
-        public void Update(OpenTK.Input.MouseDevice mouse)
+        public virtual void Update()
         {
-            X = (float)mouse.X / ScreenWidth;
-            Y = (float)mouse.Y / ScreenHeight;
+
         }
 
         public static void ResetView()

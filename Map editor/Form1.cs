@@ -29,7 +29,7 @@ namespace Map_editor
             dataTypes.Add(typeof(bool), 0);
             dataTypes.Add(typeof(Vector2), 2);
             dataTypes.Add(typeof(Vector3), 3);
-            currentWorld = new World();
+            currentWorld = new World(true);
         }
 
         public static object getWorldValue(string path)
@@ -119,7 +119,7 @@ namespace Map_editor
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            currentWorld = new World();
+            currentWorld = new World(true);
             MapPath = "";
             treeView1.Nodes.Clear();
             AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");

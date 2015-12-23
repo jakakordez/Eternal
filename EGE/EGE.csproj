@@ -93,9 +93,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
+    <Compile Include="Cameras\Camera.cs" />
+    <Compile Include="Cameras\FirstPersonCamera.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\DebugView.cs" />
+    <Compile Include="Characters\Person.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Environment\Buildable.cs" />
     <Compile Include="Environment\Heightfield.cs" />

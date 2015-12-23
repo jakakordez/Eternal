@@ -12,7 +12,6 @@ namespace EGE.Characters
     class DebugView:Character
     {
         Vector3 centerPoint = new Vector3(0, 5, 0);//new Vector3(800, 5, 200);
-        Vector3 orientation;
         bool inn = false;
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
@@ -23,19 +22,16 @@ namespace EGE.Characters
             Style = DrawingStyle.Wireframe
         };
 
-        float X = 200, Y;
-
-        public override CameraDefinition CurrentCameraDefinition
+        public DebugView()
         {
-            get
-            {
-                return defaultCameraDefinition;
-            }
-            set { }
+            CameraList = new Camera[] { new Cameras.FirstPersonCamera()};
+            CurrentCamera = 0;
         }
 
-        public override void Update(float elaspedTime, KeyboardState keyboardState)
+        public override void Update(float elaspedTime)
         {
+            CameraList[0].Update();
+
             Matrix4 Movement = Matrix4.Identity;
             float sp = (Controller.In(Func.FastMode) * 1) + 0.5f;
             Movement *= Matrix4.CreateTranslation(new Vector3(Controller.In(Func.Acceleration) * sp, 0, 0));
@@ -44,17 +40,8 @@ namespace EGE.Characters
             Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.In(Func.Right) * sp));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.In(Func.Up) * sp, 0));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.In(Func.Down) * -sp, 0));
-            Movement *= Matrix4.CreateRotationY(orientation.Y);
-            centerPoint += Movement.ExtractTranslation();
-
-            MouseState mouseState = Mouse.GetState();
-            X = (Mouse.GetCursorState().X - 200);
-            Y = (Mouse.GetCursorState().Y - 200);
-            
-            Mouse.SetPosition(200, 200);
-            orientation.Y -= X/500f;
-            orientation.X -= Y / 500f;
-
+            Movement *= Matrix4.CreateRotationY(CameraList[0].Orientation.Y);
+            centerPoint += Movement.ExtractTranslation();   
 
             if (Controller.In(Func.View)==1 && !inn)
             {
@@ -67,8 +54,10 @@ namespace EGE.Characters
 
         public override void Draw()
         {
+            
             GL.MatrixMode(MatrixMode.Modelview);
-            World.WorldMatrix = Camera.GenerateLookAt(centerPoint, orientation, CurrentCameraDefinition);
+
+            World.WorldMatrix = Camera.GenerateLookAt(centerPoint, CameraList[0].Orientation, defaultCameraDefinition);
             GL.LoadMatrix(ref World.WorldMatrix);
         }
     }

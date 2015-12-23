@@ -53,13 +53,13 @@ namespace EGE
 
         public static void Update()
         {
+            MouseState ms = Mouse.GetState();
             int Width = Screen.PrimaryScreen.Bounds.Width;
             int Height = Screen.PrimaryScreen.Bounds.Height;
-            MouseX = (Width / 2) / ((Width/2) - Mouse.GetState().X);
-            MouseY = (Height / 2) / ((Height/2) - Mouse.GetState().Y);
-            MouseScroll = Mouse.GetState().WheelPrecise;
+            MouseX = (Width / 2) / ((Width/2) - ms.X);
+            MouseY = (Height / 2) / ((Height/2) - ms.Y);
+            MouseScroll = ms.WheelPrecise;
         }
-
 
         public static float In(Func function)
         {

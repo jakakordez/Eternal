@@ -20,29 +20,33 @@ namespace EGE
         public Camera PrimaryCamera;
         Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
+
+        public static bool StaticView;
         
-        private DiscreteDynamicsWorld DynamicsWorld;
+        private static DiscreteDynamicsWorld DynamicsWorld;
 
         CollisionDispatcher dispatcher;
         DbvtBroadphase broadphase;
         CollisionConfiguration collisionConf;
 
-        public World()
+        public World(bool StaticView)
         {
+            World.StaticView = StaticView;
             CurrentMap = new Map();
             PrimaryCamera = new Camera();
             MeshCollection = new MeshCollector();
             MainCharacter = new Characters.DebugView();
 
-            // collision configuration contains default setup for memory, collision setup
-            collisionConf = new DefaultCollisionConfiguration();
-            dispatcher = new CollisionDispatcher(collisionConf);
+            if (!StaticView)
+            {
+                // collision configuration contains default setup for memory, collision setup
+                collisionConf = new DefaultCollisionConfiguration();
+                dispatcher = new CollisionDispatcher(collisionConf);
 
-            broadphase = new DbvtBroadphase();
-            DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
-            DynamicsWorld.Gravity = new Vector3(0, -10, 0);
-
-            
+                broadphase = new DbvtBroadphase();
+                DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
+                DynamicsWorld.Gravity = new Vector3(0, -9.81f, 0);
+            }
         }
 
         public void Init()
@@ -58,10 +62,16 @@ namespace EGE
             Tools.MeshManager.LoadMeshes(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
         }
-
+        RigidBody kr;
         public void Build()
         {
             //CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
+            if (!StaticView)
+            {
+                SphereShape krogla = new SphereShape(3);
+                kr = CreateRigidBody(50, Matrix4.CreateTranslation(new Vector3(20, 100, 20)), krogla);
+            }
+            
             foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
                 if(r.RoadPath.Length > 1) r.Build();
@@ -89,12 +99,12 @@ namespace EGE
             {
                 Vehicles[i].Update(elaspedTime, null, CurrentMap, Player);
             }*/
-            DynamicsWorld.StepSimulation(elaspedTime);
             if (focused)
             {
+                if (!StaticView) DynamicsWorld.StepSimulation(elaspedTime);
                 Controller.Update();
                 KeyboardState keyboardState = Keyboard.GetState();
-                MainCharacter.Update(elaspedTime, keyboardState);
+                MainCharacter.Update(elaspedTime);
             }
         }
 
@@ -111,7 +121,10 @@ namespace EGE
 
             Tools.Graphics.SetProjection();
 
+            if(!StaticView) CurrentMap.CurrentTerrain.StaticModels[0].Center.Ref.Location = kr.CenterOfMassTransform.ExtractTranslation();
+
             MainCharacter.Draw();
+
 
             CurrentMap.CurrentTerrain.Draw();
 
@@ -164,7 +177,7 @@ namespace EGE
             
         }
 
-        /*public RigidBody CreateRigidBody(float mass, Matrix4 startTransform, CollisionShape shape)
+        public static RigidBody CreateRigidBody(float mass, Matrix4 startTransform, CollisionShape shape)
         {
             bool isDynamic = (mass != 0.0f);
 
@@ -179,7 +192,7 @@ namespace EGE
             DynamicsWorld.AddRigidBody(body);
             return body;
         }
-        public void ExitPhysics()
+        /*public void ExitPhysics()
         {
             //remove/dispose constraints
             int i;

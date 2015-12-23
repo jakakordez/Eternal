@@ -8,9 +8,16 @@ namespace EGE.Characters
 {
     abstract class Character
     {
-        public abstract CameraDefinition CurrentCameraDefinition { get; set; }
+        protected Camera[] CameraList;
+        protected int CurrentCamera;
 
-        public abstract void Update(float elaspedTime, OpenTK.Input.KeyboardState keyboardState);
+        public Character()
+        {
+            CameraList = new Camera[0];
+            CurrentCamera = 0;
+        }
+
+        public abstract void Update(float elaspedTime);
 
         public abstract void Draw();
     }

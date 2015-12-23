@@ -41,7 +41,7 @@ namespace EGE
             {
                 road.Draw();
             }
-            
+           
             foreach (var m in StaticModels)
             {
                 m.Draw();

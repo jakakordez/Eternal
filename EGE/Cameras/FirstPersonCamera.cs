@@ -17,13 +17,16 @@ namespace EGE.Cameras
 
         public override void Update()
         {
-            MouseState mouseState = Mouse.GetState();
-            X = (Mouse.GetCursorState().X - 200);
-            Y = (Mouse.GetCursorState().Y - 200);
+            MouseState mouseState = Mouse.GetCursorState();
+            
+            X = mouseState.X - (ScreenWidth/2);
+            Y = mouseState.Y - (ScreenHeight / 2);
 
-            Mouse.SetPosition(200, 200);
+            ResetView();
             Orientation.Y -= X / 500f;
             Orientation.X -= Y / 500f;
+            if (Orientation.X < -1.23f) Orientation.X += Y / 500f;
+            if (Orientation.X > 0.94f) Orientation.X += Y / 500f;
             base.Update();
         }
     }

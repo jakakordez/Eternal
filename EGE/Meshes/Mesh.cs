@@ -47,7 +47,7 @@ namespace EGE.Meshes
         {
             for (int i = 0; i < ElementArraySizes.Length; i++)
             {
-                if (Materials[i].Brush== Color4.Black) System.Diagnostics.Debugger.Break(); ;
+                if (Materials[i].Brush== Color4.Black) System.Diagnostics.Debugger.Break();
                 if (Materials[i].Texture != "")
                 {
                     GL.Color4(Color.White);

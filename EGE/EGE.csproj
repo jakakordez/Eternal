@@ -123,6 +123,9 @@
     <Compile Include="Tools\VectorSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Environment\Terrain.cs" />
+    <Compile Include="Vehicles\Car.cs" />
+    <Compile Include="Vehicles\RoadVehicle.cs" />
+    <Compile Include="Vehicles\Vehicle.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

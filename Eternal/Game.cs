@@ -37,7 +37,7 @@ namespace Eternal
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            currentScreen.Focuesed = Focused;
+            currentScreen.Focused = Focused;
             currentScreen.Draw();
             base.OnRenderFrame(e);
             SwapBuffers();

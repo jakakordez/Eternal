@@ -9,7 +9,7 @@ namespace Eternal
 {
     abstract class Screen
     {
-        public bool Focuesed;
+        public bool Focused;
         public abstract void Load();
         public abstract void Draw();
         public abstract void Update(FrameEventArgs e);

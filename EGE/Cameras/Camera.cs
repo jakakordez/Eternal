@@ -27,7 +27,7 @@ namespace EGE
     {
         public Vector3 Orientation;
 
-        protected float ScreenHeight, ScreenWidth, X, Y;
+        protected int ScreenHeight, ScreenWidth, X, Y;
         public Camera()
         {
             ScreenHeight = Screen.PrimaryScreen.Bounds.Size.Height;
@@ -39,9 +39,9 @@ namespace EGE
 
         }
 
-        public static void ResetView()
+        public void ResetView()
         {
-            Cursor.Position = new System.Drawing.Point(Screen.PrimaryScreen.Bounds.Size.Width / 2, Screen.PrimaryScreen.Bounds.Size.Height / 2);
+            Cursor.Position = new System.Drawing.Point(ScreenWidth / 2, ScreenHeight / 2);
         }
 
         public static Matrix4 GenerateLookAt(Vector3 center, Vector3 orientation, CameraDefinition cameraConfiguration)

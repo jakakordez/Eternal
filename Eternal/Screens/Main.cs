@@ -30,7 +30,7 @@ namespace Eternal
 
         public override void Update(FrameEventArgs e)
         {
-            currentWorld.Update(Focuesed, (float)e.Time);
+            currentWorld.Update(Focused, (float)e.Time);
         }
 
         public override void Resize(float Width, float Height)

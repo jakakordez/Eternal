@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using EGE.Environment;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using BulletSharp;
 
 namespace EGE
 {
     public class Model : Buildable
     {
         public string MeshName { get; set; }
+
         public Environment.NodeReference Center { get; set; }
 
         public Model()

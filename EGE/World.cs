@@ -21,9 +21,11 @@ namespace EGE
         Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
 
+        Vehicles.Vehicle car;
+
         public static bool StaticView;
         
-        private static DiscreteDynamicsWorld DynamicsWorld;
+        public static DiscreteDynamicsWorld DynamicsWorld;
 
         CollisionDispatcher dispatcher;
         DbvtBroadphase broadphase;
@@ -47,7 +49,10 @@ namespace EGE
                 DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
                 DynamicsWorld.Gravity = new Vector3(0, -9.81f, 0);
 
-                MainCharacter = new Characters.Person(new Vector3(800, 10, 800));
+                MainCharacter = new Characters.Person(new Vector3(683, 10, 274));
+
+                car = new Vehicles.Car();
+                (car as Vehicles.Car).Load();
             }
         }
 
@@ -110,8 +115,11 @@ namespace EGE
             Tools.Graphics.SetProjection();
 
             MainCharacter.Draw();
+            
 
-            CurrentMap.CurrentTerrain.Draw();            
+            CurrentMap.CurrentTerrain.Draw();
+
+            (car as Vehicles.Car).Draw();
         }
 
         public static RigidBody CreateRigidBody(float mass, Matrix4 startTransform, CollisionShape shape)

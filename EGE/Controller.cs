@@ -64,14 +64,14 @@ namespace EGE
             }
         }
 
-        public static float In(Func function)
+        public static float Val(Func function)
         {
             ControlSource source = ControllerMapping[function];
             if (source.DeviceType == typeof(Keyboard))
             {
-                return Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex)?1:0;
+                return Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex) ? 1 : 0;
             }
-            else if(source.DeviceType == typeof(Mouse))
+            else if (source.DeviceType == typeof(Mouse))
             {
                 MouseState deviceState = Mouse.GetState();
                 switch (source.ControlIndex)
@@ -95,6 +95,39 @@ namespace EGE
                 
             }*/
             return 0;
+        }
+
+        public static bool In(Func function)
+        {
+            ControlSource source = ControllerMapping[function];
+            if (source.DeviceType == typeof(Keyboard))
+            {
+                return Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex);
+            }
+            else if(source.DeviceType == typeof(Mouse))
+            {
+                MouseState deviceState = Mouse.GetState();
+                switch (source.ControlIndex)
+                {
+                    case 0: return false;
+                    case 1: return false;
+                    case 2: return false;
+                    case 3: return deviceState.LeftButton == OpenTK.Input.ButtonState.Pressed;
+                    case 4: return deviceState.MiddleButton == OpenTK.Input.ButtonState.Pressed;
+                    case 5: return deviceState.RightButton == OpenTK.Input.ButtonState.Pressed;
+                }
+            }
+            /*else if(DeviceType == typeof(Joystick))
+            {
+                JoystickState deviceState = Joystick.GetState(deviceIndex);
+                if (controlIndex <= 10) return deviceState.GetAxis((JoystickAxis)controlIndex);
+                else if(controlIndex <= 14) return deviceState.GetHat((JoystickHat)(controlIndex-10)).
+            }
+            else if(DeviceType == typeof(GamePad))
+            {
+                
+            }*/
+            return false;
         }
     }
 }

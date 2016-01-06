@@ -115,11 +115,9 @@
     <Compile Include="Meshes\Mesh.cs" />
     <Compile Include="Meshes\MeshCollector.cs" />
     <Compile Include="Tools\Graphics.cs" />
-    <Compile Include="Tools\MeshManager.cs" />
     <Compile Include="Tools\Misc.cs" />
-    <Compile Include="Tools\ResourceManager.cs" />
+    <Compile Include="Tools\Resources.cs" />
     <Compile Include="Tools\Settings.cs" />
-    <Compile Include="Tools\TextureManager.cs" />
     <Compile Include="Tools\VectorSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Environment\Terrain.cs" />

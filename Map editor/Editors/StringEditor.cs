@@ -9,7 +9,7 @@ namespace Map_editor.Editors
 {
     class StringEditor : ValueEditor
     {
-        ToolStripSplitButton insertButton;
+        ToolStripButton insertButton;
         TextBox txtText;
 
         public StringEditor()
@@ -24,16 +24,11 @@ namespace Map_editor.Editors
             Controls.Add(txtText);
 
             ToolStrip tlsInsert = new ToolStrip();
-            insertButton = new ToolStripSplitButton();            
+            insertButton = new ToolStripButton();
 
-            ToolStripMenuItem tsmTexture = new ToolStripMenuItem("Texture");
-            tsmTexture.Click += TsmTexture_Click;
-
-            ToolStripMenuItem tsmHeightfield = new ToolStripMenuItem("Heightfield");
-            tsmHeightfield.Click += TsmTexture_Click;
+            insertButton.Click += InsertButton_Click;          
 
             insertButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            insertButton.DropDownItems.AddRange(new ToolStripItem[] { tsmTexture, tsmHeightfield });
             insertButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
             insertButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             insertButton.Size = new System.Drawing.Size(32, 22);
@@ -45,7 +40,7 @@ namespace Map_editor.Editors
             Controls.Add(tlsInsert);
         }
 
-        private void TsmTexture_Click(object sender, EventArgs e)
+        private void InsertButton_Click(object sender, EventArgs e)
         {
             ResourceCollector tc = new ResourceCollector();
             if (tc.ShowDialog() == DialogResult.OK)
@@ -54,6 +49,7 @@ namespace Map_editor.Editors
                 base.SetValue(tc.CollectionResult);
             }
         }
+
 
         private void TxtText_TextChanged(object sender, EventArgs e)
         {

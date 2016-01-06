@@ -208,9 +208,9 @@ namespace Map_editor
         {           
             try
             {
-                currentWorld.Update(glControl1.Focused, 0);
+                currentWorld.Update(tabControl1.SelectedIndex == 1, 0);
                 fpsCounter.Restart();
-                currentWorld.Draw(glControl1.Focused);
+                currentWorld.Draw(tabControl1.SelectedIndex == 1);
                 fpsCounter.Stop();
                 if (fpsCounter.ElapsedMilliseconds == 0) lblFPS.Text = "<1000 FPS";
                 else lblFPS.Text = (1 / fpsCounter.ElapsedMilliseconds*1000) + " FPS";

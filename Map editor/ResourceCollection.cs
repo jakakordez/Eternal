@@ -15,6 +15,7 @@ namespace Map_editor
     {
         Dictionary<string, Bitmap> images = new Dictionary<string, Bitmap>();
         public string CollectionResult;
+        public string location = "";
         public ResourceCollector()
         {
             InitializeComponent();
@@ -22,20 +23,23 @@ namespace Map_editor
 
         private void ResourceCollection_Load(object sender, EventArgs e)
         {
-            images = EGE.Tools.TextureManager.GetTextures();
-            foreach (var item in images)
+            LoadFolder();
+            EGE.Resources.FillTreeview(treeView1.Nodes[0].Nodes);
+            treeView1.Nodes[0].Expand();
+        }
+
+        private void LoadFolder()
+        {
+            lstFiles.Items.Clear();
+            foreach (var item in EGE.Resources.GetFolderFiles(tlsAddress.Text))
             {
-                imgTextures.Images.Add(item.Value);
-                ListViewItem lstItem = new ListViewItem(item.Key, imgTextures.Images.Count - 1);
-                lstTextures.Items.Add(lstItem);
-            }
-            foreach (var item in EGE.Tools.ResourceManager.Files)
-            {
-                lstFiles.Items.Add(new ListViewItem(new string[] { item.Key, EGE.Misc.sizeToString(item.Value) }));
+                ListViewItem it = new ListViewItem(new string[] { item.Name + "." + item.Extension, EGE.Misc.sizeToString(item.Size) });
+                it.Tag = item;
+                lstFiles.Items.Add(it);
             }
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+       /* private void toolStripButton1_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -55,58 +59,124 @@ namespace Map_editor
                     }
                     else
                     {
-                        EGE.Tools.ResourceManager.AddFile(p);
+                        //EGE.ResourceManager.AddFile(p);
                         lstFiles.Items.Add(item);
                     }
                 }
             }
-        }
+        }*/
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ListView lst;
-            if (tabControl1.SelectedIndex == 0) lst = lstTextures;
-            else lst = lstFiles;
-            if (lst.SelectedItems.Count > 0 && saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (lstFiles.SelectedItems.Count > 0 && saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                if (tabControl1.SelectedIndex == 0) images[lst.SelectedItems[0].Text].Save(saveFileDialog1.FileName);
-                else File.WriteAllBytes(saveFileDialog1.FileName, EGE.Tools.ResourceManager.GetResource(lst.SelectedItems[0].Text));
+                images[lstFiles.SelectedItems[0].Text].Save(saveFileDialog1.FileName);
+                //else File.WriteAllBytes(saveFileDialog1.FileName, EGE.ResourceManager.GetFile(lst.SelectedItems[0].Text));
             }
         }
 
         private void removeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedIndex == 0)
+            if (lstFiles.SelectedItems.Count > 0 && MessageBox.Show("Do you want to remove this file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                if (lstTextures.SelectedItems.Count > 0)
-                {
-                    if (MessageBox.Show("Do you want to remove the file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        images.Remove(lstTextures.SelectedItems[0].Text);
-                        EGE.Tools.TextureManager.RemoveTexture(lstTextures.SelectedItems[0].Text);
-                        lstTextures.SelectedItems[0].Remove();
-                    }
-                }
-            }
-            else if (lstFiles.SelectedItems.Count > 0 && MessageBox.Show("Do you want to remove the file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                EGE.Tools.ResourceManager.RemoveFile(lstFiles.SelectedItems[0].Text);
+                EGE.Resources.RemoveFile(lstFiles.SelectedItems[0].Text);
                 lstFiles.SelectedItems[0].Remove();
             }
-
         }
 
-        private void lstTextures_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void lstFiles_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            ListView lst;
-            if (tabControl1.SelectedIndex == 0) lst = lstTextures;
-            else lst = lstFiles;
-            if (lst.SelectedItems.Count > 0 && e.Button == MouseButtons.Left)
+            if (lstFiles.SelectedItems.Count > 0 && e.Button == MouseButtons.Left)
             {
-                CollectionResult = lst.SelectedItems[0].Text;
+                if (((EGE.RFile)lstFiles.SelectedItems[0].Tag).Type == EGE.RFile.RFileType.Mesh)
+                    CollectionResult = ((EGE.RFile)lstFiles.SelectedItems[0].Tag).FullName.Replace(".mesh", "");
+                else CollectionResult = ((EGE.RFile)lstFiles.SelectedItems[0].Tag).FullName;
                 DialogResult = DialogResult.OK;
                 Close();
             }
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var p in openFileDialog1.FileNames)
+                {
+                    EGE.Resources.AddFile(p, tlsAddress.Text);
+                }
+                LoadFolder();
+            }
+        }
+
+        private void rebuildToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(lstFiles.SelectedItems.Count > 0)
+            {
+                EGE.Resources.BuildMesh((EGE.RFile)lstFiles.SelectedItems[0].Tag);
+                LoadFolder();
+                MessageBox.Show("Done");
+            }
+        }
+
+        private void tlsAddress_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                LoadFolder();
+            }
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            tlsAddress.Text = getSelectedPath();
+            LoadFolder();
+        }
+
+        private string getSelectedPath()
+        {
+            if (treeView1.SelectedNode.FullPath == "") return "";
+            else return treeView1.SelectedNode.FullPath.Substring(1, treeView1.SelectedNode.FullPath.Length - 1) + "/";
+        }
+
+        private void removeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode != null && treeView1.SelectedNode.Level > 0)
+            {
+                tlsAddress.Text = "";
+                LoadFolder();
+                EGE.Resources.RemoveFolder(getSelectedPath());
+                treeView1.SelectedNode.Remove();
+            }
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            up();
+        }
+
+        private void up()
+        {
+            if (tlsAddress.Text.Contains('/'))
+            {
+                tlsAddress.Text = EGE.Misc.pathUp(EGE.Misc.pathUp(tlsAddress.Text));
+                if (tlsAddress.Text != "") tlsAddress.Text += "/";
+                LoadFolder();
+            }
+        }
+
+        private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enter_text dialog = new Enter_text();
+            if(dialog.ShowDialog() == DialogResult.OK)
+            {
+                treeView1.SelectedNode.Nodes.Add(dialog.Text);
+                treeView1.SelectedNode.Expand();
+            }
+        }
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            treeView1.SelectedNode = e.Node;
         }
     }
 }

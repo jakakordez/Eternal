@@ -176,7 +176,7 @@ namespace Map_editor
                 heightfieldBitmap.Width = heightfieldBitmap.Height;
                 heightfieldBitmap.HorizontalAlignment = HorizontalAlignment.Left;
                 heightfieldBitmap.VerticalAlignment = VerticalAlignment.Top;
-                var bmp = EGE.Tools.TextureManager.getTexture(Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.TextureName);
+                var bmp = EGE.Resources.textureToBitmap(Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.TextureName);
                 bmp.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
                 System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
                 BitmapImage bmpi = new BitmapImage();

@@ -50,19 +50,20 @@ namespace EGE.Characters
             Vector2 sideDirection = Misc.getCartesian(-CameraList[0].Orientation.Y+MathHelper.PiOver2);
             CharacterBody.LinearVelocity = new Vector3(0, CharacterBody.LinearVelocity.Y, 0);
             float y = CharacterBody.LinearVelocity.Y;
-            if (Controller.In(Func.Acceleration))
+            if (Controller.In(Func.Forward))
             {
                 if(Controller.In(Func.FastMode)) 
                     CharacterBody.LinearVelocity += new Vector3(direction.X*RunningSpeed, CharacterBody.LinearVelocity.Y, direction.Y*RunningSpeed);
                 else CharacterBody.LinearVelocity += new Vector3(direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, direction.Y * WalkingSpeed);
             }
-            else if(Controller.In(Func.Brake))
+            else if(Controller.In(Func.Backward))
                 CharacterBody.LinearVelocity += new Vector3(-direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -direction.Y * WalkingSpeed);
             if(Controller.In(Func.Right))
                 CharacterBody.LinearVelocity += new Vector3(sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, sideDirection.Y * WalkingSpeed);
             else if (Controller.In(Func.Left))
                 CharacterBody.LinearVelocity += new Vector3(-sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -sideDirection.Y * WalkingSpeed);
             CharacterBody.LinearVelocity = new Vector3(CharacterBody.LinearVelocity.X, y, CharacterBody.LinearVelocity.Z);
+            if (Controller.In(Func.Jump)) CharacterBody.ApplyCentralImpulse(new Vector3(0, 40, 0));
         }
     }
 }

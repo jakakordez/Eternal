@@ -29,7 +29,7 @@ namespace EGE
 
         public void Load()
         {
-            Tools.MeshManager.LoadMesh(MeshName);
+            //Tools.MeshManager.LoadMesh(MeshName);
         }
 
         public void Draw()
@@ -37,7 +37,7 @@ namespace EGE
             Matrix4 trans = World.WorldMatrix;
             trans = Center.Ref.CreateTransform() * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Tools.MeshManager.DrawMesh(MeshName);
+            Resources.DrawMesh(MeshName);
         }
 
         public void Build()

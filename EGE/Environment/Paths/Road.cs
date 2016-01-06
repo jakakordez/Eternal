@@ -43,7 +43,7 @@ namespace EGE.Environment.Paths
             }
             else
             {
-                Tools.TextureManager.BindTexture(TextureName);
+                Resources.BindTexture(TextureName);
                 RoadMesh.Draw();
             }
         }

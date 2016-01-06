@@ -34,8 +34,8 @@ namespace EGE.Characters
 
             Matrix4 Movement = Matrix4.Identity;
             float sp = (Controller.Val(Func.FastMode) * 1) + 0.5f;
-            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Acceleration) * sp, 0, 0));
-            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Brake) * -sp, 0, 0));
+            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Forward) * sp, 0, 0));
+            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Backward) * -sp, 0, 0));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.Val(Func.Left) * -sp));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.Val(Func.Right) * sp));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.Val(Func.Up) * sp, 0));

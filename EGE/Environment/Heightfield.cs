@@ -43,7 +43,7 @@ namespace EGE.Environment
 
         public void Load()
         {
-            Stream entryStream = new MemoryStream(Tools.ResourceManager.GetResource(HeightfieldName));
+            Stream entryStream = new MemoryStream(Resources.GetFile(HeightfieldName));
             if (entryStream  != null)
             {
                 
@@ -97,7 +97,7 @@ namespace EGE.Environment
             Bitmap result = new Bitmap(Size, Size);
             Graphics g = Graphics.FromImage(result);
             g.Clear(Color.Black);
-            Stream entryStream = new MemoryStream(Tools.ResourceManager.GetResource(HeightfieldName));
+            Stream entryStream = new MemoryStream(Resources.GetFile(HeightfieldName));
             if (entryStream != null)
             {
                 byte[] b = new byte[4];
@@ -138,7 +138,7 @@ namespace EGE.Environment
 
         public void Draw()
         {
-            Tools.TextureManager.BindTexture(TextureName);
+            Resources.BindTexture(TextureName);
             HeightfieldMesh.Draw();
             
             GL.Begin(BeginMode.Quads);

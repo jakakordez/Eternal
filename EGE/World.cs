@@ -64,9 +64,7 @@ namespace EGE
 
         public void LoadData(string Path)
         {
-            Tools.TextureManager.LoadTextures(Path + "\\Map");
-            Tools.ResourceManager.LoadResources(Path + "\\Map");
-            Tools.MeshManager.LoadMeshes(Path + "\\Map");
+            Resources.LoadResources(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
         }
         public void Build()
@@ -94,6 +92,7 @@ namespace EGE
         {
             if (focused)
             {
+                if(!StaticView)(car as Vehicles.Car).Update();
                 if (!StaticView) DynamicsWorld.StepSimulation(elaspedTime);
                 Controller.Update();
                 KeyboardState keyboardState = Keyboard.GetState();

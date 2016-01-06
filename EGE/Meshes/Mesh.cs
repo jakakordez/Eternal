@@ -36,13 +36,6 @@ namespace EGE.Meshes
             Location = new Vector3();
         }
 
-        public void SaveToMesh()
-        {
-            LoadMTL(Name + ".mtl");
-            LoadOBJ();
-
-        }
-
         public void Draw()
         {
             for (int i = 0; i < ElementArraySizes.Length; i++)
@@ -51,7 +44,7 @@ namespace EGE.Meshes
                 if (Materials[i].Texture != "")
                 {
                     GL.Color4(Color.White);
-                    Tools.TextureManager.BindTexture(Materials[i].Texture);
+                    Resources.BindTexture(Materials[i].Texture);
                 }
                 else
                 {
@@ -102,9 +95,8 @@ namespace EGE.Meshes
             ElementArraySizes = new int[] { FillIndexBuffer(Indicies, ElementArrays[0]) };
         }
 
-        public void LoadMesh(ZipArchive MeshArchive, string MaterialFile)
+        public void LoadMesh(ZipArchive MeshArchive)
         {
-            LoadMTL(MaterialFile);
             ElementArrays = new uint[MeshArchive.Entries.Count-2];
             GL.GenBuffers(ElementArrays.Length, ElementArrays);
             ElementArraySizes = new int[ElementArrays.Length];
@@ -156,10 +148,10 @@ namespace EGE.Meshes
 
         public void LoadOBJ()
         {
-            LoadOBJ(null);
+            LoadOBJ("");
         }
 
-        public void LoadOBJ(ZipArchive MeshOutput)
+        public void LoadOBJ(string exportFilePath)
         {
             string name = Name+".obj";
             Face[] Faces = new Face[0];
@@ -168,7 +160,7 @@ namespace EGE.Meshes
             Vector3[] SortedVertices = new Vector3[0];
             Vector2[] SortedTextureCoordinates = new Vector2[0];
 
-            string[] file = Encoding.Default.GetString(Tools.ResourceManager.GetResource(name)).Replace("\r", "").Split('\n');
+            string[] file = Encoding.Default.GetString(Resources.GetFile(name)).Replace("\r", "").Split('\n');
             int currentMaterial = 0;
             for (int i = 0; i < file.Length; i++)
             {
@@ -223,6 +215,15 @@ namespace EGE.Meshes
             int[] currentElements = new int[0];
             ElementArraySizes = new int[0];
             int set = 0;
+
+            ZipArchive archive = null;
+            ZipArchive meshArchive = null;
+            if (exportFilePath != null)
+            {
+                 archive = ZipFile.Open(Resources.ArchivePath, ZipArchiveMode.Update, Global.Encoding);
+                 meshArchive = new ZipArchive(archive.CreateEntry(exportFilePath + ".mesh").Open(), ZipArchiveMode.Update);
+            }
+
             //Materials = new Material[0];
             for (int i = 0; i < Faces.Length; i++)
             {
@@ -230,9 +231,9 @@ namespace EGE.Meshes
                 if (Faces.Length - 1 == i || currentMaterial != Faces[i + 1].mtl)
                 {
                     Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
-                    if(MeshOutput != null)
+                    if(exportFilePath != null)
                     {
-                        Stream s = MeshOutput.CreateEntry(set+".raw").Open();
+                        Stream s = meshArchive.CreateEntry(set+".raw").Open();
                         for (int j = 0; j < currentElements.Length; j++)
                         {
                             byte[] output = BitConverter.GetBytes(currentElements[j]);
@@ -253,9 +254,9 @@ namespace EGE.Meshes
             VertexBuffer = AddVertexBuffer(SortedVertices);
             TextureCoordinateBuffer = AddTextureCoordsBuffer(SortedTextureCoordinates);
 
-            if(MeshOutput != null)
+            if(exportFilePath != null)
             {
-                Stream s = MeshOutput.CreateEntry("Vertices.raw").Open();
+                Stream s = meshArchive.CreateEntry("Vertices.raw").Open();
                 foreach (var item in SortedVertices)
                 {
                     byte[] Output = new byte[4 * 3];
@@ -265,7 +266,7 @@ namespace EGE.Meshes
                     s.Write(Output, 0, 12);
                 }
                 s.Close();
-                s = MeshOutput.CreateEntry("TextureCoordinates.raw").Open();
+                s = meshArchive.CreateEntry("TextureCoordinates.raw").Open();
                 foreach (var item in SortedTextureCoordinates)
                 {
                     byte[] Output = new byte[4 * 2];
@@ -274,12 +275,15 @@ namespace EGE.Meshes
                     s.Write(Output, 0, 8);
                 }
                 s.Close();
+                meshArchive.Dispose();
+                archive.Dispose();
             }
         }
 
-        private void LoadMTL(string name)
+        public void LoadMTL(string name)
         {
-            string[] file = Encoding.Default.GetString(Tools.ResourceManager.GetResource(name)).Replace("\r", "").Split('\n');
+            Materials = new Material[0];
+            string[] file = Encoding.Default.GetString(Resources.GetFile(name)).Replace("\r", "").Split('\n');
             Material currentMaterial = null;
             for (int i = 0; i < file.Length; i++)
             {

@@ -28,12 +28,12 @@ namespace EGE.Vehicles
             WheelRadius = 0.41f;
             WheelWidth = 0.31f;
             WheelFriction = 2000;
-            SuspensionStiffness = 800;
+            SuspensionStiffness = 80000;
             SuspensionDamping = 20.3f;
             SuspensionCompression = 4000.4f;
             RollInfluence = 0.1f;
             SuspensionHeight = -0.2f;
-            SuspensionRestLength = 0.4f;
+            SuspensionRestLength = 1f;
             SteeringWheelAngle = new Vector2(-8, 0.4f);
             FrontWheelLocation = new Vector2(1.48f, 0.7f);
             RearWheelLocation = new Vector2(1.35f, 0.7f);
@@ -47,7 +47,7 @@ namespace EGE.Vehicles
             Matrix4 localTrans = Matrix4.CreateTranslation(0 * Vector3.UnitY);
             ((CompoundShape)collisionShape).AddChildShape(localTrans, chassisShape);
 
-            vehicleBody = World.CreateRigidBody(1505, Matrix4.CreateTranslation(new Vector3(693, 10, 284)), collisionShape);
+            vehicleBody = World.CreateRigidBody(1, Matrix4.CreateTranslation(new Vector3(693, 15, 284)), collisionShape);//m: 1505
             
             // create vehicle
             RaycastVehicle.VehicleTuning tuning = new RaycastVehicle.VehicleTuning();
@@ -91,7 +91,14 @@ namespace EGE.Vehicles
             
             trans = Matrix4.CreateTranslation(vehicleBody.CenterOfMassPosition) * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Tools.MeshManager.DrawMesh("exterior");
+            Resources.DrawMesh("meshes/cars/bmw/420d/exterior");
+            
+        }
+
+        public void Update()
+        {
+            raycastVehicle.ApplyEngineForce(200000, 2);
+            raycastVehicle.ApplyEngineForce(200000, 3);
         }
     }
 }

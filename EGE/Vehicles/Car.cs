@@ -28,16 +28,15 @@ namespace EGE.Vehicles
             WheelRadius = 0.41f;
             WheelWidth = 0.31f;
             WheelFriction = 2000;
-            SuspensionStiffness = 80000;
+            SuspensionStiffness = 800;
             SuspensionDamping = 20.3f;
             SuspensionCompression = 4000.4f;
             RollInfluence = 0.1f;
-            SuspensionHeight = -0.2f;
-            SuspensionRestLength = 1f;
+            SuspensionHeight = 0f;
+            SuspensionRestLength = 0.4f;
             SteeringWheelAngle = new Vector2(-8, 0.4f);
-            FrontWheelLocation = new Vector2(1.48f, 0.7f);
+            FrontWheelLocation = new Vector2(1.55f, 0.7f);
             RearWheelLocation = new Vector2(1.35f, 0.7f);
-
 
             Vector3 Dimensions = new Vector3(4.64f, 2.01f, 1.38f);
 
@@ -47,7 +46,7 @@ namespace EGE.Vehicles
             Matrix4 localTrans = Matrix4.CreateTranslation(0 * Vector3.UnitY);
             ((CompoundShape)collisionShape).AddChildShape(localTrans, chassisShape);
 
-            vehicleBody = World.CreateRigidBody(1, Matrix4.CreateTranslation(new Vector3(693, 15, 284)), collisionShape);//m: 1505
+            vehicleBody = World.CreateRigidBody(1505, Matrix4.CreateTranslation(new Vector3(693, 15, 284)), collisionShape);//m: 1505
             
             // create vehicle
             RaycastVehicle.VehicleTuning tuning = new RaycastVehicle.VehicleTuning();
@@ -83,22 +82,43 @@ namespace EGE.Vehicles
                 wheel.FrictionSlip = WheelFriction;
                 wheel.RollInfluence = RollInfluence;
             }
+
+            World.DynamicsWorld.AddAction(raycastVehicle);
         }
 
         public void Draw()
         {
             Matrix4 trans = World.WorldMatrix;
             
-            trans = Matrix4.CreateTranslation(vehicleBody.CenterOfMassPosition) * World.WorldMatrix;
+            trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Resources.DrawMesh("meshes/cars/bmw/420d/exterior");
-            
+            Resources.DrawMesh(vehicleMesh);
+            string wheelMesh = "meshes/cars/bmw/420d/wheel";
+
+            Matrix4 wheel;
+            wheel = raycastVehicle.GetWheelTransformWS(0)*World.WorldMatrix;
+            GL.LoadMatrix(ref wheel);
+            Resources.DrawMesh(wheelMesh);
+            wheel = Matrix4.CreateRotationY((float)MathHelper.Pi);
+            wheel *= raycastVehicle.GetWheelTransformWS(1) * World.WorldMatrix;
+            GL.LoadMatrix(ref wheel);
+            Resources.DrawMesh(wheelMesh);
+            wheel = Matrix4.CreateRotationY((float)MathHelper.Pi);
+            wheel *= raycastVehicle.GetWheelTransformWS(2) * World.WorldMatrix;
+            GL.LoadMatrix(ref wheel);
+            Resources.DrawMesh(wheelMesh);
+            wheel = raycastVehicle.GetWheelTransformWS(3) * World.WorldMatrix;
+            GL.LoadMatrix(ref wheel);
+            Resources.DrawMesh(wheelMesh);
+
         }
 
         public void Update()
         {
-            raycastVehicle.ApplyEngineForce(200000, 2);
-            raycastVehicle.ApplyEngineForce(200000, 3);
+            raycastVehicle.ApplyEngineForce(1000, 2);
+            raycastVehicle.ApplyEngineForce(1000, 3);
+            raycastVehicle.SetSteeringValue(-0.5f, 0);
+            raycastVehicle.SetSteeringValue(-0.5f, 1);
         }
     }
 }

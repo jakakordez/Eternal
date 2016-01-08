@@ -263,16 +263,17 @@ namespace EGE
 
         public static void DrawMesh(string name)
         {
-            ((Mesh)findFile(name+".mesh", RFile.RFileType.Mesh).obj).Draw();
+            Mesh m = (Mesh)findFile(name + ".mesh", RFile.RFileType.Mesh).obj;
+            if(m != null)m.Draw();
         }
 
         public static void BuildMesh(RFile fromFile)
         {
             CheckArchive(ArchivePath);
-           // if (ResourceManager.ContainsKey(Name)) return;
-            
-                
+            // if (ResourceManager.ContainsKey(Name)) return;
+
             Mesh m = new Mesh(fromFile.Folder+fromFile.Name);
+            m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");
             m.LoadOBJ(fromFile.Folder+fromFile.Name);
         }
 

@@ -13,7 +13,7 @@ namespace EGE.Characters
     class Person : Character
     {
         RigidBody CharacterBody;
-        float WalkingSpeed = 4, RunningSpeed = 10;
+        float WalkingSpeed = 4, RunningSpeed = 100;
 
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
@@ -48,17 +48,18 @@ namespace EGE.Characters
            
             Vector2 direction = Misc.getCartesian(-CameraList[0].Orientation.Y);
             Vector2 sideDirection = Misc.getCartesian(-CameraList[0].Orientation.Y+MathHelper.PiOver2);
-            CharacterBody.LinearVelocity = new Vector3(0, CharacterBody.LinearVelocity.Y, 0);
+            
             float y = CharacterBody.LinearVelocity.Y;
             if (Controller.In(Func.Forward))
             {
                 if(Controller.In(Func.FastMode)) 
-                    CharacterBody.LinearVelocity += new Vector3(direction.X*RunningSpeed, CharacterBody.LinearVelocity.Y, direction.Y*RunningSpeed);
-                else CharacterBody.LinearVelocity += new Vector3(direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, direction.Y * WalkingSpeed);
+                    CharacterBody.LinearVelocity = new Vector3(direction.X*RunningSpeed, CharacterBody.LinearVelocity.Y, direction.Y*RunningSpeed);
+                else CharacterBody.LinearVelocity = new Vector3(direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, direction.Y * WalkingSpeed);
             }
             else if(Controller.In(Func.Backward))
-                CharacterBody.LinearVelocity += new Vector3(-direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -direction.Y * WalkingSpeed);
-            if(Controller.In(Func.Right))
+                CharacterBody.LinearVelocity = new Vector3(-direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -direction.Y * WalkingSpeed);
+            else CharacterBody.LinearVelocity = new Vector3(0, CharacterBody.LinearVelocity.Y, 0);
+            if (Controller.In(Func.Right))
                 CharacterBody.LinearVelocity += new Vector3(sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, sideDirection.Y * WalkingSpeed);
             else if (Controller.In(Func.Left))
                 CharacterBody.LinearVelocity += new Vector3(-sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -sideDirection.Y * WalkingSpeed);

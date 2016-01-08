@@ -10,7 +10,7 @@ namespace EGE.Vehicles
 {
     class Vehicle
     {
-        protected Mesh vehicleMesh;
+        protected string vehicleMesh = "meshes/cars/bmw/420d/exterior";
 
         protected RigidBody vehicleBody;
     }

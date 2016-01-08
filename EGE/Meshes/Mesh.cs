@@ -170,7 +170,7 @@ namespace EGE.Meshes
                     switch (line[0])
                     {
                         case "mtllib":
-                            LoadMTL(line[1]);
+                            //LoadMTL(line[1]);
                             break;
                         case "usemtl":
                             for (int j = 0; j < Materials.Length; j++)

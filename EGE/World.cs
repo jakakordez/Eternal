@@ -92,8 +92,19 @@ namespace EGE
         {
             if (focused)
             {
-                if(!StaticView)(car as Vehicles.Car).Update();
-                if (!StaticView) DynamicsWorld.StepSimulation(elaspedTime);
+                if (!StaticView)
+                {
+                    if (Controller.Pressed(Func.Enter))
+                    {
+                        if ((MainCharacter as Characters.Person).ControlledVehicle == null)
+                        {
+                            (MainCharacter as Characters.Person).ControlledVehicle = car;
+                        }
+                        else (MainCharacter as Characters.Person).ControlledVehicle = null;
+                    }
+                    (car as Vehicles.Car).Update();
+                    DynamicsWorld.StepSimulation(elaspedTime);
+                }
                 Controller.Update();
                 KeyboardState keyboardState = Keyboard.GetState();
                 MainCharacter.Update(elaspedTime);

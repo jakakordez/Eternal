@@ -24,7 +24,8 @@ namespace EGE
         GearDown,
         View,
         FastMode,
-        Jump
+        Jump,
+        Enter
     }
     class Controller
     {
@@ -36,6 +37,7 @@ namespace EGE
             public float Offset;
             public float Scale;
             public float NullZone;
+            public bool PrevState;
         }
 
         private static float MouseX, MouseY, MouseScroll;
@@ -55,6 +57,7 @@ namespace EGE
             ControllerMapping.Add(Func.View, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
             ControllerMapping.Add(Func.FastMode, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.LShift });
             ControllerMapping.Add(Func.Jump, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Space });
+            ControllerMapping.Add(Func.Enter, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.F });
         }
 
         public static void Update()
@@ -108,7 +111,9 @@ namespace EGE
             ControlSource source = ControllerMapping[function];
             if (source.DeviceType == typeof(Keyboard))
             {
-                return Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex);
+                bool state = Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex);
+                source.PrevState = state;
+                return state;
             }
             else if(source.DeviceType == typeof(Mouse))
             {
@@ -134,6 +139,11 @@ namespace EGE
                 
             }*/
             return false;
+        }
+
+        public static bool Pressed(Func function)
+        {
+            return (!ControllerMapping[function].PrevState && In(function));
         }
     }
 }

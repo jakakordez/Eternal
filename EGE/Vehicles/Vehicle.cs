@@ -10,8 +10,37 @@ namespace EGE.Vehicles
 {
     class Vehicle
     {
+        public enum VehicleController
+        {
+            Player,
+            AI,
+            Network
+        }
+
+        public VehicleController ControllerType;
+
         protected string vehicleMesh = "meshes/cars/bmw/420d/exterior";
 
-        protected RigidBody vehicleBody;
+        public RigidBody vehicleBody;
+
+        public virtual void Draw()
+        {
+
+        }
+
+        public virtual void Update()
+        {
+           
+        }
+
+        public virtual void HandleInput()
+        {
+
+        }
+
+        protected virtual void HandleAI()
+        {
+
+        }
     }
 }

@@ -24,8 +24,7 @@ namespace EGE.Vehicles
 
         public void Load()
         {
-
-            WheelRadius = 0.41f;
+            WheelRadius = 0.45f;
             WheelWidth = 0.31f;
             WheelFriction = 2000;
             SuspensionStiffness = 800;
@@ -37,6 +36,7 @@ namespace EGE.Vehicles
             SteeringWheelAngle = new Vector2(-8, 0.4f);
             FrontWheelLocation = new Vector2(1.55f, 0.7f);
             RearWheelLocation = new Vector2(1.35f, 0.7f);
+            SteeringClamp = 0.8f;
 
             Vector3 Dimensions = new Vector3(4.64f, 2.01f, 1.38f);
 
@@ -86,7 +86,7 @@ namespace EGE.Vehicles
             World.DynamicsWorld.AddAction(raycastVehicle);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             Matrix4 trans = World.WorldMatrix;
             
@@ -113,12 +113,42 @@ namespace EGE.Vehicles
 
         }
 
-        public void Update()
+        public override void Update()
         {
-            raycastVehicle.ApplyEngineForce(1000, 2);
-            raycastVehicle.ApplyEngineForce(1000, 3);
-            raycastVehicle.SetSteeringValue(-0.5f, 0);
-            raycastVehicle.SetSteeringValue(-0.5f, 1);
+            base.Update();
+            raycastVehicle.ApplyEngineForce(Thrust * 5000, 2);
+            raycastVehicle.ApplyEngineForce(Thrust * 5000, 3);
+            raycastVehicle.SetSteeringValue(Steering, 0);
+            raycastVehicle.SetSteeringValue(Steering, 1);
+            raycastVehicle.SetBrake(Brake*200, 0);
+            raycastVehicle.SetBrake(Brake*200, 1);
+            raycastVehicle.SetBrake(Brake*200, 2);
+            raycastVehicle.SetBrake(Brake*200, 3);
+        }
+
+        public override void HandleInput()
+        {
+            if (Controller.In(Func.Acceleration) && Thrust < 1)
+            {
+                Thrust += 0.1f;
+            }
+            else Thrust *= 0.5f;
+            if (Controller.In(Func.Brake) && Brake < 1)
+            {
+                Brake += 0.1f;
+            }
+            else Brake *= 0.5f;
+            if (Controller.In(Func.Left) && Steering < SteeringClamp)
+            {
+                Steering += 0.01f;
+                if (Steering > SteeringClamp) Steering = SteeringClamp;
+            }
+            else if (Controller.In(Func.Right) && Steering > -SteeringClamp)
+            {
+                Steering -= 0.01f;
+                if (Steering < -SteeringClamp) Steering = -SteeringClamp;
+            }
+            if(!Controller.In(Func.Right) && !Controller.In(Func.Left)) Steering *= 0.8f;
         }
     }
 }

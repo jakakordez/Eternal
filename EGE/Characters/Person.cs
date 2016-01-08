@@ -14,6 +14,7 @@ namespace EGE.Characters
     {
         RigidBody CharacterBody;
         float WalkingSpeed = 4, RunningSpeed = 100;
+        public Vehicles.Vehicle ControlledVehicle;
 
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
@@ -38,7 +39,10 @@ namespace EGE.Characters
         {
             GL.MatrixMode(MatrixMode.Modelview);
 
-            World.WorldMatrix = Camera.GenerateLookAt(CharacterBody.CenterOfMassPosition+(Vector3.UnitY), CameraList[0].Orientation, defaultCameraDefinition);
+            if(ControlledVehicle == null)
+                World.WorldMatrix = Camera.GenerateLookAt(CharacterBody.CenterOfMassPosition+(Vector3.UnitY), CameraList[0].Orientation, defaultCameraDefinition);
+            else
+                World.WorldMatrix = Camera.GenerateLookAt(ControlledVehicle.vehicleBody.CenterOfMassPosition + new Vector3(5, 2, 5), CameraList[0].Orientation, defaultCameraDefinition);
             GL.LoadMatrix(ref World.WorldMatrix);
         }
 
@@ -48,23 +52,27 @@ namespace EGE.Characters
            
             Vector2 direction = Misc.getCartesian(-CameraList[0].Orientation.Y);
             Vector2 sideDirection = Misc.getCartesian(-CameraList[0].Orientation.Y+MathHelper.PiOver2);
-            
-            float y = CharacterBody.LinearVelocity.Y;
-            if (Controller.In(Func.Forward))
+
+            if (ControlledVehicle == null)
             {
-                if(Controller.In(Func.FastMode)) 
-                    CharacterBody.LinearVelocity = new Vector3(direction.X*RunningSpeed, CharacterBody.LinearVelocity.Y, direction.Y*RunningSpeed);
-                else CharacterBody.LinearVelocity = new Vector3(direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, direction.Y * WalkingSpeed);
+                float y = CharacterBody.LinearVelocity.Y;
+                if (Controller.In(Func.Forward))
+                {
+                    if (Controller.In(Func.FastMode))
+                        CharacterBody.LinearVelocity = new Vector3(direction.X * RunningSpeed, CharacterBody.LinearVelocity.Y, direction.Y * RunningSpeed);
+                    else CharacterBody.LinearVelocity = new Vector3(direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, direction.Y * WalkingSpeed);
+                }
+                else if (Controller.In(Func.Backward))
+                    CharacterBody.LinearVelocity = new Vector3(-direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -direction.Y * WalkingSpeed);
+                else CharacterBody.LinearVelocity = new Vector3(0, CharacterBody.LinearVelocity.Y, 0);
+                if (Controller.In(Func.Right))
+                    CharacterBody.LinearVelocity += new Vector3(sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, sideDirection.Y * WalkingSpeed);
+                else if (Controller.In(Func.Left))
+                    CharacterBody.LinearVelocity += new Vector3(-sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -sideDirection.Y * WalkingSpeed);
+                CharacterBody.LinearVelocity = new Vector3(CharacterBody.LinearVelocity.X, y, CharacterBody.LinearVelocity.Z);
+                if (Controller.In(Func.Jump)) CharacterBody.ApplyCentralImpulse(new Vector3(0, 40, 0));
             }
-            else if(Controller.In(Func.Backward))
-                CharacterBody.LinearVelocity = new Vector3(-direction.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -direction.Y * WalkingSpeed);
-            else CharacterBody.LinearVelocity = new Vector3(0, CharacterBody.LinearVelocity.Y, 0);
-            if (Controller.In(Func.Right))
-                CharacterBody.LinearVelocity += new Vector3(sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, sideDirection.Y * WalkingSpeed);
-            else if (Controller.In(Func.Left))
-                CharacterBody.LinearVelocity += new Vector3(-sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -sideDirection.Y * WalkingSpeed);
-            CharacterBody.LinearVelocity = new Vector3(CharacterBody.LinearVelocity.X, y, CharacterBody.LinearVelocity.Z);
-            if (Controller.In(Func.Jump)) CharacterBody.ApplyCentralImpulse(new Vector3(0, 40, 0));
+            else ControlledVehicle.HandleInput();
         }
     }
 }

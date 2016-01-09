@@ -23,6 +23,8 @@ namespace EGE.Vehicles
 
         public RigidBody vehicleBody;
 
+        public Camera[] CameraList = new Camera[] { new Cameras.FirstPersonCamera(), new Cameras.ThirdPersonCamera(5)};
+
         public virtual void Draw()
         {
 

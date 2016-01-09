@@ -28,28 +28,26 @@ namespace EGE.Characters
 
         public Person(Vector3 StartPosition)
         {
-            CameraList = new Camera[] { new Cameras.FirstPersonCamera() };
+            CameraList = new Camera[] { new Cameras.FirstPersonCamera(), new Cameras.ThirdPersonCamera(5) };
             CurrentCamera = 0;
             SphereShape body = new SphereShape(0.5f);
             CharacterBody = World.CreateRigidBody(80, Matrix4.CreateTranslation(StartPosition), body);
-            
         }
 
         public override void Draw()
         {
             GL.MatrixMode(MatrixMode.Modelview);
 
-            if(ControlledVehicle == null)
-                World.WorldMatrix = Camera.GenerateLookAt(CharacterBody.CenterOfMassPosition+(Vector3.UnitY), CameraList[0].Orientation, defaultCameraDefinition);
+
+            if (ControlledVehicle == null)
+                CameraList[CurrentCamera].GenerateLookAt(CharacterBody.CenterOfMassPosition);
             else
-                World.WorldMatrix = Camera.GenerateLookAt(ControlledVehicle.vehicleBody.CenterOfMassPosition + new Vector3(5, 2, 5), CameraList[0].Orientation, defaultCameraDefinition);
+                ControlledVehicle.CameraList[CurrentCamera].GenerateLookAt(ControlledVehicle.vehicleBody.CenterOfMassPosition);
             GL.LoadMatrix(ref World.WorldMatrix);
         }
 
         public override void Update(float elaspedTime)
         {
-            CameraList[0].Update();
-           
             Vector2 direction = Misc.getCartesian(-CameraList[0].Orientation.Y);
             Vector2 sideDirection = Misc.getCartesian(-CameraList[0].Orientation.Y+MathHelper.PiOver2);
 
@@ -73,6 +71,23 @@ namespace EGE.Characters
                 if (Controller.In(Func.Jump)) CharacterBody.ApplyCentralImpulse(new Vector3(0, 40, 0));
             }
             else ControlledVehicle.HandleInput();
+
+            if (ControlledVehicle == null)
+            {
+                CameraList[CurrentCamera].Update();
+                if (Controller.Pressed(Func.SwitchView))
+                {
+                    CurrentCamera = (CurrentCamera + 1) % CameraList.Length;
+                }
+            }
+            else
+            {
+                ControlledVehicle.CameraList[CurrentCamera].Update();
+                if (Controller.Pressed(Func.SwitchView))
+                {
+                    CurrentCamera = (CurrentCamera + 1) % ControlledVehicle.CameraList.Length;
+                }
+            }
         }
     }
 }

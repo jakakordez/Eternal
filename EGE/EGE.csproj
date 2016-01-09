@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="Cameras\Camera.cs" />
     <Compile Include="Cameras\FirstPersonCamera.cs" />
+    <Compile Include="Cameras\ThirdPersonCamera.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\DebugView.cs" />
     <Compile Include="Characters\Person.cs" />

@@ -25,11 +25,12 @@ namespace EGE
         View,
         FastMode,
         Jump,
-        Enter
+        Enter,
+        SwitchView
     }
     class Controller
     {
-        struct ControlSource
+        class ControlSource
         {
             public int DeviceIndex;
             public Type DeviceType;
@@ -37,7 +38,8 @@ namespace EGE
             public float Offset;
             public float Scale;
             public float NullZone;
-            public bool PrevState;
+            public float PrevState;
+            public float CurrentState;
         }
 
         private static float MouseX, MouseY, MouseScroll;
@@ -58,6 +60,7 @@ namespace EGE
             ControllerMapping.Add(Func.FastMode, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.LShift });
             ControllerMapping.Add(Func.Jump, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Space });
             ControllerMapping.Add(Func.Enter, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.F });
+            ControllerMapping.Add(Func.SwitchView, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
         }
 
         public static void Update()
@@ -71,79 +74,54 @@ namespace EGE
                 MouseY = (Height / 2) / ((Height / 2) - ms.Y);
                 MouseScroll = ms.WheelPrecise;
             }
+
+            foreach (var key in Controller.ControllerMapping.Keys)
+            {
+                ControlSource source = ControllerMapping[key];
+                source.PrevState = source.CurrentState;
+                if (source.DeviceType == typeof(Keyboard))
+                {
+                    source.CurrentState = Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex)?1:0;
+                }
+                else if (source.DeviceType == typeof(Mouse))
+                {
+                    MouseState deviceState = Mouse.GetState();
+                    switch (source.ControlIndex)
+                    {
+                        case 0: source.CurrentState = MouseX; break;
+                        case 1: source.CurrentState = MouseY; break;
+                        case 2: source.CurrentState = deviceState.WheelPrecise; break;
+                        case 3: source.CurrentState = deviceState.LeftButton == OpenTK.Input.ButtonState.Pressed ? 1 : 0; break;
+                        case 4: source.CurrentState = deviceState.MiddleButton == OpenTK.Input.ButtonState.Pressed ? 1 : 0; break;
+                        case 5: source.CurrentState = deviceState.RightButton == OpenTK.Input.ButtonState.Pressed ? 1 : 0; break;
+                    }
+                }
+                /*else if(DeviceType == typeof(Joystick))
+                {
+                    JoystickState deviceState = Joystick.GetState(deviceIndex);
+                    if (controlIndex <= 10) return deviceState.GetAxis((JoystickAxis)controlIndex);
+                    else if(controlIndex <= 14) return deviceState.GetHat((JoystickHat)(controlIndex-10)).
+                }
+                else if(DeviceType == typeof(GamePad))
+                {
+
+                }*/
+            }
         }
 
         public static float Val(Func function)
         {
-            ControlSource source = ControllerMapping[function];
-            if (source.DeviceType == typeof(Keyboard))
-            {
-                return Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex) ? 1 : 0;
-            }
-            else if (source.DeviceType == typeof(Mouse))
-            {
-                MouseState deviceState = Mouse.GetState();
-                switch (source.ControlIndex)
-                {
-                    case 0: return MouseX;
-                    case 1: return MouseY;
-                    case 2: return deviceState.WheelPrecise;
-                    case 3: return deviceState.LeftButton == OpenTK.Input.ButtonState.Pressed ? 1 : 0;
-                    case 4: return deviceState.MiddleButton == OpenTK.Input.ButtonState.Pressed ? 1 : 0;
-                    case 5: return deviceState.RightButton == OpenTK.Input.ButtonState.Pressed ? 1 : 0;
-                }
-            }
-            /*else if(DeviceType == typeof(Joystick))
-            {
-                JoystickState deviceState = Joystick.GetState(deviceIndex);
-                if (controlIndex <= 10) return deviceState.GetAxis((JoystickAxis)controlIndex);
-                else if(controlIndex <= 14) return deviceState.GetHat((JoystickHat)(controlIndex-10)).
-            }
-            else if(DeviceType == typeof(GamePad))
-            {
-                
-            }*/
-            return 0;
+            return ControllerMapping[function].CurrentState;
         }
 
         public static bool In(Func function)
         {
-            ControlSource source = ControllerMapping[function];
-            if (source.DeviceType == typeof(Keyboard))
-            {
-                bool state = Keyboard.GetState(source.DeviceIndex).IsKeyDown((short)source.ControlIndex);
-                source.PrevState = state;
-                return state;
-            }
-            else if(source.DeviceType == typeof(Mouse))
-            {
-                MouseState deviceState = Mouse.GetState();
-                switch (source.ControlIndex)
-                {
-                    case 0: return false;
-                    case 1: return false;
-                    case 2: return false;
-                    case 3: return deviceState.LeftButton == OpenTK.Input.ButtonState.Pressed;
-                    case 4: return deviceState.MiddleButton == OpenTK.Input.ButtonState.Pressed;
-                    case 5: return deviceState.RightButton == OpenTK.Input.ButtonState.Pressed;
-                }
-            }
-            /*else if(DeviceType == typeof(Joystick))
-            {
-                JoystickState deviceState = Joystick.GetState(deviceIndex);
-                if (controlIndex <= 10) return deviceState.GetAxis((JoystickAxis)controlIndex);
-                else if(controlIndex <= 14) return deviceState.GetHat((JoystickHat)(controlIndex-10)).
-            }
-            else if(DeviceType == typeof(GamePad))
-            {
-                
-            }*/
-            return false;
+            return ControllerMapping[function].CurrentState == 1;
         }
 
         public static bool Pressed(Func function)
         {
-            return (!ControllerMapping[function].PrevState && In(function));
+            return (ControllerMapping[function].PrevState == 0 && In(function));
         }
     }
 }

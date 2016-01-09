@@ -11,7 +11,7 @@ namespace EGE.Characters
 {
     class DebugView:Character
     {
-        Vector3 centerPoint = new Vector3(730f, 98, 595f);// new Vector3(0, 5, 0);//
+        Vector3 centerPoint = new Vector3(730f, 98, 595f);
         bool inn = false;
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
@@ -57,7 +57,7 @@ namespace EGE.Characters
             
             GL.MatrixMode(MatrixMode.Modelview);
 
-            World.WorldMatrix = Camera.GenerateLookAt(centerPoint, CameraList[0].Orientation, defaultCameraDefinition);
+            CameraList[CurrentCamera].GenerateLookAt(centerPoint);
             GL.LoadMatrix(ref World.WorldMatrix);
         }
     }

@@ -9,7 +9,7 @@ using OpenTK;
 
 namespace EGE.Vehicles
 {
-    public class Vehicle
+    public class Vehicle:ICloneable
     {
         public enum VehicleController
         {
@@ -20,11 +20,14 @@ namespace EGE.Vehicles
 
         public VehicleController ControllerType;
 
-        protected string vehicleMesh = "meshes/cars/bmw/420d/exterior";
+        public string vehicleMesh { get; set; } 
 
         public RigidBody vehicleBody;
 
-        public Camera[] CameraList;
+        public Camera FirstPersonCamera { get; set; }
+        public Camera ThirdPersonCamera { get; set; }
+        public Camera[] CameraList { get; set; }
+        int CurrentCamera;
 
         public Vehicle()
         {
@@ -36,12 +39,15 @@ namespace EGE.Vehicles
                 ViewAngle = Vector2.One,
                 Style = DrawingStyle.Normal
             };
-            CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition), new ThirdPersonCamera(defaultCameraDefinition) };
+            FirstPersonCamera = new FirstPersonCamera(defaultCameraDefinition);
+            ThirdPersonCamera = new ThirdPersonCamera(defaultCameraDefinition);
+            CameraList = new Camera[0];
+            vehicleMesh = "";
+            CurrentCamera = 0;
         }
 
         public virtual void Draw()
         {
-
         }
 
         public virtual void Update()
@@ -59,12 +65,37 @@ namespace EGE.Vehicles
 
         }
 
+        public void NextCamera()
+        {
+            CurrentCamera = (CurrentCamera + 1) % (CameraList.Length + 2);
+            
+        }
+
+        public void UpdateCamera()
+        {
+            if (CurrentCamera == 0) FirstPersonCamera.Update();
+            else if (CurrentCamera == 1) ThirdPersonCamera.Update();
+            else CameraList[CurrentCamera - 2].Update();
+        }
+
+        public void DrawCamera()
+        {
+            if (CurrentCamera == 0) FirstPersonCamera.GenerateLookAt(vehicleBody.CenterOfMassPosition);
+            else if (CurrentCamera == 1) ThirdPersonCamera.GenerateLookAt(vehicleBody.CenterOfMassPosition);
+            else CameraList[CurrentCamera - 2].GenerateLookAt(vehicleBody.CenterOfMassPosition);
+        }
+
         public static Vehicle VehicleFromString(string type)
         {
             switch (type){
                 case "Car": return new Car();
             }
             return new Vehicle();
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

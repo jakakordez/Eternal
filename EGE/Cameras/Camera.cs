@@ -18,16 +18,16 @@ namespace EGE
     }
     public struct CameraDefinition
     {
-        public float Distance;
-        public bool FPV;
-        public Vector2 ViewAngle;
-        public Vector3 Offset;
-        public DrawingStyle Style;
+        public float Distance { get; set; }
+        public bool FPV { get; set; }
+        public Vector2 ViewAngle { get; set; }
+        public Vector3 Offset { get; set; }
+        public DrawingStyle Style { get; set; }
     }
     public class Camera
     {
         public Vector3 Orientation;
-        public CameraDefinition CameraSettings;
+        public CameraDefinition CameraSettings { get; set; }
 
         protected int ScreenHeight, ScreenWidth, X, Y;
         public Camera(CameraDefinition definition)

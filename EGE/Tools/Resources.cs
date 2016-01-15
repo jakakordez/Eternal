@@ -72,6 +72,8 @@ namespace EGE
 
         static List<RFile> Files;
 
+        public delegate void ProgressReport(object sender, int progress, string currentTask);
+
         public static void LoadResources(string FilePath)
         {
             Files = new List<RFile>();
@@ -259,14 +261,15 @@ namespace EGE
             if(m != null)m.Draw();
         }
 
-        public static void BuildMesh(RFile fromFile)
+        public static void BuildMesh(RFile fromFile, ProgressReport progressReporter)
         {
             Misc.CheckArchive(ArchivePath);
 
             Mesh m = new Mesh(fromFile.Folder+fromFile.Name);
             m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");
-            m.LoadOBJ(fromFile.Folder+fromFile.Name);
+            m.LoadOBJ(fromFile.Folder+fromFile.Name, progressReporter);
         }
+
 
         public static RFile findFile(string name, RFile.RFileType type)
         {

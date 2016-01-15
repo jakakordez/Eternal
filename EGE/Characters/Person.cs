@@ -16,9 +16,6 @@ namespace EGE.Characters
         float WalkingSpeed = 4, RunningSpeed = 100;
         public Vehicles.Vehicle ControlledVehicle;
 
-        
-
-
         public Person(Vector3 StartPosition)
         {
             CameraDefinition defaultCameraDefinition = new CameraDefinition()
@@ -40,11 +37,9 @@ namespace EGE.Characters
         {
             GL.MatrixMode(MatrixMode.Modelview);
 
-
             if (ControlledVehicle == null)
                 CameraList[CurrentCamera].GenerateLookAt(CharacterBody.CenterOfMassPosition);
-            else
-                ControlledVehicle.CameraList[CurrentCamera].GenerateLookAt(ControlledVehicle.vehicleBody.CenterOfMassPosition);
+            else ControlledVehicle.DrawCamera();
             GL.LoadMatrix(ref World.WorldMatrix);
         }
 
@@ -84,11 +79,8 @@ namespace EGE.Characters
             }
             else
             {
-                ControlledVehicle.CameraList[CurrentCamera].Update();
-                if (Controller.Pressed(Func.SwitchView))
-                {
-                    CurrentCamera = (CurrentCamera + 1) % ControlledVehicle.CameraList.Length;
-                }
+                ControlledVehicle.UpdateCamera();
+                if (Controller.Pressed(Func.SwitchView)) ControlledVehicle.NextCamera();
             }
         }
     }

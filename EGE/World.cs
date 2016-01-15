@@ -20,7 +20,7 @@ namespace EGE
         Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
 
-        Vehicles.Vehicle car;
+        List<Vehicles.Vehicle> VehicleList;
 
         public static bool StaticView;
         
@@ -49,8 +49,7 @@ namespace EGE
 
                 MainCharacter = new Characters.Person(new Vector3(683, 10, 274));
 
-                car = new Vehicles.Car();
-                (car as Vehicles.Car).Load();
+                VehicleList = new List<Vehicles.Vehicle>();
             }
         }
 
@@ -79,6 +78,16 @@ namespace EGE
                 item.Load();
             }
             CurrentMap.CurrentTerrain.TerrainHeightfield.Load();
+
+            if (!StaticView)
+            {
+                var car = Vehicles.Vehicles.getKey("Car/BMW/420d");
+                (car as Vehicles.Car).Load(new Vector3(693, 15, 284));
+                VehicleList.Add(car);
+                car = Vehicles.Vehicles.getKey("Car/BMW/420d");
+                (car as Vehicles.Car).Load(new Vector3(693, 15, 294));
+                VehicleList.Add(car);
+            }
         }
 
         public void SaveData(string Path)
@@ -97,11 +106,11 @@ namespace EGE
                     {
                         if ((MainCharacter as Characters.Person).ControlledVehicle == null)
                         {
-                            (MainCharacter as Characters.Person).ControlledVehicle = car;
+                            (MainCharacter as Characters.Person).ControlledVehicle = VehicleList[0];
                         }
                         else (MainCharacter as Characters.Person).ControlledVehicle = null;
                     }
-                    (car as Vehicles.Car).Update();
+                    foreach (var v in VehicleList) v.Update();
                     DynamicsWorld.StepSimulation(elaspedTime);
                 }
                 Controller.Update();
@@ -128,7 +137,7 @@ namespace EGE
 
             CurrentMap.CurrentTerrain.Draw();
 
-            (car as Vehicles.Car).Draw();
+            foreach (var v in VehicleList) v.Draw();
         }
 
         public static RigidBody CreateRigidBody(float mass, Matrix4 startTransform, CollisionShape shape)

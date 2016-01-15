@@ -17,6 +17,7 @@ namespace Map_editor
         Dictionary<Type, int> dataTypes = new Dictionary<Type, int>();
         string previousPath = "";
         object currentObject;
+        public event EventHandler ValueChanged;
 
         public ObjectBrowser()
         {
@@ -80,6 +81,7 @@ namespace Map_editor
             if (previousPath != "" && valueEditor1.GetType() != typeof(Editors.GeneralEditor))
             {
                 setValue(previousPath.Split('/'), currentObject, valueEditor1.GetValue(), 0);
+                ValueChanged.Invoke(this, null);
             }
             object val = getValue(e.Node.Tag.ToString());
             Controls.Remove(valueEditor1);
@@ -99,7 +101,7 @@ namespace Map_editor
             for (int i = 0; i < pathParts.Length; i++)
             {
                 if (pathParts[i] == "") continue;
-                if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
+                if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[++i]));
                 else if (findProperty(pathParts, v, 0) != null) v = findProperty(pathParts, v, i).GetValue(v);
             }
             return v;
@@ -121,8 +123,8 @@ namespace Map_editor
             if (i == path.Length-1) return o;
             if (v.GetType().IsArray)
             {
-                object currentValue = ((Array)v).GetValue(Convert.ToInt32(path[0]));
-                ((Array)v).SetValue(setValue(path, currentValue, o, i+1), Convert.ToInt32(path[0]));
+                object currentValue = ((Array)v).GetValue(Convert.ToInt32(path[i+1]));
+                ((Array)v).SetValue(setValue(path, currentValue, o, i+2), Convert.ToInt32(path[i+1]));
             }
             else
             {

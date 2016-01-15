@@ -57,7 +57,7 @@ namespace Map_editor
             }
         }
 
-        private void lstFiles_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void lstFiles_MouseDoubleClick_1(object sender, MouseEventArgs e)
         {
             if (lstFiles.SelectedItems.Count > 0 && e.Button == MouseButtons.Left)
             {
@@ -85,11 +85,12 @@ namespace Map_editor
         {
             if(lstFiles.SelectedItems.Count > 0)
             {
-                EGE.Resources.BuildMesh((EGE.RFile)lstFiles.SelectedItems[0].Tag);
-                LoadFolder();
-                MessageBox.Show("Done");
+                bcgMeshBuilder.RunWorkerAsync((EGE.RFile)lstFiles.SelectedItems[0].Tag);
+                
             }
         }
+
+       
 
         private void tlsAddress_KeyUp(object sender, KeyEventArgs e)
         {
@@ -147,9 +148,31 @@ namespace Map_editor
             }
         }
 
-        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void treeView1_NodeMouseClick_1(object sender, TreeNodeMouseClickEventArgs e)
         {
             treeView1.SelectedNode = e.Node;
+        }
+
+        private void bcgMeshBuilder_DoWork(object sender, DoWorkEventArgs e)
+        {
+            EGE.Resources.BuildMesh((EGE.RFile) e.Argument, new EGE.Resources.ProgressReport(progressReport));
+        }
+
+        private void bcgMeshBuilder_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            tlsStatus.Text = e.UserState.ToString();
+            stProgress.Value = e.ProgressPercentage;
+        }
+
+        void progressReport(object sender, int progress, string task)
+        {
+            bcgMeshBuilder.ReportProgress(progress, task);
+        }
+
+        private void bcgMeshBuilder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            LoadFolder();
+            MessageBox.Show("Done");
         }
     }
 }

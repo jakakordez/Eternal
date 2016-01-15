@@ -146,12 +146,7 @@ namespace EGE.Meshes
             }
         }
 
-        public void LoadOBJ()
-        {
-            LoadOBJ("");
-        }
-
-        public void LoadOBJ(string exportFilePath)
+        public void LoadOBJ(string exportFilePath, Resources.ProgressReport progressReporter)
         {
             string name = Name+".obj";
             Face[] Faces = new Face[0];
@@ -164,6 +159,7 @@ namespace EGE.Meshes
             int currentMaterial = 0;
             for (int i = 0; i < file.Length; i++)
             {
+                progressReporter(this, i*100 /file.Length, "Loading OBJ file ...");
                 if (file[i] != "" && file[i][0] != '#')
                 {
                     string[] line = file[i].Split(' ');
@@ -211,9 +207,9 @@ namespace EGE.Meshes
             currentMaterial = Faces[0].mtl;
             //  Misc.Push<Material>(Materials[currentMaterial].Brush, ref Materials);
             ElementArrays = new uint[Materials.Length];
-            GL.GenBuffers(Materials.Length, ElementArrays);
+            //GL.GenBuffers(Materials.Length, ElementArrays);
             int[] currentElements = new int[0];
-            ElementArraySizes = new int[0];
+            //ElementArraySizes = new int[0];
             int set = 0;
 
             ZipArchive archive = null;
@@ -227,10 +223,11 @@ namespace EGE.Meshes
             //Materials = new Material[0];
             for (int i = 0; i < Faces.Length; i++)
             {
+                progressReporter(this, i*100/Faces.Length, "Exporting faces ...");
                 Misc.Push<int>(Faces[i].vertices, ref currentElements);
                 if (Faces.Length - 1 == i || currentMaterial != Faces[i + 1].mtl)
                 {
-                    Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
+                    //Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
                     if(exportFilePath != null)
                     {
                         Stream s = meshArchive.CreateEntry(set+".raw").Open();
@@ -251,14 +248,15 @@ namespace EGE.Meshes
                 }
 
             }
-            VertexBuffer = AddVertexBuffer(SortedVertices);
-            TextureCoordinateBuffer = AddTextureCoordsBuffer(SortedTextureCoordinates);
+            //VertexBuffer = AddVertexBuffer(SortedVertices);
+            //TextureCoordinateBuffer = AddTextureCoordsBuffer(SortedTextureCoordinates);
 
             if(exportFilePath != null)
             {
                 Stream s = meshArchive.CreateEntry("Vertices.raw").Open();
                 foreach (var item in SortedVertices)
                 {
+                    progressReporter(this, 30, "Exporting vertices ...");
                     byte[] Output = new byte[4 * 3];
                     Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
@@ -269,14 +267,17 @@ namespace EGE.Meshes
                 s = meshArchive.CreateEntry("TextureCoordinates.raw").Open();
                 foreach (var item in SortedTextureCoordinates)
                 {
+                    progressReporter(this, 60, "Exporting texture coordinates ...");
                     byte[] Output = new byte[4 * 2];
                     Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
                     s.Write(Output, 0, 8);
                 }
+                progressReporter(this, 90, "Finishing ...");
                 s.Close();
                 meshArchive.Dispose();
                 archive.Dispose();
+                progressReporter(this, 100, "Done ...");
             }
         }
 

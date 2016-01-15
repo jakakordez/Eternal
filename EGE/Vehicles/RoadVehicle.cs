@@ -8,8 +8,8 @@ namespace EGE.Vehicles
 {
     class RoadVehicle:Vehicle
     {
-        protected float Thrust, Brake, Steering, SteeringClamp;
+        protected float Thrust, Brake, Steering;
+        public float SteeringClamp { get; set; }
 
-        
     }
 }

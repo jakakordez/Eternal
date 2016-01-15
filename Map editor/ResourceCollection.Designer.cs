@@ -41,23 +41,28 @@
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rebuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imgTextures = new System.Windows.Forms.ImageList(this.components);
-            this.lstFiles = new System.Windows.Forms.ListView();
-            this.fileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.ctxFolders = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.stProgress = new System.Windows.Forms.ToolStripProgressBar();
+            this.tlsStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.lstFiles = new System.Windows.Forms.ListView();
+            this.fileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.bcgMeshBuilder = new System.ComponentModel.BackgroundWorker();
             this.toolStrip2.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
+            this.ctxFolders.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.ctxFolders.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip2
@@ -139,31 +144,6 @@
             this.imgTextures.ImageSize = new System.Drawing.Size(64, 64);
             this.imgTextures.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // lstFiles
-            // 
-            this.lstFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.fileName,
-            this.Size});
-            this.lstFiles.ContextMenuStrip = this.contextMenuStrip1;
-            this.lstFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstFiles.Location = new System.Drawing.Point(0, 0);
-            this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(379, 377);
-            this.lstFiles.TabIndex = 0;
-            this.lstFiles.UseCompatibleStateImageBehavior = false;
-            this.lstFiles.View = System.Windows.Forms.View.Details;
-            this.lstFiles.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstFiles_MouseDoubleClick);
-            // 
-            // fileName
-            // 
-            this.fileName.Text = "Name";
-            this.fileName.Width = 200;
-            // 
-            // Size
-            // 
-            this.Size.Text = "Size";
-            this.Size.Width = 100;
-            // 
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileName = "texture.bmp";
@@ -171,39 +151,6 @@
             // openFileDialog1
             // 
             this.openFileDialog1.Multiselect = true;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.treeView1);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.lstFiles);
-            this.splitContainer1.Size = new System.Drawing.Size(527, 377);
-            this.splitContainer1.SplitterDistance = 144;
-            this.splitContainer1.TabIndex = 2;
-            // 
-            // treeView1
-            // 
-            this.treeView1.ContextMenuStrip = this.ctxFolders;
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Name = "treeView1";
-            treeNode2.Name = "Node0";
-            treeNode2.Text = "";
-            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2});
-            this.treeView1.PathSeparator = "/";
-            this.treeView1.Size = new System.Drawing.Size(144, 377);
-            this.treeView1.TabIndex = 0;
-            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
-            this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
             // ctxFolders
             // 
@@ -228,12 +175,101 @@
             this.newFolderToolStripMenuItem.Text = "New folder";
             this.newFolderToolStripMenuItem.Click += new System.EventHandler(this.newFolderToolStripMenuItem_Click);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stProgress,
+            this.tlsStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 380);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(527, 22);
+            this.statusStrip1.TabIndex = 3;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // stProgress
+            // 
+            this.stProgress.Name = "stProgress";
+            this.stProgress.Size = new System.Drawing.Size(200, 16);
+            this.stProgress.Value = 100;
+            // 
+            // tlsStatus
+            // 
+            this.tlsStatus.Name = "tlsStatus";
+            this.tlsStatus.Size = new System.Drawing.Size(48, 17);
+            this.tlsStatus.Text = "Waiting";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.lstFiles);
+            this.splitContainer1.Size = new System.Drawing.Size(527, 355);
+            this.splitContainer1.SplitterDistance = 143;
+            this.splitContainer1.TabIndex = 4;
+            // 
+            // treeView1
+            // 
+            this.treeView1.ContextMenuStrip = this.ctxFolders;
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            treeNode2.Name = "Node0";
+            treeNode2.Text = "";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode2});
+            this.treeView1.PathSeparator = "/";
+            this.treeView1.Size = new System.Drawing.Size(143, 355);
+            this.treeView1.TabIndex = 0;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick_1);
+            // 
+            // lstFiles
+            // 
+            this.lstFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.fileName,
+            this.Size});
+            this.lstFiles.ContextMenuStrip = this.contextMenuStrip1;
+            this.lstFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstFiles.Location = new System.Drawing.Point(0, 0);
+            this.lstFiles.Name = "lstFiles";
+            this.lstFiles.Size = new System.Drawing.Size(380, 355);
+            this.lstFiles.TabIndex = 0;
+            this.lstFiles.UseCompatibleStateImageBehavior = false;
+            this.lstFiles.View = System.Windows.Forms.View.Details;
+            this.lstFiles.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstFiles_MouseDoubleClick_1);
+            // 
+            // fileName
+            // 
+            this.fileName.Text = "Name";
+            this.fileName.Width = 200;
+            // 
+            // Size
+            // 
+            this.Size.Text = "Size";
+            this.Size.Width = 100;
+            // 
+            // bcgMeshBuilder
+            // 
+            this.bcgMeshBuilder.WorkerReportsProgress = true;
+            this.bcgMeshBuilder.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bcgMeshBuilder_DoWork);
+            this.bcgMeshBuilder.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bcgMeshBuilder_ProgressChanged);
+            this.bcgMeshBuilder.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bcgMeshBuilder_RunWorkerCompleted);
+            // 
             // ResourceCollector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(527, 402);
             this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip2);
             this.Name = "ResourceCollector";
             this.Text = "Resource collection";
@@ -241,11 +277,13 @@
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
+            this.ctxFolders.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.ctxFolders.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -254,24 +292,28 @@
         #endregion
 
         private System.Windows.Forms.ToolStrip toolStrip2;
-        private System.Windows.Forms.ListView lstFiles;
         private System.Windows.Forms.ImageList imgTextures;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.ColumnHeader fileName;
-        private System.Windows.Forms.ColumnHeader Size;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rebuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox tlsAddress;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ContextMenuStrip ctxFolders;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem newFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ListView lstFiles;
+        private System.Windows.Forms.ColumnHeader fileName;
+        private System.Windows.Forms.ColumnHeader Size;
+        private System.Windows.Forms.ToolStripProgressBar stProgress;
+        private System.Windows.Forms.ToolStripStatusLabel tlsStatus;
+        private System.ComponentModel.BackgroundWorker bcgMeshBuilder;
     }
 }

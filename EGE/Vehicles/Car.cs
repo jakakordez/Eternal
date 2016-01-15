@@ -13,10 +13,21 @@ namespace EGE.Vehicles
     {
         RaycastVehicle raycastVehicle;
         CollisionShape collisionShape;
-        public Vector2 SteeringWheelAngle, FrontWheelLocation, RearWheelLocation;
+        public Vector3 Dimensions { get; set; }
+        public Vector2 SteeringWheelAngle { get; set; }
+        public Vector2 FrontWheelLocation { get; set; }
+        public Vector2 RearWheelLocation { get; set; }
         public float WheelRadius { get; set; }
         public float WheelWidth { get; set; }
-        public float WheelFriction, SuspensionStiffness, SuspensionDamping, SuspensionCompression, RollInfluence, SuspensionHeight, SuspensionRestLength;
+        public float WheelFriction { get; set; }
+        public float SuspensionStiffness { get; set; }
+        public float SuspensionDamping { get; set; }
+        public float SuspensionCompression { get; set; }
+        public float RollInfluence { get; set; }
+        public float SuspensionHeight { get; set; }
+        public float SuspensionRestLength { get; set; }
+        public string WheelMesh { get; set; }
+
         public Vector3 wheelDirectionCS0 = new Vector3(0, -1, 0);
         public Vector3 wheelAxleCS = new Vector3(-1, 0, 0);
 
@@ -24,9 +35,14 @@ namespace EGE.Vehicles
         public const int upIndex = 1;
         public const int forwardIndex = 2;
 
-        public void Load()
+        public Car()
         {
-            WheelRadius = 0.45f;
+            WheelMesh = "";
+        }
+
+        public void Load(Vector3 Location)
+        {
+            /*WheelRadius = 0.45f;
             WheelWidth = 0.31f;
             WheelFriction = 2000;
             SuspensionStiffness = 800;
@@ -40,7 +56,7 @@ namespace EGE.Vehicles
             RearWheelLocation = new Vector2(1.35f, 0.7f);
             SteeringClamp = 0.8f;
 
-            Vector3 Dimensions = new Vector3(4.64f, 2.01f, 1.38f);
+            Vector3 Dimensions = new Vector3(4.64f, 2.01f, 1.38f);*/
 
             CollisionShape chassisShape = new BoxShape(Dimensions.Y / 2, Dimensions.Z / 2, Dimensions.X / 2);
             collisionShape = new CompoundShape();
@@ -48,7 +64,7 @@ namespace EGE.Vehicles
             Matrix4 localTrans = Matrix4.CreateTranslation(0 * Vector3.UnitY);
             ((CompoundShape)collisionShape).AddChildShape(localTrans, chassisShape);
 
-            vehicleBody = World.CreateRigidBody(1505, Matrix4.CreateTranslation(new Vector3(693, 15, 284)), collisionShape);//m: 1505
+            vehicleBody = World.CreateRigidBody(1505, Matrix4.CreateTranslation(Location), collisionShape);//m: 1505
             
             // create vehicle
             RaycastVehicle.VehicleTuning tuning = new RaycastVehicle.VehicleTuning();
@@ -95,24 +111,22 @@ namespace EGE.Vehicles
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             Resources.DrawMesh(vehicleMesh);
-            string wheelMesh = "meshes/cars/bmw/420d/wheel";
 
             Matrix4 wheel;
             wheel = raycastVehicle.GetWheelTransformWS(0)*World.WorldMatrix;
             GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(wheelMesh);
+            Resources.DrawMesh(WheelMesh);
             wheel = Matrix4.CreateRotationY((float)MathHelper.Pi);
             wheel *= raycastVehicle.GetWheelTransformWS(1) * World.WorldMatrix;
             GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(wheelMesh);
+            Resources.DrawMesh(WheelMesh);
             wheel = Matrix4.CreateRotationY((float)MathHelper.Pi);
             wheel *= raycastVehicle.GetWheelTransformWS(2) * World.WorldMatrix;
             GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(wheelMesh);
+            Resources.DrawMesh(WheelMesh);
             wheel = raycastVehicle.GetWheelTransformWS(3) * World.WorldMatrix;
             GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(wheelMesh);
-
+            Resources.DrawMesh(WheelMesh);
         }
 
         public override void Update()

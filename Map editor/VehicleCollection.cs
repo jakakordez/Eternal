@@ -45,6 +45,7 @@ namespace Map_editor
                 lstVehicles.Items.Add(j);
                 break;
             }
+            Vehicles.SaveVehicles();
         }
 
         private void lstVehicles_SelectedIndexChanged(object sender, EventArgs e)
@@ -56,6 +57,56 @@ namespace Map_editor
         private void objectBrowser1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void objectBrowser1_ValueChanged(object sender, EventArgs e)
+        {
+            Vehicles.SaveVehicles();
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstVehicles.SelectedItems.Count > 0 && MessageBox.Show("Delete", "Do you really want to delete this vehicle?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                Vehicles.RemoveVehicle(lstVehicles.SelectedItems[0].Tag.ToString());
+                lstVehicles.SelectedItems[0].Remove();
+            }
+        }
+
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstVehicles.SelectedItems.Count > 0)
+            {
+                Enter_text t = new Enter_text();
+                if (t.ShowDialog() == DialogResult.OK)
+                {
+                    ListViewItem l = lstVehicles.SelectedItems[0];
+                    l.SubItems[2].Text = t.Text;
+
+                    string oldKey = l.Tag.ToString();
+                    string[] p = oldKey.Split('/');
+                    l.Tag = p[0] + "/" + p[1] + "/" + t.Text;
+                    Vehicles.RenameVehicle(oldKey, l.Tag.ToString());
+                }
+            }
+        }
+
+        private void changeManufacturerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lstVehicles.SelectedItems.Count > 0)
+            {
+                Enter_text t = new Enter_text();
+                if (t.ShowDialog() == DialogResult.OK)
+                {
+                    ListViewItem l = lstVehicles.SelectedItems[0];
+                    l.SubItems[1].Text = t.Text;
+
+                    string oldKey = l.Tag.ToString();
+                    string[] p = oldKey.Split('/');
+                    l.Tag = p[0] + "/" + t.Text + "/" + p[2];
+                    Vehicles.RenameVehicle(oldKey, l.Tag.ToString());
+                }
+            }
         }
     }
 }

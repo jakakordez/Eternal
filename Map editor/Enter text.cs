@@ -16,7 +16,13 @@ namespace Map_editor
         {
             InitializeComponent();
         }
-        public string Text;
+        public Enter_text(string title, string Value)
+        {
+            OldValue = Value;
+            textBox1.Text = Value;
+            Text = title;
+        }
+        public string NewValue, OldValue;
 
         private void button1_Click(object sender, EventArgs e)
         {

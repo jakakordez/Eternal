@@ -16,19 +16,21 @@ namespace EGE.Characters
         float WalkingSpeed = 4, RunningSpeed = 100;
         public Vehicles.Vehicle ControlledVehicle;
 
-        static CameraDefinition defaultCameraDefinition = new CameraDefinition()
-        {
-            Distance = 10,
-            FPV = true,
-            Offset = Vector3.Zero,
-            ViewAngle = Vector2.One,
-            Style = DrawingStyle.Normal
-        };
+        
 
 
         public Person(Vector3 StartPosition)
         {
-            CameraList = new Camera[] { new Cameras.FirstPersonCamera(), new Cameras.ThirdPersonCamera(5) };
+            CameraDefinition defaultCameraDefinition = new CameraDefinition()
+            {
+                Distance = 10,
+                FPV = true,
+                Offset = Vector3.Zero,
+                ViewAngle = Vector2.One,
+                Style = DrawingStyle.Normal
+            };
+
+            CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition), new ThirdPersonCamera(defaultCameraDefinition) };
             CurrentCamera = 0;
             SphereShape body = new SphereShape(0.5f);
             CharacterBody = World.CreateRigidBody(80, Matrix4.CreateTranslation(StartPosition), body);

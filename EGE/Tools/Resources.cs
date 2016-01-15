@@ -76,7 +76,7 @@ namespace EGE
         {
             Files = new List<RFile>();
             ArchivePath = FilePath + "\\Resources.ege";
-            CheckArchive(ArchivePath);
+            Misc.CheckArchive(ArchivePath);
             using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Read, Global.Encoding))
             {
                 Files.Clear();
@@ -96,7 +96,7 @@ namespace EGE
 
         public static void FillTreeview(System.Windows.Forms.TreeNodeCollection rootNodes)
         {
-            CheckArchive(ArchivePath);
+            Misc.CheckArchive(ArchivePath);
             using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Update, Global.Encoding))
             {
                 foreach (var e in archive.Entries)
@@ -177,14 +177,6 @@ namespace EGE
             return result;
         }
 
-        static void CheckArchive(string path)
-        {
-            if (!File.Exists(path))
-            {
-                using (ZipArchive archive = ZipFile.Open(path, ZipArchiveMode.Create, Global.Encoding)){ }
-            }
-        }
-
         static void CreateFile(string Name)
         {
             using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Update, Global.Encoding))
@@ -246,11 +238,11 @@ namespace EGE
 
         public static void RemoveFile(string name)
         {
-            Files.RemoveAll(f => f.FullName == name);
             using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Update, Global.Encoding))
             {
                 archive.GetEntry(name).Delete();
             }
+            Files.RemoveAll(f => f.FullName == name);
         }
 
         public static void RemoveFolder(string folder)
@@ -269,8 +261,7 @@ namespace EGE
 
         public static void BuildMesh(RFile fromFile)
         {
-            CheckArchive(ArchivePath);
-            // if (ResourceManager.ContainsKey(Name)) return;
+            Misc.CheckArchive(ArchivePath);
 
             Mesh m = new Mesh(fromFile.Folder+fromFile.Name);
             m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");

@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using EGE.Meshes;
 using BulletSharp;
+using OpenTK;
 
 namespace EGE.Vehicles
 {
-    class Vehicle
+    public class Vehicle
     {
         public enum VehicleController
         {
@@ -23,7 +24,20 @@ namespace EGE.Vehicles
 
         public RigidBody vehicleBody;
 
-        public Camera[] CameraList = new Camera[] { new Cameras.FirstPersonCamera(), new Cameras.ThirdPersonCamera(5)};
+        public Camera[] CameraList;
+
+        public Vehicle()
+        {
+            CameraDefinition defaultCameraDefinition = new CameraDefinition()
+            {
+                Distance = 10,
+                FPV = true,
+                Offset = Vector3.Zero,
+                ViewAngle = Vector2.One,
+                Style = DrawingStyle.Normal
+            };
+            CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition), new ThirdPersonCamera(defaultCameraDefinition) };
+        }
 
         public virtual void Draw()
         {
@@ -43,6 +57,14 @@ namespace EGE.Vehicles
         protected virtual void HandleAI()
         {
 
+        }
+
+        public static Vehicle VehicleFromString(string type)
+        {
+            switch (type){
+                case "Car": return new Car();
+            }
+            return new Vehicle();
         }
     }
 }

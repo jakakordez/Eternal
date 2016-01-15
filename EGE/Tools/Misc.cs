@@ -9,6 +9,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
+using System.IO.Compression;
 
 namespace EGE
 {
@@ -154,6 +155,14 @@ namespace EGE
         public static float lerp(float v0, float v1, float t)
         {
             return (1 - t) * v0 + t * v1;
+        }
+
+        public static void CheckArchive(string path)
+        {
+            if (!File.Exists(path))
+            {
+                using (ZipArchive archive = ZipFile.Open(path, ZipArchiveMode.Create, Global.Encoding)) { }
+            }
         }
     }
 }

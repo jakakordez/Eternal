@@ -17,7 +17,6 @@ namespace EGE
         private MeshCollector MeshCollection;
 
         public Map CurrentMap { get; set;}
-        public Camera PrimaryCamera;
         Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
 
@@ -35,7 +34,6 @@ namespace EGE
         {
             World.StaticView = StaticView;
             CurrentMap = new Map();
-            PrimaryCamera = new Camera();
             MeshCollection = new MeshCollector();
 
             if (StaticView) MainCharacter = new Characters.DebugView();
@@ -66,6 +64,7 @@ namespace EGE
         {
             Resources.LoadResources(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
+            Vehicles.Vehicles.LoadVehicles(Path + "\\Map");
         }
         public void Build()
         {

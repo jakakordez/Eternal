@@ -61,7 +61,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.tsbTextureCollection = new System.Windows.Forms.ToolStripButton();
+            this.tsbResources = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblLocation = new System.Windows.Forms.ToolStripStatusLabel();
@@ -80,9 +80,10 @@
             this.tmrPreview = new System.Windows.Forms.Timer(this.components);
             this.ctxNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxArray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbVehicles = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -339,22 +340,24 @@
             // 
             this.toolStrip1.Enabled = false;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsbTextureCollection});
+            this.tsbResources,
+            this.tsbVehicles});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(683, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // tsbTextureCollection
+            // tsbResources
             // 
-            this.tsbTextureCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbTextureCollection.Image = ((System.Drawing.Image)(resources.GetObject("tsbTextureCollection.Image")));
-            this.tsbTextureCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbTextureCollection.Name = "tsbTextureCollection";
-            this.tsbTextureCollection.Size = new System.Drawing.Size(23, 22);
-            this.tsbTextureCollection.Text = "toolStripButton1";
-            this.tsbTextureCollection.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.tsbResources.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbResources.Image = ((System.Drawing.Image)(resources.GetObject("tsbResources.Image")));
+            this.tsbResources.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbResources.Name = "tsbResources";
+            this.tsbResources.Size = new System.Drawing.Size(23, 22);
+            this.tsbResources.Text = "toolStripButton1";
+            this.tsbResources.ToolTipText = "Resources";
+            this.tsbResources.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // statusStrip1
             // 
@@ -510,15 +513,22 @@
             this.deleteToolStripMenuItem,
             this.buildToolStripMenuItem});
             this.ctxNode.Name = "ctxNode";
-            this.ctxNode.Size = new System.Drawing.Size(153, 70);
+            this.ctxNode.Size = new System.Drawing.Size(132, 48);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // buildToolStripMenuItem
+            // 
+            this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
+            this.buildToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.buildToolStripMenuItem.Text = "Build";
+            this.buildToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
             // 
             // ctxArray
             // 
@@ -534,12 +544,16 @@
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
-            // buildToolStripMenuItem
+            // tsbVehicles
             // 
-            this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
-            this.buildToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.buildToolStripMenuItem.Text = "Build";
-            this.buildToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
+            this.tsbVehicles.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbVehicles.Image = ((System.Drawing.Image)(resources.GetObject("tsbVehicles.Image")));
+            this.tsbVehicles.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbVehicles.Name = "tsbVehicles";
+            this.tsbVehicles.Size = new System.Drawing.Size(23, 22);
+            this.tsbVehicles.Text = "toolStripButton1";
+            this.tsbVehicles.ToolTipText = "Vehicles";
+            this.tsbVehicles.Click += new System.EventHandler(this.tsbVehicles_Click);
             // 
             // Form1
             // 
@@ -629,8 +643,9 @@
         private mapView mapView1;
         private System.Windows.Forms.ToolStripStatusLabel lblLocation;
         private System.Windows.Forms.ToolStripStatusLabel lblFPS;
-        private System.Windows.Forms.ToolStripButton tsbTextureCollection;
+        private System.Windows.Forms.ToolStripButton tsbResources;
         private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton tsbVehicles;
     }
 }
 

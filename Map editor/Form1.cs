@@ -333,5 +333,10 @@ namespace Map_editor
         {
             invokeWorldMethod(treeView1.SelectedNode.Tag+"/Build");
         }
+
+        private void tsbVehicles_Click(object sender, EventArgs e)
+        {
+            new VehicleCollection().Show();
+        }
     }
 }

@@ -30,8 +30,9 @@ namespace EGE
         public CameraDefinition CameraSettings;
 
         protected int ScreenHeight, ScreenWidth, X, Y;
-        public Camera()
+        public Camera(CameraDefinition definition)
         {
+            CameraSettings = definition;
             ScreenHeight = Screen.PrimaryScreen.Bounds.Size.Height;
             ScreenWidth = Screen.PrimaryScreen.Bounds.Size.Width;
         }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using OpenTK;
 
 
-namespace EGE.Cameras
+namespace EGE
 {
     class FirstPersonCamera:Camera
     {
+        public FirstPersonCamera(CameraDefinition def) : base(def) { }
     }
 }

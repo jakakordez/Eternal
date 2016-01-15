@@ -14,7 +14,9 @@ namespace EGE.Vehicles
         RaycastVehicle raycastVehicle;
         CollisionShape collisionShape;
         public Vector2 SteeringWheelAngle, FrontWheelLocation, RearWheelLocation;
-        public float WheelRadius, WheelWidth, WheelFriction, SuspensionStiffness, SuspensionDamping, SuspensionCompression, RollInfluence, SuspensionHeight, SuspensionRestLength;
+        public float WheelRadius { get; set; }
+        public float WheelWidth { get; set; }
+        public float WheelFriction, SuspensionStiffness, SuspensionDamping, SuspensionCompression, RollInfluence, SuspensionHeight, SuspensionRestLength;
         public Vector3 wheelDirectionCS0 = new Vector3(0, -1, 0);
         public Vector3 wheelAxleCS = new Vector3(-1, 0, 0);
 

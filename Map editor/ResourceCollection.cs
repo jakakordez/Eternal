@@ -39,33 +39,6 @@ namespace Map_editor
             }
         }
 
-       /* private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                foreach (var p in openFileDialog1.FileNames)
-                {
-                    string item = EGE.Misc.pathName(p);
-                    if(tabControl1.SelectedIndex == 0)
-                    {
-                        Bitmap img = (Bitmap)Image.FromFile(p);
-                        images.Add(item, img);
-
-                        EGE.Tools.TextureManager.AddTexture(item, img);
-                        imgTextures.Images.Add(img);
-                        ListViewItem lstItem = new ListViewItem(item, imgTextures.Images.Count - 1);
-
-                        lstTextures.Items.Add(lstItem);
-                    }
-                    else
-                    {
-                        //EGE.ResourceManager.AddFile(p);
-                        lstFiles.Items.Add(item);
-                    }
-                }
-            }
-        }*/
-
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (lstFiles.SelectedItems.Count > 0 && saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -79,7 +52,7 @@ namespace Map_editor
         {
             if (lstFiles.SelectedItems.Count > 0 && MessageBox.Show("Do you want to remove this file?", "Remove", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                EGE.Resources.RemoveFile(lstFiles.SelectedItems[0].Text);
+                EGE.Resources.RemoveFile(tlsAddress.Text+ lstFiles.SelectedItems[0].Text);
                 lstFiles.SelectedItems[0].Remove();
             }
         }

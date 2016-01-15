@@ -125,6 +125,7 @@
     <Compile Include="Vehicles\Car.cs" />
     <Compile Include="Vehicles\RoadVehicle.cs" />
     <Compile Include="Vehicles\Vehicle.cs" />
+    <Compile Include="Vehicles\Vehicles.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

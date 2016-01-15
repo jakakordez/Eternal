@@ -24,7 +24,7 @@ namespace EGE.Characters
 
         public DebugView()
         {
-            CameraList = new Camera[] { new Cameras.FirstPersonCamera()};
+            CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition)};
             CurrentCamera = 0;
         }
 

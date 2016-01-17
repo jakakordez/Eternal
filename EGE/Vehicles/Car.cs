@@ -26,45 +26,23 @@ namespace EGE.Vehicles
         public float RollInfluence { get; set; }
         public float SuspensionHeight { get; set; }
         public float SuspensionRestLength { get; set; }
-        public string WheelMesh { get; set; }
 
         public Vector3 wheelDirectionCS0 = new Vector3(0, -1, 0);
         public Vector3 wheelAxleCS = new Vector3(-1, 0, 0);
 
         public const int rightIndex = 0;
         public const int upIndex = 1;
-        public const int forwardIndex = 2;
-
-        public Car()
-        {
-            WheelMesh = "";
-        }
+        public const int forwardIndex = 2;     
 
         public void Load(Vector3 Location)
         {
-            /*WheelRadius = 0.45f;
-            WheelWidth = 0.31f;
-            WheelFriction = 2000;
-            SuspensionStiffness = 800;
-            SuspensionDamping = 20.3f;
-            SuspensionCompression = 4000.4f;
-            RollInfluence = 0.1f;
-            SuspensionHeight = 0f;
-            SuspensionRestLength = 0.4f;
-            SteeringWheelAngle = new Vector2(-8, 0.4f);
-            FrontWheelLocation = new Vector2(1.55f, 0.7f);
-            RearWheelLocation = new Vector2(1.35f, 0.7f);
-            SteeringClamp = 0.8f;
-
-            Vector3 Dimensions = new Vector3(4.64f, 2.01f, 1.38f);*/
-
             CollisionShape chassisShape = new BoxShape(Dimensions.Y / 2, Dimensions.Z / 2, Dimensions.X / 2);
             collisionShape = new CompoundShape();
             //localTrans effectively shifts the center of mass with respect to the chassis
             Matrix4 localTrans = Matrix4.CreateTranslation(0 * Vector3.UnitY);
             ((CompoundShape)collisionShape).AddChildShape(localTrans, chassisShape);
 
-            vehicleBody = World.CreateRigidBody(1505, Matrix4.CreateTranslation(Location), collisionShape);//m: 1505
+            vehicleBody = World.CreateRigidBody(Mass, Matrix4.CreateTranslation(Location), collisionShape);
             
             // create vehicle
             RaycastVehicle.VehicleTuning tuning = new RaycastVehicle.VehicleTuning();
@@ -110,7 +88,8 @@ namespace EGE.Vehicles
             
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Resources.DrawMesh(vehicleMesh);
+            if (CurrentCamera == 0) Resources.DrawMesh(InteriorMesh);
+            else Resources.DrawMesh(vehicleMesh);
 
             Matrix4 wheel;
             wheel = raycastVehicle.GetWheelTransformWS(0)*World.WorldMatrix;

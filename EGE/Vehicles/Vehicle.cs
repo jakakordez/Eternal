@@ -27,7 +27,10 @@ namespace EGE.Vehicles
         public Camera FirstPersonCamera { get; set; }
         public Camera ThirdPersonCamera { get; set; }
         public Camera[] CameraList { get; set; }
-        int CurrentCamera;
+
+        public float Mass { get; set; }
+
+        protected int CurrentCamera;
 
         public Vehicle()
         {

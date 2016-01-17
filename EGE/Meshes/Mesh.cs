@@ -146,14 +146,14 @@ namespace EGE.Meshes
             }
         }
 
-        public void LoadOBJ(string exportFilePath, Resources.ProgressReport progressReporter)
+        public void BuildOBJ(string exportFilePath, Resources.ProgressReport progressReporter)
         {
             string name = Name+".obj";
-            Face[] Faces = new Face[0];
-            Vector3[] OriginalVertices = new Vector3[0];
-            Vector2[] OriginalTextureCoordinates = new Vector2[0];
-            Vector3[] SortedVertices = new Vector3[0];
-            Vector2[] SortedTextureCoordinates = new Vector2[0];
+            List<Face> Faces = new List<Face>();
+            List<Vector3> OriginalVertices = new List<Vector3>();
+            List<Vector2> OriginalTextureCoordinates = new List<Vector2>();
+            List<Vector3> SortedVertices = new List<Vector3>();
+            List<Vector2> SortedTextureCoordinates = new List<Vector2>();
 
             string[] file = Encoding.Default.GetString(Resources.GetFile(name)).Replace("\r", "").Split('\n');
             int currentMaterial = 0;
@@ -179,7 +179,7 @@ namespace EGE.Meshes
                             }
                             break;
                         case "v":
-                            Misc.Push<Vector3>(new Vector3(Misc.toFloat(line[1]), Misc.toFloat(line[2]), Misc.toFloat(line[3])), ref OriginalVertices);
+                            OriginalVertices.Add(new Vector3(Misc.toFloat(line[1]), Misc.toFloat(line[2]), Misc.toFloat(line[3])));
                             break;
                         case "f":
                             Face f = new Face();
@@ -189,21 +189,23 @@ namespace EGE.Meshes
                                 if (line[j].Contains('/'))
                                 {
                                     string[] fac = line[j].Split('/');
-                                    int v = Misc.Push<Vector3>(OriginalVertices[Misc.toInt(fac[0]) - 1], ref SortedVertices);
-                                    int t = Misc.Push<Vector2>(OriginalTextureCoordinates[Misc.toInt(fac[1]) - 1], ref SortedTextureCoordinates);
+                                    SortedVertices.Add(OriginalVertices[Misc.toInt(fac[0]) - 1]);
+                                    int v = SortedVertices.Count - 1;
+                                    SortedTextureCoordinates.Add(OriginalTextureCoordinates[Misc.toInt(fac[1]) - 1]);
+                                    int t = SortedTextureCoordinates.Count - 1;
                                     Misc.Push<int>(v, ref f.vertices);
                                 }
                             }
-                            Misc.Push<Face>(f, ref Faces);
+                            Faces.Add(f);
                             break;
                         case "vt":
-                            Misc.Push<Vector2>(new Vector2(Misc.toFloat(line[2]), Misc.toFloat(line[1])), ref OriginalTextureCoordinates);
+                            OriginalTextureCoordinates.Add(new Vector2(Misc.toFloat(line[2]), Misc.toFloat(line[1])));
                             break;
                     }
                 }
             }
 
-            Array.Sort<Face>(Faces, delegate (Face x, Face y) { return x.mtl.CompareTo(y.mtl); });
+            Faces.Sort(delegate (Face x, Face y) { return x.mtl.CompareTo(y.mtl); });
             currentMaterial = Faces[0].mtl;
             //  Misc.Push<Material>(Materials[currentMaterial].Brush, ref Materials);
             ElementArrays = new uint[Materials.Length];
@@ -221,11 +223,11 @@ namespace EGE.Meshes
             }
 
             //Materials = new Material[0];
-            for (int i = 0; i < Faces.Length; i++)
+            for (int i = 0; i < Faces.Count; i++)
             {
-                progressReporter(this, i*100/Faces.Length, "Exporting faces ...");
+                progressReporter(this, i*100/Faces.Count, "Exporting faces ...");
                 Misc.Push<int>(Faces[i].vertices, ref currentElements);
-                if (Faces.Length - 1 == i || currentMaterial != Faces[i + 1].mtl)
+                if (Faces.Count - 1 == i || currentMaterial != Faces[i + 1].mtl)
                 {
                     //Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
                     if(exportFilePath != null)
@@ -238,7 +240,7 @@ namespace EGE.Meshes
                         }
                         s.Close();
                     }
-                    if (Faces.Length - 1 > i)
+                    if (Faces.Count - 1 > i)
                     {
                         set++;
                         currentMaterial = Faces[i + 1].mtl;

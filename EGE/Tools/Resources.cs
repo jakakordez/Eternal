@@ -267,7 +267,7 @@ namespace EGE
 
             Mesh m = new Mesh(fromFile.Folder+fromFile.Name);
             m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");
-            m.LoadOBJ(fromFile.Folder+fromFile.Name, progressReporter);
+            m.BuildOBJ(fromFile.Folder+fromFile.Name, progressReporter);
         }
 
 

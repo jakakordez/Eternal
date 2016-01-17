@@ -81,7 +81,7 @@ namespace EGE
 
             if (!StaticView)
             {
-                var car = Vehicles.Vehicles.getKey("Car/BMW/420d");
+                var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo");
                 (car as Vehicles.Car).Load(new Vector3(693, 15, 284));
                 VehicleList.Add(car);
                 car = Vehicles.Vehicles.getKey("Car/BMW/420d");

@@ -109,6 +109,8 @@
     <Compile Include="Environment\Paths\RoadNode.cs" />
     <Compile Include="Environment\Paths\Road.cs" />
     <Compile Include="Meshes\Material.cs" />
+    <Compile Include="Meshes\MovableMesh.cs" />
+    <Compile Include="Meshes\RotatableMesh.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Tools\Contruction.cs" />
     <Compile Include="Tools\Global.cs" />

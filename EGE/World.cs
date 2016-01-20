@@ -35,6 +35,7 @@ namespace EGE
             World.StaticView = StaticView;
             CurrentMap = new Map();
             MeshCollection = new MeshCollector();
+            VehicleList = new List<Vehicles.Vehicle>();
 
             if (StaticView) MainCharacter = new Characters.DebugView();
             else
@@ -47,9 +48,7 @@ namespace EGE
                 DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
                 DynamicsWorld.Gravity = new Vector3(0, -9.81f, 0);
 
-                MainCharacter = new Characters.Person(new Vector3(683, 10, 274));
-
-                VehicleList = new List<Vehicles.Vehicle>();
+                MainCharacter = new Characters.Person(new Vector3(673, 5, 274));                
             }
         }
 

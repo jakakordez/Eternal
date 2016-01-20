@@ -22,7 +22,7 @@ namespace EGE.Characters
             {
                 Distance = 10,
                 FPV = true,
-                Offset = Vector3.Zero,
+                Offset = Vector3.UnitY,
                 ViewAngle = Vector2.One,
                 Style = DrawingStyle.Normal
             };

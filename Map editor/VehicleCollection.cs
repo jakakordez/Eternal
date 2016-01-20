@@ -47,11 +47,15 @@ namespace Map_editor
             }
             Vehicles.SaveVehicles();
         }
+        string currentVehicle = "";
 
         private void lstVehicles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(lstVehicles.SelectedIndices.Count > 0)
-                objectBrowser1.LoadNodes(Vehicles.VehicleCollection[lstVehicles.SelectedItems[0].Tag.ToString()], "Vehicle");
+            if (lstVehicles.SelectedIndices.Count > 0)
+            {
+                currentVehicle = lstVehicles.SelectedItems[0].Tag.ToString();
+                objectBrowser1.LoadNodes(Vehicles.VehicleCollection[currentVehicle], "Vehicle");
+            }
         }
 
         private void objectBrowser1_Load(object sender, EventArgs e)
@@ -61,7 +65,12 @@ namespace Map_editor
 
         private void objectBrowser1_ValueChanged(object sender, EventArgs e)
         {
-            Vehicles.SaveVehicles();
+            if(currentVehicle != "")
+            {
+                Vehicles.VehicleCollection[currentVehicle] = (EGE.Vehicles.Vehicle)objectBrowser1.currentObject;
+                Vehicles.SaveVehicles();
+            }
+            
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)

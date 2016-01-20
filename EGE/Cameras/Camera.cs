@@ -60,8 +60,17 @@ namespace EGE
         {
             Matrix4 e = new Matrix4();
             Matrix4 v = new Matrix4();
-            e = Matrix4.Identity * Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
-            v = Matrix4.Identity * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(CameraSettings.Offset) *Matrix4.CreateTranslation(center);
+            e = Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
+            v = Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
+            World.WorldMatrix = Matrix4.LookAt(v.ExtractTranslation(), e.ExtractTranslation(), Vector3.UnitY);
+        }
+
+        public virtual void GenerateLookAt(Matrix4 centerTransform)
+        {
+            Matrix4 e = new Matrix4();
+            Matrix4 v = new Matrix4();
+            e = Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(CameraSettings.Offset) *  centerTransform;
+            v = Matrix4.CreateTranslation(CameraSettings.Offset) *  centerTransform;
             World.WorldMatrix = Matrix4.LookAt(v.ExtractTranslation(), e.ExtractTranslation(), Vector3.UnitY);
         }
     }

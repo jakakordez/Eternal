@@ -46,7 +46,7 @@ namespace EGE.Vehicles
             ThirdPersonCamera = new ThirdPersonCamera(defaultCameraDefinition);
             CameraList = new Camera[0];
             vehicleMesh = "";
-            CurrentCamera = 0;
+            CurrentCamera = 1;
         }
 
         public virtual void Draw()
@@ -83,7 +83,7 @@ namespace EGE.Vehicles
 
         public void DrawCamera()
         {
-            if (CurrentCamera == 0) FirstPersonCamera.GenerateLookAt(vehicleBody.CenterOfMassPosition);
+            if (CurrentCamera == 0) FirstPersonCamera.GenerateLookAt(vehicleBody.CenterOfMassTransform);
             else if (CurrentCamera == 1) ThirdPersonCamera.GenerateLookAt(vehicleBody.CenterOfMassPosition);
             else CameraList[CurrentCamera - 2].GenerateLookAt(vehicleBody.CenterOfMassPosition);
         }

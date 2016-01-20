@@ -16,7 +16,7 @@ namespace Map_editor
     {
         Dictionary<Type, int> dataTypes = new Dictionary<Type, int>();
         string previousPath = "";
-        object currentObject;
+        public object currentObject;
         public event EventHandler ValueChanged;
 
         public ObjectBrowser()
@@ -36,6 +36,7 @@ namespace Map_editor
 
         public void LoadNodes(object obj, string title)
         {
+            previousPath = "";
             treeView1.Nodes.Clear();
             currentObject = obj;
             AddNode(obj, treeView1.Nodes, title, title);

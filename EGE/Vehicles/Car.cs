@@ -32,7 +32,18 @@ namespace EGE.Vehicles
 
         public const int rightIndex = 0;
         public const int upIndex = 1;
-        public const int forwardIndex = 2;     
+        public const int forwardIndex = 2;
+
+        public Meshes.MovableMesh SteeringWheel { get; set; }
+        public Meshes.MovableMesh VelocityNeedle { get; set; }
+        public Meshes.MovableMesh RPMNeedle { get; set; }
+
+        public Car()
+        {
+            SteeringWheel = new Meshes.MovableMesh();
+            VelocityNeedle = new Meshes.MovableMesh();
+            RPMNeedle = new Meshes.MovableMesh();
+        }
 
         public void Load(Vector3 Location)
         {
@@ -88,7 +99,13 @@ namespace EGE.Vehicles
             
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            if (CurrentCamera == 0) Resources.DrawMesh(InteriorMesh);
+            if (CurrentCamera == 0)
+            {
+                Resources.DrawMesh(InteriorMesh);
+                SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
+                VelocityNeedle.Draw(vehicleBody.CenterOfMassTransform);
+                RPMNeedle.Draw(vehicleBody.CenterOfMassTransform);
+            }
             else Resources.DrawMesh(vehicleMesh);
 
             Matrix4 wheel;
@@ -119,6 +136,9 @@ namespace EGE.Vehicles
             raycastVehicle.SetBrake(Brake*200, 1);
             raycastVehicle.SetBrake(Brake*200, 2);
             raycastVehicle.SetBrake(Brake*200, 3);
+
+            SteeringWheel.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, -5*Steering);
+            VelocityNeedle.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, raycastVehicle.CurrentSpeedKmHour/50);
         }
 
         public override void HandleInput()

@@ -19,6 +19,7 @@ namespace EGE.Meshes
         int[] ElementArraySizes;
         int VertexBuffer;
         int TextureCoordinateBuffer;
+        public string MeshFolder = "";
         public Vector3 Location { get;set; }
         public string Name { get; set; }
 
@@ -44,7 +45,7 @@ namespace EGE.Meshes
                 if (Materials[i].Texture != "")
                 {
                     GL.Color4(Color.White);
-                    Resources.BindTexture(Materials[i].Texture);
+                    Resources.BindTexture(MeshFolder+Materials[i].Texture);
                 }
                 else
                 {

@@ -35,14 +35,20 @@ namespace EGE.Vehicles
         public const int forwardIndex = 2;
 
         public Meshes.MovableMesh SteeringWheel { get; set; }
-        public Meshes.MovableMesh VelocityNeedle { get; set; }
-        public Meshes.MovableMesh RPMNeedle { get; set; }
+        public Meshes.RotatableMesh VelocityNeedle { get; set; }
+        public Meshes.RotatableMesh RPMNeedle { get; set; }
+
+        public float MaxEnginePower { get; set; }
+        public float MaxEngineRPM { get; set; }
+        public float[] GearRatio { get; set; }
+        float Throttle, RPM, CurrentGear, Clutch;
 
         public Car()
         {
             SteeringWheel = new Meshes.MovableMesh();
-            VelocityNeedle = new Meshes.MovableMesh();
-            RPMNeedle = new Meshes.MovableMesh();
+            VelocityNeedle = new Meshes.RotatableMesh();
+            RPMNeedle = new Meshes.RotatableMesh();
+            GearRatio = new float[0];
         }
 
         public void Load(Vector3 Location)
@@ -132,13 +138,15 @@ namespace EGE.Vehicles
             raycastVehicle.ApplyEngineForce(Thrust * 5000, 3);
             raycastVehicle.SetSteeringValue(Steering, 0);
             raycastVehicle.SetSteeringValue(Steering, 1);
-            raycastVehicle.SetBrake(Brake*200, 0);
-            raycastVehicle.SetBrake(Brake*200, 1);
+            raycastVehicle.SetBrake(Brake*100, 0);
+            raycastVehicle.SetBrake(Brake*100, 1);
             raycastVehicle.SetBrake(Brake*200, 2);
             raycastVehicle.SetBrake(Brake*200, 3);
 
             SteeringWheel.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, -5*Steering);
-            VelocityNeedle.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, raycastVehicle.CurrentSpeedKmHour/50);
+            VelocityNeedle.SetZ(raycastVehicle.CurrentSpeedKmHour/50);
+            RPM = (float)((Math.Sin(Clutch * MathHelper.PiOver2)*1000) + ((1-Math.Sin(Clutch * MathHelper.PiOver2))*0));
+            RPMNeedle.SetZ(RPM);
         }
 
         public override void HandleInput()

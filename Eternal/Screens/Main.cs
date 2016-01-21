@@ -19,7 +19,7 @@ namespace Eternal
 
         public override void Load()
         {
-            currentWorld.LoadData("C:\\Users\\jakak\\Desktop\\mapa");
+            currentWorld.LoadData(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\mapa");
             currentWorld.Init();
             currentWorld.Build();
         }

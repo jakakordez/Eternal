@@ -165,6 +165,7 @@ namespace EGE
             using (ZipArchive meshArchive = new ZipArchive(e.Open(), ZipArchiveMode.Read))
             {
                 m.LoadMesh(meshArchive);
+                m.MeshFolder = folder + e.Name.Split('.')[0]+"/";
             }
             return m;
         }

@@ -62,18 +62,16 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbResources = new System.Windows.Forms.ToolStripButton();
+            this.tsbVehicles = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblLocation = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblFPS = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.valueEditor1 = new Map_editor.Editors.ValueEditor();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.mapView1 = new Map_editor.mapView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.glControl1 = new OpenTK.GLControl();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -83,7 +81,10 @@
             this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxArray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsbVehicles = new System.Windows.Forms.ToolStripButton();
+            this.tlsRun = new System.Windows.Forms.ToolStripButton();
+            this.valueEditor1 = new Map_editor.Editors.ValueEditor();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.mapView1 = new Map_editor.mapView();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -341,7 +342,8 @@
             this.toolStrip1.Enabled = false;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbResources,
-            this.tsbVehicles});
+            this.tsbVehicles,
+            this.tlsRun});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(683, 25);
@@ -358,6 +360,17 @@
             this.tsbResources.Text = "toolStripButton1";
             this.tsbResources.ToolTipText = "Resources";
             this.tsbResources.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // tsbVehicles
+            // 
+            this.tsbVehicles.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbVehicles.Image = ((System.Drawing.Image)(resources.GetObject("tsbVehicles.Image")));
+            this.tsbVehicles.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbVehicles.Name = "tsbVehicles";
+            this.tsbVehicles.Size = new System.Drawing.Size(23, 22);
+            this.tsbVehicles.Text = "toolStripButton1";
+            this.tsbVehicles.ToolTipText = "Vehicles";
+            this.tsbVehicles.Click += new System.EventHandler(this.tsbVehicles_Click);
             // 
             // statusStrip1
             // 
@@ -408,15 +421,6 @@
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
-            // valueEditor1
-            // 
-            this.valueEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.valueEditor1.Location = new System.Drawing.Point(0, 0);
-            this.valueEditor1.Name = "valueEditor1";
-            this.valueEditor1.Size = new System.Drawing.Size(146, 30);
-            this.valueEditor1.TabIndex = 1;
-            // 
             // treeView1
             // 
             this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -464,16 +468,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Map";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(3, 3);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(519, 336);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.mapView1;
             // 
             // tabPage2
             // 
@@ -544,16 +538,34 @@
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
-            // tsbVehicles
+            // tlsRun
             // 
-            this.tsbVehicles.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbVehicles.Image = ((System.Drawing.Image)(resources.GetObject("tsbVehicles.Image")));
-            this.tsbVehicles.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbVehicles.Name = "tsbVehicles";
-            this.tsbVehicles.Size = new System.Drawing.Size(23, 22);
-            this.tsbVehicles.Text = "toolStripButton1";
-            this.tsbVehicles.ToolTipText = "Vehicles";
-            this.tsbVehicles.Click += new System.EventHandler(this.tsbVehicles_Click);
+            this.tlsRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tlsRun.Image = ((System.Drawing.Image)(resources.GetObject("tlsRun.Image")));
+            this.tlsRun.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tlsRun.Name = "tlsRun";
+            this.tlsRun.Size = new System.Drawing.Size(23, 22);
+            this.tlsRun.Text = "Run";
+            this.tlsRun.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            // 
+            // valueEditor1
+            // 
+            this.valueEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.valueEditor1.Location = new System.Drawing.Point(0, 0);
+            this.valueEditor1.Name = "valueEditor1";
+            this.valueEditor1.Size = new System.Drawing.Size(146, 30);
+            this.valueEditor1.TabIndex = 1;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(3, 3);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(519, 336);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.mapView1;
             // 
             // Form1
             // 
@@ -646,6 +658,7 @@
         private System.Windows.Forms.ToolStripButton tsbResources;
         private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton tsbVehicles;
+        private System.Windows.Forms.ToolStripButton tlsRun;
     }
 }
 

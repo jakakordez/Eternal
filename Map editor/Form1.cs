@@ -274,7 +274,7 @@ namespace Map_editor
             tabPage1.Show(); // Switch back to page 1
             mapView1.UpdateLocation += MapView1_UpdateLocation;
             mapView1.MoveNode += MapView1_MoveNode;
-            LoadMap("C:\\Users\\jakak\\Desktop\\mapa");
+            LoadMap(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\mapa");
         }
 
         private void MapView1_MoveNode(double X, double Y, object argument)
@@ -337,6 +337,11 @@ namespace Map_editor
         private void tsbVehicles_Click(object sender, EventArgs e)
         {
             new VehicleCollection().Show();
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(System.Environment.CurrentDirectory+"\\..\\..\\..\\Eternal\\bin\\Debug\\Eternal.exe");
         }
     }
 }

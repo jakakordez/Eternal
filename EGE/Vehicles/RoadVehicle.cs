@@ -11,14 +11,11 @@ namespace EGE.Vehicles
         protected float Thrust, Brake, Steering;
         public float SteeringClamp { get; set; }
 
-        public string InteriorMesh { get; set; }
-
         public string WheelMesh { get; set; }
 
         public RoadVehicle()
         {
             WheelMesh = "";
-            InteriorMesh = "";
         }
     }
 }

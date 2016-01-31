@@ -138,12 +138,13 @@ namespace EGE.Environment
 
         public void Draw()
         {
+
             Resources.BindTexture(TextureName);
             HeightfieldMesh.Draw();
-            
+
             GL.Begin(BeginMode.Quads);
             GL.BindTexture(TextureTarget.Texture2D, 0);
-            GL.Color3(Color.Blue);
+            GL.Color4(Color.FromArgb(200, Color.Navy));
             GL.Vertex3(new Vector3(0, 0, 0));
             GL.Vertex3(new Vector3(0, 0, Size));
             GL.Vertex3(new Vector3(Size, 0, Size));

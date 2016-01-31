@@ -16,13 +16,15 @@ namespace EGE.Tools
         public static void Init()
         {
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.DepthClamp);
             GL.Enable(EnableCap.ColorMaterial);
-            GL.Enable(EnableCap.Texture2D);
-            GL.Enable(EnableCap.Light0);
-            //GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.AlphaTest);
+            GL.Enable(EnableCap.Texture2D);
+            GL.Enable(EnableCap.DepthClamp);
+            //GL.Enable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Normalize);  // These is critical to have
+            GL.Enable(EnableCap.RescaleNormal);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             Initialized = true;
         }
 
@@ -35,7 +37,7 @@ namespace EGE.Tools
         public static void SetProjection()
         {
             GL.MatrixMode(MatrixMode.Projection);
-            Matrix4 ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(70), AspectRatio, 0.1f, 500);
+            Matrix4 ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(70), AspectRatio, 0.1f, 1000);
             GL.LoadMatrix(ref ProjectionMatrix);
         }
     }

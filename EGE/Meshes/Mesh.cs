@@ -306,6 +306,9 @@ namespace EGE.Meshes
                             currentMaterial.Brush.B = Misc.toFloat(line[3]);
                         }
                         break;
+                    case "d":
+                        currentMaterial.Brush.A = Misc.toFloat(line[1]);
+                        break;
                     case "map_Kd":
                         if (currentMaterial != null)
                         {

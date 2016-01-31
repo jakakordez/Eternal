@@ -105,14 +105,14 @@ namespace EGE.Vehicles
             
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
+            Resources.DrawMesh(vehicleMesh);
+            SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
             if (CurrentCamera == 0)
             {
-                Resources.DrawMesh(InteriorMesh);
-                SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
                 VelocityNeedle.Draw(vehicleBody.CenterOfMassTransform);
                 RPMNeedle.Draw(vehicleBody.CenterOfMassTransform);
             }
-            else Resources.DrawMesh(vehicleMesh);
+            
 
             Matrix4 wheel;
             wheel = raycastVehicle.GetWheelTransformWS(0)*World.WorldMatrix;

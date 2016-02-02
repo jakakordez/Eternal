@@ -21,8 +21,9 @@ namespace EGE.Tools
             GL.Enable(EnableCap.AlphaTest);
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.DepthClamp);
+            //GL.Enable(EnableCap.CullFace);
             //GL.Enable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Normalize);  // These is critical to have
+            GL.Enable(EnableCap.Normalize);
             GL.Enable(EnableCap.RescaleNormal);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             Initialized = true;

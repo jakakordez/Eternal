@@ -18,6 +18,7 @@ namespace Map_editor
         string previousPath = "";
         public object currentObject;
         public event EventHandler ValueChanged;
+        public event EventHandler<ulong> NavigateNode;
 
         public ObjectBrowser()
         {
@@ -93,6 +94,8 @@ namespace Map_editor
             valueEditor1.Realign();
             if (valueEditor1.GetType() != typeof(Editors.GeneralEditor)) previousPath = e.Node.Tag.ToString();
             else previousPath = "";
+
+            if (val.GetType() == typeof(EGE.Environment.NodeReference)) NavigateNode.Invoke(this, ((EGE.Environment.NodeReference)val).ID);
         }
 
         object getValue(string path)
@@ -102,7 +105,7 @@ namespace Map_editor
             for (int i = 0; i < pathParts.Length; i++)
             {
                 if (pathParts[i] == "" || i >= pathParts.Length) break;
-                if (v.GetType().IsArray && i < pathParts.Length-1) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
+                if (v.GetType().IsArray && i < pathParts.Length) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
                 else if (v.GetType().GetProperty(pathParts[i]) != null) v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
             }
             return v;
@@ -236,6 +239,28 @@ namespace Map_editor
         public void Realign()
         {
             if (valueEditor1 != null) valueEditor1.Realign();
+        }
+
+        private void prependToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            object arr = getValue(treeView1.SelectedNode.Tag.ToString());
+            Array arrayObject = (Array)arr;
+            Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length + 1);
+            Array.Copy(arrayObject, 0, copyArray, 1, arrayObject.Length);
+
+
+            if (arr.GetType().GetElementType() == typeof(EGE.Environment.NodeReference))
+            {
+                copyArray.SetValue(new EGE.Environment.NodeReference(Vector3.Zero), 0);
+            }
+            else if (arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static) != null)
+            {
+                object newObj = arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
+                copyArray.SetValue(newObj, 0);
+            }
+            else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), 0);
+            setValue(treeView1.SelectedNode.Tag.ToString().Split('/'), currentObject, copyArray, 0);
+            UpdateArray(treeView1.SelectedNode.Tag.ToString());
         }
     }
 }

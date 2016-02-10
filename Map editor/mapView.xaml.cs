@@ -57,16 +57,30 @@ namespace Map_editor
             map.Children.Add(heightfieldCanvas);
         }
 
+        public void FocusNode(ulong key)
+        {
+            Button a = (Button)MapObjects["Nodes/" + key];
+            double mx = -a.Margin.Left+(ActualWidth/zoom.ScaleX/2);
+            double my = -a.Margin.Top+(ActualHeight / zoom.ScaleX / 2);
+            map.Margin = new System.Windows.Thickness(mx, my, 0, 0);
+
+        }
+
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            slider.Value -= e.Delta/2000f;
+            slider.Value -= e.Delta/500f;
         }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            double xhalf = ActualWidth/zoom.ScaleX / 2;
+            double yhalf = ActualHeight / zoom.ScaleY / 2;
+            map.Margin = new Thickness(map.Margin.Left-xhalf, map.Margin.Top-yhalf, 0, 0);
             zoom.ScaleX = 1/e.NewValue;
             zoom.ScaleY = 1/e.NewValue;
-            map.Margin = new Thickness(map.Margin.Left, map.Margin.Top, 0, 0);
+            xhalf = ActualWidth / zoom.ScaleX / 2;
+            yhalf = ActualHeight / zoom.ScaleY / 2;
+            map.Margin = new Thickness(map.Margin.Left+xhalf, map.Margin.Top+yhalf, 0, 0);
         }
 
         public void UpdateWorld()
@@ -252,5 +266,6 @@ namespace Map_editor
                 grabPoint = Mouse.GetPosition(mainGrid);
             }
         }
+
     }
 }

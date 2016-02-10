@@ -32,12 +32,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ObjectBrowser));
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.valueEditor1 = new Map_editor.Editors.ValueEditor();
             this.ctxArray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.prependToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.valueEditor1 = new Map_editor.Editors.ValueEditor();
             this.ctxArray.SuspendLayout();
             this.ctxNode.SuspendLayout();
             this.SuspendLayout();
@@ -67,6 +68,51 @@
             this.imageList1.Images.SetKeyName(4, "object.png");
             this.imageList1.Images.SetKeyName(5, "array.png");
             // 
+            // ctxArray
+            // 
+            this.ctxArray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addToolStripMenuItem,
+            this.prependToolStripMenuItem});
+            this.ctxArray.Name = "ctxArray";
+            this.ctxArray.Size = new System.Drawing.Size(119, 48);
+            // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.addToolStripMenuItem.Text = "Append";
+            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+            // 
+            // prependToolStripMenuItem
+            // 
+            this.prependToolStripMenuItem.Name = "prependToolStripMenuItem";
+            this.prependToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.prependToolStripMenuItem.Text = "Prepend";
+            this.prependToolStripMenuItem.Click += new System.EventHandler(this.prependToolStripMenuItem_Click);
+            // 
+            // ctxNode
+            // 
+            this.ctxNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem,
+            this.buildToolStripMenuItem});
+            this.ctxNode.Name = "ctxNode";
+            this.ctxNode.Size = new System.Drawing.Size(132, 48);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // buildToolStripMenuItem
+            // 
+            this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
+            this.buildToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.buildToolStripMenuItem.Text = "Build";
+            this.buildToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
+            // 
             // valueEditor1
             // 
             this.valueEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -75,43 +121,6 @@
             this.valueEditor1.Name = "valueEditor1";
             this.valueEditor1.Size = new System.Drawing.Size(202, 30);
             this.valueEditor1.TabIndex = 3;
-            // 
-            // ctxArray
-            // 
-            this.ctxArray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem});
-            this.ctxArray.Name = "ctxArray";
-            this.ctxArray.Size = new System.Drawing.Size(97, 26);
-            // 
-            // addToolStripMenuItem
-            // 
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
-            this.addToolStripMenuItem.Text = "Add";
-            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
-            // 
-            // ctxNode
-            // 
-            this.ctxNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.deleteToolStripMenuItem,
-            this.buildToolStripMenuItem});
-            this.ctxNode.Name = "ctxNode";
-            this.ctxNode.Size = new System.Drawing.Size(153, 70);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-            // buildToolStripMenuItem
-            // 
-            this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
-            this.buildToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.buildToolStripMenuItem.Text = "Build";
-            this.buildToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
             // 
             // ObjectBrowser
             // 
@@ -138,5 +147,6 @@
         private System.Windows.Forms.ContextMenuStrip ctxNode;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem prependToolStripMenuItem;
     }
 }

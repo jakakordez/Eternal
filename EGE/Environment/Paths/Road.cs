@@ -111,14 +111,17 @@ namespace EGE.Environment.Paths
             }
             RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureName, TextureCoordinates);
 
-            // Triangle mesh for BulletSharp
-            TriangleMesh mesh = new TriangleMesh();
-            for (int i = 0; i < Indices.Length; i+=3)
+            if (!World.StaticView)
             {
-                mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i + 1]], Vertices[Indices[i + 2]]);
+                // Triangle mesh for BulletSharp
+                TriangleMesh mesh = new TriangleMesh();
+                for (int i = 0; i < Indices.Length; i += 3)
+                {
+                    mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i + 1]], Vertices[Indices[i + 2]]);
+                }
+                TriangleMeshShape tr = new BvhTriangleMeshShape(mesh, true);
+                RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, tr);
             }
-            TriangleMeshShape tr = new BvhTriangleMeshShape(mesh, true);
-            RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, tr);
         }
     }
 }

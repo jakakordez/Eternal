@@ -180,5 +180,10 @@ namespace Map_editor
         {
             System.Diagnostics.Process.Start(System.Environment.CurrentDirectory+"\\..\\..\\..\\Eternal\\bin\\Debug\\Eternal.exe");
         }
+
+        private void objectBrowser1_NavigateNode(object sender, ulong e)
+        {
+            mapView1.FocusNode(e);
+        }
     }
 }

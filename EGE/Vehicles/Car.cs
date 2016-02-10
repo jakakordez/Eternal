@@ -138,10 +138,10 @@ namespace EGE.Vehicles
             raycastVehicle.ApplyEngineForce(Thrust * 5000, 3);
             raycastVehicle.SetSteeringValue(Steering, 0);
             raycastVehicle.SetSteeringValue(Steering, 1);
-            raycastVehicle.SetBrake(Brake*100, 0);
-            raycastVehicle.SetBrake(Brake*100, 1);
-            raycastVehicle.SetBrake(Brake*200, 2);
-            raycastVehicle.SetBrake(Brake*200, 3);
+            //raycastVehicle.SetBrake(Brake*100, 0);
+            //raycastVehicle.SetBrake(Brake*100, 1);
+            raycastVehicle.SetBrake(Brake*400, 2);
+            raycastVehicle.SetBrake(Brake*400, 3);
 
             SteeringWheel.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, -5*Steering);
             VelocityNeedle.SetZ(raycastVehicle.CurrentSpeedKmHour/50);

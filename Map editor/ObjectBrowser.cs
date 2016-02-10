@@ -232,5 +232,10 @@ namespace Map_editor
             string[] p = path.Replace("\\", "/").Split('/');
             return p[p.Length - 1];
         }
+
+        public void Realign()
+        {
+            if (valueEditor1 != null) valueEditor1.Realign();
+        }
     }
 }

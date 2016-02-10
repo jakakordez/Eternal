@@ -48,7 +48,7 @@ namespace EGE
                 DynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
                 DynamicsWorld.Gravity = new Vector3(0, -9.81f, 0);
 
-                MainCharacter = new Characters.Person(new Vector3(673, 5, 274));                
+                MainCharacter = new Characters.Person(new Vector3(403, 5, 274));
             }
         }
 

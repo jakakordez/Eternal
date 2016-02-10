@@ -64,24 +64,23 @@
             this.tsbResources = new System.Windows.Forms.ToolStripButton();
             this.tsbVehicles = new System.Windows.Forms.ToolStripButton();
             this.tlsRun = new System.Windows.Forms.ToolStripButton();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.objectBrowser1 = new Map_editor.ObjectBrowser();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.mapView1 = new Map_editor.mapView();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.glControl1 = new OpenTK.GLControl();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.tmrPreview = new System.Windows.Forms.Timer(this.components);
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblLocation = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblFPS = new System.Windows.Forms.ToolStripStatusLabel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.glControl1 = new OpenTK.GLControl();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.tmrPreview = new System.Windows.Forms.Timer(this.components);
-            this.objectBrowser1 = new Map_editor.ObjectBrowser();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.mapView1 = new Map_editor.mapView();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -89,6 +88,7 @@
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -374,36 +374,6 @@
             this.tlsRun.Text = "Run";
             this.tlsRun.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblStatus,
-            this.lblLocation,
-            this.lblFPS});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 417);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(683, 22);
-            this.statusStrip1.TabIndex = 2;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(39, 17);
-            this.lblStatus.Text = "Ready";
-            // 
-            // lblLocation
-            // 
-            this.lblLocation.Name = "lblLocation";
-            this.lblLocation.Size = new System.Drawing.Size(48, 17);
-            this.lblLocation.Text = "X: 0 Y: 0";
-            // 
-            // lblFPS
-            // 
-            this.lblFPS.Name = "lblFPS";
-            this.lblFPS.Size = new System.Drawing.Size(35, 17);
-            this.lblFPS.Text = "0 FPS";
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -422,16 +392,13 @@
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
-            // imageList1
+            // objectBrowser1
             // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "number.png");
-            this.imageList1.Images.SetKeyName(1, "string.png");
-            this.imageList1.Images.SetKeyName(2, "vector2.png");
-            this.imageList1.Images.SetKeyName(3, "vector3.png");
-            this.imageList1.Images.SetKeyName(4, "object.png");
-            this.imageList1.Images.SetKeyName(5, "array.png");
+            this.objectBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectBrowser1.Location = new System.Drawing.Point(0, 0);
+            this.objectBrowser1.Name = "objectBrowser1";
+            this.objectBrowser1.Size = new System.Drawing.Size(146, 368);
+            this.objectBrowser1.TabIndex = 2;
             // 
             // tabControl1
             // 
@@ -455,6 +422,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Map";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(3, 3);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(519, 336);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.mapView1;
             // 
             // tabPage2
             // 
@@ -483,28 +460,51 @@
             this.glControl1.Leave += new System.EventHandler(this.glControl1_Leave);
             this.glControl1.Resize += new System.EventHandler(this.glControl1_Resize);
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "number.png");
+            this.imageList1.Images.SetKeyName(1, "string.png");
+            this.imageList1.Images.SetKeyName(2, "vector2.png");
+            this.imageList1.Images.SetKeyName(3, "vector3.png");
+            this.imageList1.Images.SetKeyName(4, "object.png");
+            this.imageList1.Images.SetKeyName(5, "array.png");
+            // 
             // tmrPreview
             // 
             this.tmrPreview.Interval = 30;
             this.tmrPreview.Tick += new System.EventHandler(this.tmpPreview_Tick);
             // 
-            // objectBrowser1
+            // lblStatus
             // 
-            this.objectBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.objectBrowser1.Name = "objectBrowser1";
-            this.objectBrowser1.Size = new System.Drawing.Size(146, 368);
-            this.objectBrowser1.TabIndex = 2;
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(39, 17);
+            this.lblStatus.Text = "Ready";
             // 
-            // elementHost1
+            // lblLocation
             // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(3, 3);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(519, 336);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.mapView1;
+            this.lblLocation.Name = "lblLocation";
+            this.lblLocation.Size = new System.Drawing.Size(48, 17);
+            this.lblLocation.Text = "X: 0 Y: 0";
+            // 
+            // lblFPS
+            // 
+            this.lblFPS.Name = "lblFPS";
+            this.lblFPS.Size = new System.Drawing.Size(35, 17);
+            this.lblFPS.Text = "0 FPS";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus,
+            this.lblLocation,
+            this.lblFPS});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 417);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(683, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
             // 
             // Form1
             // 
@@ -525,8 +525,6 @@
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -534,6 +532,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -543,7 +543,6 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
@@ -581,15 +580,16 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Timer tmrPreview;
-        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private mapView mapView1;
-        private System.Windows.Forms.ToolStripStatusLabel lblLocation;
-        private System.Windows.Forms.ToolStripStatusLabel lblFPS;
         private System.Windows.Forms.ToolStripButton tsbResources;
         private System.Windows.Forms.ToolStripButton tsbVehicles;
         private System.Windows.Forms.ToolStripButton tlsRun;
         private ObjectBrowser objectBrowser1;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        private System.Windows.Forms.ToolStripStatusLabel lblLocation;
+        private System.Windows.Forms.ToolStripStatusLabel lblFPS;
+        private System.Windows.Forms.StatusStrip statusStrip1;
     }
 }
 

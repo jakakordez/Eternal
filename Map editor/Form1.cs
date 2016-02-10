@@ -16,19 +16,12 @@ namespace Map_editor
 {
     public partial class Form1 : Form
     {
-        Dictionary<Type, int> dataTypes = new Dictionary<Type, int>();
         public static World currentWorld;
         bool OpenGLLoaded = false;
         string MapPath = "";
         public Form1()
         {
             InitializeComponent();
-            dataTypes.Add(typeof(string), 1);
-            dataTypes.Add(typeof(int), 0);
-            dataTypes.Add(typeof(float), 0);
-            dataTypes.Add(typeof(bool), 0);
-            dataTypes.Add(typeof(Vector2), 2);
-            dataTypes.Add(typeof(Vector3), 3);
             currentWorld = new World(true);
         }
 
@@ -44,53 +37,12 @@ namespace Map_editor
             return v;
         }
 
-        public static object invokeWorldMethod(string path)
-        {
-            string[] pathParts = path.Split('/');
-            object v = currentWorld;
-            for (int i = 0; i < pathParts.Length; i++)
-            {
-                if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
-                else if (v.GetType().GetProperty(pathParts[i]) != null) v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
-                else v.GetType().GetMethod(pathParts[i]).Invoke(v, null);
-            }
-            return v;
-        }
-
-        public static object setWorldValue(string path, object v, object o)
-        {
-            string[] pathParts = path.Split('/');
-            if (path == "") return o;
-            string newPath = String.Join("/", pathParts, 1, pathParts.Length - 1);
-            if (v.GetType().IsArray)
-            {
-                object currentValue = ((Array)v).GetValue(Convert.ToInt32(pathParts[0]));
-                ((Array)v).SetValue(setWorldValue(newPath, currentValue, o), Convert.ToInt32(pathParts[0]));
-            }
-            else
-            {
-                PropertyInfo prop = v.GetType().GetProperty(pathParts[0]);
-                if (prop != null)
-                {
-                    prop.SetValue(v, setWorldValue(newPath, prop.GetValue(v), o));
-                }
-                else
-                {
-                    FieldInfo field = v.GetType().GetField(pathParts[0]);
-                    field.SetValue(v, setWorldValue(newPath, field.GetValue(v), o));
-                }
-            }
-            return v;
-        }
-
         #region Files
         public void LoadMap(string path)
         {
             toolStrip1.Enabled = true;
             MapPath = path;
             currentWorld.LoadData(path);
-            //treeView1.Nodes.Clear();
-            //AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
             objectBrowser1.LoadNodes(currentWorld.CurrentMap, "CurrentMap");
             
             currentWorld.Init();
@@ -122,8 +74,6 @@ namespace Map_editor
         {
             currentWorld = new World(true);
             MapPath = "";
-            //treeView1.Nodes.Clear();
-            //AddNode(currentWorld.CurrentMap, treeView1.Nodes, "CurrentMap", "CurrentMap");
             objectBrowser1.LoadNodes(currentWorld.CurrentMap, "CurrentMap");
         }
         #endregion
@@ -189,12 +139,12 @@ namespace Map_editor
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            //if (valueEditor1 != null) valueEditor1.Realign();
+            objectBrowser1.Realign();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            //valueEditor1.Realign();
+            objectBrowser1.Realign();
         }
 
         private void Form1_Load(object sender, EventArgs e)

@@ -7,6 +7,7 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using EGE.Meshes;
+using BulletSharp;
 
 namespace EGE.Environment.Paths
 {
@@ -21,6 +22,7 @@ namespace EGE.Environment.Paths
         List<ulong[]> Lanes;
 
         Mesh RoadMesh;
+        RigidBody RoadSurface;
 
         public Road()
         {
@@ -108,6 +110,15 @@ namespace EGE.Environment.Paths
                 TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
             }
             RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureName, TextureCoordinates);
+
+            // Triangle mesh for BulletSharp
+            TriangleMesh mesh = new TriangleMesh();
+            for (int i = 0; i < Indices.Length; i+=3)
+            {
+                mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i + 1]], Vertices[Indices[i + 2]]);
+            }
+            TriangleMeshShape tr = new BvhTriangleMeshShape(mesh, true);
+            RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, tr);
         }
     }
 }

@@ -19,6 +19,7 @@ namespace EGE
     public class Terrain
     {
         public Road[] Roads { get; set; }
+        public Junction[] Junctions { get; set; }
 
         public Model[] StaticModels { get; set; }
 
@@ -30,6 +31,7 @@ namespace EGE
         public Terrain()
         {
             Roads = new Road[0];
+            Junctions = new Junction[0];
             StaticModels = new Model[0];
             TerrainHeightfield = new Heightfield();
         }

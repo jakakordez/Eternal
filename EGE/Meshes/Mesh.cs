@@ -9,32 +9,34 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.IO.Compression;
 using System.IO;
+using BulletSharp;
+using Newtonsoft.Json;
 
 namespace EGE.Meshes
 {
     public class Mesh
     {
+        public TriangleMeshShape CollisionShape;
         Material[] Materials;
         uint[] ElementArrays;
         int[] ElementArraySizes;
         int VertexBuffer;
         int TextureCoordinateBuffer;
         public string MeshFolder = "";
-        public Vector3 Location { get;set; }
         public string Name { get; set; }
+        public bool GenerateCollisionShape { get; set; }
 
         public Mesh()
         {
             Name = "";
             Materials = new Material[0];
-            Location = new Vector3();
+            GenerateCollisionShape = false;
         }
 
         public Mesh(String name)
         {
             Name = name;
             Materials = new Material[0];
-            Location = new Vector3();
         }
 
         public void Draw()
@@ -65,7 +67,7 @@ namespace EGE.Meshes
                 switch (Settings.CurrentDrawingMode)
                 {
                     case Settings.DrawingModes.Wireframe:
-                        GL.DrawElements(PrimitiveType.LineStrip, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.DrawElements(PrimitiveType.Points, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
                         break;
                     case Settings.DrawingModes.Full:
                         GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
@@ -86,38 +88,55 @@ namespace EGE.Meshes
             }
         }
 
-        public void Load(Vector3[] Vertices, int[] Indicies, string TextureName, Vector2[] TextureCoordinates)
+        public void Load(Vector3[] Vertices, int[] Indices, string TextureName, Vector2[] TextureCoordinates)
         {
             Materials = new Material[] { new Material("texture") { Texture = TextureName } };
             VertexBuffer = AddVertexBuffer(Vertices);
             TextureCoordinateBuffer = AddTextureCoordsBuffer(TextureCoordinates);
             ElementArrays = new uint[1];
             GL.GenBuffers(1, ElementArrays);
-            ElementArraySizes = new int[] { FillIndexBuffer(Indicies, ElementArrays[0]) };
+            ElementArraySizes = new int[] { FillIndexBuffer(Indices, ElementArrays[0]) };
+
+            if (GenerateCollisionShape)
+            {
+                TriangleMesh mesh = new TriangleMesh();
+                for (int i = 0; i < Indices.Length; i += 3)
+                {
+                    mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i + 1]], Vertices[Indices[i + 2]]);
+                }
+                CollisionShape = new BvhTriangleMeshShape(mesh, true);
+            }
         }
 
         public void LoadMesh(ZipArchive MeshArchive)
         {
-            ElementArrays = new uint[MeshArchive.Entries.Count-2];
+            ElementArrays = new uint[MeshArchive.Entries.Count-3];
             GL.GenBuffers(ElementArrays.Length, ElementArrays);
             ElementArraySizes = new int[ElementArrays.Length];
+            TriangleMesh mesh = new TriangleMesh();
+
+            ZipArchiveEntry entry = MeshArchive.GetEntry("Descriptor.json");
+            JsonConvert.PopulateObject(Misc.StreamToString(entry.Open()), this, Global.SerializerSettings);
+
+            entry = MeshArchive.GetEntry("Vertices.raw");
+            Stream s = entry.Open();
+            Vector3[] Vertices = new Vector3[entry.Length / 12];
+            for (int i = 0; i < entry.Length / 12; i++)
+            {
+                Vertices[i] = new Vector3();
+                byte[] input = new byte[12];
+                s.Read(input, 0, 12);
+                Vertices[i].X = BitConverter.ToSingle(input, 0);
+                Vertices[i].Y = BitConverter.ToSingle(input, 4);
+                Vertices[i].Z = BitConverter.ToSingle(input, 8);
+            }
+            VertexBuffer = AddVertexBuffer(Vertices);
+
             foreach (var item in MeshArchive.Entries)
             {
-                Stream s = item.Open();
-                if(item.Name == "Vertices.raw") {
-                    Vector3[] Vertices = new Vector3[item.Length / 12];
-                    for (int i = 0; i < item.Length / 12; i++)
-                    {
-                        Vertices[i] = new Vector3();
-                        byte[] input = new byte[12];
-                        s.Read(input, 0, 12);
-                        Vertices[i].X = BitConverter.ToSingle(input, 0);
-                        Vertices[i].Y = BitConverter.ToSingle(input, 4);
-                        Vertices[i].Z = BitConverter.ToSingle(input, 8);
-                    }
-                    VertexBuffer = AddVertexBuffer(Vertices);
-                }
-                else if(item.Name == "TextureCoordinates.raw")
+                s = item.Open();
+                if (item.Name == "Vertices.raw" || item.Name == "Descriptor.json") continue;
+                else if (item.Name == "TextureCoordinates.raw")
                 {
                     Vector2[] TextureCoordinates = new Vector2[item.Length / 8];
                     for (int i = 0; i < item.Length / 8; i++)
@@ -133,18 +152,19 @@ namespace EGE.Meshes
                 else
                 {
                     int mat = Convert.ToInt32(item.Name.Split('.')[0]);
-                    int[] Indices = new int[item.Length/4];
-                    for (int i = 0; i < item.Length / 4; i++)
+                    byte[] bytes = new byte[item.Length];
+                    s.Read(bytes, 0, (int)item.Length);
+                    int[] Indices = new int[item.Length / 4];
+                    Buffer.BlockCopy(bytes, 0, Indices, 0, (int)item.Length);
+                    for (int i = 0; i < Indices.Length; i+=3)
                     {
-                        
-                        byte[] input = new byte[4];
-                        s.Read(input, 0, 4);
-                        Indices[i] = BitConverter.ToInt32(input, 0);
+                        mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i+1]], Vertices[Indices[i+2]]);
                     }
                     ElementArraySizes[mat] = FillIndexBuffer(Indices, ElementArrays[mat]);
                 }
                 s.Close();
             }
+            CollisionShape = new BvhTriangleMeshShape(mesh, true);
         }
 
         public void BuildOBJ(string exportFilePath, Resources.ProgressReport progressReporter)
@@ -223,6 +243,11 @@ namespace EGE.Meshes
                  meshArchive = new ZipArchive(archive.CreateEntry(exportFilePath + ".mesh").Open(), ZipArchiveMode.Update);
             }
 
+            Stream s = meshArchive.CreateEntry("Descriptor.json").Open();
+            byte[] entryBytes = Global.Encoding.GetBytes(JsonConvert.SerializeObject(this, Global.SerializerSettings));
+            s.Write(entryBytes, 0, entryBytes.Length);
+            s.Close();
+
             //Materials = new Material[0];
             for (int i = 0; i < Faces.Count; i++)
             {
@@ -233,7 +258,7 @@ namespace EGE.Meshes
                     //Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
                     if(exportFilePath != null)
                     {
-                        Stream s = meshArchive.CreateEntry(set+".raw").Open();
+                        s = meshArchive.CreateEntry(set+".raw").Open();
                         for (int j = 0; j < currentElements.Length; j++)
                         {
                             byte[] output = BitConverter.GetBytes(currentElements[j]);
@@ -256,7 +281,7 @@ namespace EGE.Meshes
 
             if(exportFilePath != null)
             {
-                Stream s = meshArchive.CreateEntry("Vertices.raw").Open();
+                s = meshArchive.CreateEntry("Vertices.raw").Open();
                 foreach (var item in SortedVertices)
                 {
                     progressReporter(this, 30, "Exporting vertices ...");

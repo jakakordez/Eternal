@@ -164,5 +164,18 @@ namespace EGE
                 using (ZipArchive archive = ZipFile.Open(path, ZipArchiveMode.Create, Global.Encoding)) { }
             }
         }
+
+        public static bool PointIntPolygon(Vector2[] vertices, Vector2 point)
+        {
+            int j = vertices.Length - 1;
+            bool c = false;
+            for (int i = 0; i < vertices.Length; j = i++)
+            {
+                if (((vertices[i].Y > point.Y) != (vertices[j].Y > point.Y)) &&
+                 (point.X < (vertices[j].X - vertices[i].X) * (point.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) + vertices[i].X))
+                    c = !c;
+            }
+            return c;
+        }
     }
 }

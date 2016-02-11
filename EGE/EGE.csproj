@@ -105,6 +105,7 @@
     <Compile Include="Environment\Node.cs" />
     <Compile Include="Environment\NodeReference.cs" />
     <Compile Include="Environment\Nodes.cs" />
+    <Compile Include="Environment\Paths\Junction.cs" />
     <Compile Include="Environment\Paths\Path.cs" />
     <Compile Include="Environment\Paths\RoadNode.cs" />
     <Compile Include="Environment\Paths\Road.cs" />

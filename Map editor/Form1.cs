@@ -109,7 +109,7 @@ namespace Map_editor
                 currentWorld.Draw(tabControl1.SelectedIndex == 1);
                 fpsCounter.Stop();
                 if (fpsCounter.ElapsedMilliseconds == 0) lblFPS.Text = "<1000 FPS";
-                else lblFPS.Text = (1 / fpsCounter.ElapsedMilliseconds*1000) + " FPS";
+                else lblFPS.Text = (1f / fpsCounter.ElapsedMilliseconds*1000f) + " FPS";
             }
             catch { }
             
@@ -156,14 +156,14 @@ namespace Map_editor
             LoadMap(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\mapa");
         }
 
-        private void MapView1_MoveNode(double X, double Y, object argument)
+        private void MapView1_MoveNode(double X, double Y, object argument, string additionalData)
         {
             
         }
 
-        private void MapView1_UpdateLocation(double X, double Y, object arg)
+        private void MapView1_UpdateLocation(double X, double Y, object arg, string additionalData)
         {
-            lblLocation.Text= string.Format("X: {0,7:0.00} Y: {1,7:0.00}", X, Y);
+            lblLocation.Text= string.Format("X: {0,7:0.00} Y: {1,7:0.00}"+additionalData, X, Y);
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -184,6 +184,21 @@ namespace Map_editor
         private void objectBrowser1_NavigateNode(object sender, ulong e)
         {
             mapView1.FocusNode(e);
+        }
+
+        private void objectBrowser1_UpdateWorld(object sender, EventArgs e)
+        {
+            mapView1.UpdateWorld();
+        }
+
+        public void tsbPointer_Click(object sender, EventArgs e)
+        {
+            ToolStripButton clickedButton = (ToolStripButton)sender;
+            tsbPointerNone.Checked = (int)clickedButton.Tag == 1;
+            tsbPointerMove.Checked = (int)clickedButton.Tag == 2;
+            tsbPointerHeight.Checked = (int)clickedButton.Tag == 3;
+            tsbPointerDelete.Checked = (int)clickedButton.Tag == 4;
+            mapView1.CurrentFunction = (mapView.PointerFunction)clickedButton.Tag;
         }
     }
 }

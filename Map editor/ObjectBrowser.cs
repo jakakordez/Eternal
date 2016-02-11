@@ -18,6 +18,7 @@ namespace Map_editor
         string previousPath = "";
         public object currentObject;
         public event EventHandler ValueChanged;
+        public event EventHandler UpdateWorld;
         public event EventHandler<ulong> NavigateNode;
 
         public ObjectBrowser()
@@ -172,11 +173,11 @@ namespace Map_editor
             else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), arrayObject.Length);
             setValue(treeView1.SelectedNode.Tag.ToString().Split('/'), currentObject, copyArray, 0);
             UpdateArray(treeView1.SelectedNode.Tag.ToString());
+            UpdateWorld.Invoke(this, null);
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             object arr = getValue(pathUp(treeView1.SelectedNode.Tag.ToString()));
             Array arrayObject = (Array)arr;
             Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length - 1);
@@ -190,6 +191,7 @@ namespace Map_editor
             }
             setValue(pathUp(treeView1.SelectedNode.Tag.ToString()).Split('/'), currentObject, copyArray, 0);
             UpdateArray(pathUp(treeView1.SelectedNode.Tag.ToString()));
+            UpdateWorld.Invoke(this, null);
         }
 
         private void UpdateArray(string path)
@@ -204,6 +206,7 @@ namespace Map_editor
             TreeNode parent = nod.Parent;
             parent.Nodes.Remove(nod);
             AddNode(getValue(path), parent.Nodes, nod.Name, path);
+            
         }
 
         private void buildToolStripMenuItem_Click(object sender, EventArgs e)
@@ -261,6 +264,7 @@ namespace Map_editor
             else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), 0);
             setValue(treeView1.SelectedNode.Tag.ToString().Split('/'), currentObject, copyArray, 0);
             UpdateArray(treeView1.SelectedNode.Tag.ToString());
+            UpdateWorld.Invoke(this, null);
         }
     }
 }

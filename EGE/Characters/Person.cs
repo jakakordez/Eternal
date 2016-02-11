@@ -13,7 +13,7 @@ namespace EGE.Characters
     class Person : Character
     {
         RigidBody CharacterBody;
-        float WalkingSpeed = 4, RunningSpeed = 100;
+        float WalkingSpeed = 8, RunningSpeed = 100;
         public Vehicles.Vehicle ControlledVehicle;
 
         public Person(Vector3 StartPosition)

@@ -151,6 +151,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="ResourceCollection.resx">
       <DependentUpon>ResourceCollection.cs</DependentUpon>
@@ -186,6 +187,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\move.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\height.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\add.png" />
+    <Content Include="Resources\array.png" />
+    <Content Include="Resources\number.png" />
+    <Content Include="Resources\object.png" />
+    <Content Include="Resources\play.png" />
+    <Content Include="Resources\pointer.png" />
+    <Content Include="Resources\string.png" />
+    <Content Include="Resources\textures.png" />
+    <Content Include="Resources\vector2.png" />
+    <Content Include="Resources\vector3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

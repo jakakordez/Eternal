@@ -61,9 +61,15 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tlsRun = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbResources = new System.Windows.Forms.ToolStripButton();
             this.tsbVehicles = new System.Windows.Forms.ToolStripButton();
-            this.tlsRun = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbPointerNone = new System.Windows.Forms.ToolStripButton();
+            this.tsbPointerMove = new System.Windows.Forms.ToolStripButton();
+            this.tsbPointerHeight = new System.Windows.Forms.ToolStripButton();
+            this.tsbPointerDelete = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.objectBrowser1 = new Map_editor.ObjectBrowser();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -333,14 +339,35 @@
             // 
             this.toolStrip1.Enabled = false;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tlsRun,
+            this.toolStripSeparator6,
             this.tsbResources,
             this.tsbVehicles,
-            this.tlsRun});
+            this.toolStripSeparator7,
+            this.tsbPointerNone,
+            this.tsbPointerMove,
+            this.tsbPointerHeight,
+            this.tsbPointerDelete});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(683, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // tlsRun
+            // 
+            this.tlsRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tlsRun.Image = ((System.Drawing.Image)(resources.GetObject("tlsRun.Image")));
+            this.tlsRun.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tlsRun.Name = "tlsRun";
+            this.tlsRun.Size = new System.Drawing.Size(23, 22);
+            this.tlsRun.Text = "Run";
+            this.tlsRun.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbResources
             // 
@@ -364,15 +391,56 @@
             this.tsbVehicles.ToolTipText = "Vehicles";
             this.tsbVehicles.Click += new System.EventHandler(this.tsbVehicles_Click);
             // 
-            // tlsRun
+            // toolStripSeparator7
             // 
-            this.tlsRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tlsRun.Image = ((System.Drawing.Image)(resources.GetObject("tlsRun.Image")));
-            this.tlsRun.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tlsRun.Name = "tlsRun";
-            this.tlsRun.Size = new System.Drawing.Size(23, 22);
-            this.tlsRun.Text = "Run";
-            this.tlsRun.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tsbPointerNone
+            // 
+            this.tsbPointerNone.Checked = true;
+            this.tsbPointerNone.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsbPointerNone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerNone.Image = ((System.Drawing.Image)(resources.GetObject("tsbPointerNone.Image")));
+            this.tsbPointerNone.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerNone.Name = "tsbPointerNone";
+            this.tsbPointerNone.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerNone.Tag = 1;
+            this.tsbPointerNone.Text = "Pointer";
+            this.tsbPointerNone.Click += new System.EventHandler(this.tsbPointer_Click);
+            // 
+            // tsbPointerMove
+            // 
+            this.tsbPointerMove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerMove.Image = global::Map_editor.Properties.Resources.move;
+            this.tsbPointerMove.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerMove.Name = "tsbPointerMove";
+            this.tsbPointerMove.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerMove.Tag = 2;
+            this.tsbPointerMove.Text = "Move";
+            this.tsbPointerMove.Click += new System.EventHandler(this.tsbPointer_Click);
+            // 
+            // tsbPointerHeight
+            // 
+            this.tsbPointerHeight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerHeight.Image = global::Map_editor.Properties.Resources.height;
+            this.tsbPointerHeight.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerHeight.Name = "tsbPointerHeight";
+            this.tsbPointerHeight.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerHeight.Tag = 3;
+            this.tsbPointerHeight.Text = "Height";
+            this.tsbPointerHeight.Click += new System.EventHandler(this.tsbPointer_Click);
+            // 
+            // tsbPointerDelete
+            // 
+            this.tsbPointerDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerDelete.Image = global::Map_editor.Properties.Resources.delete;
+            this.tsbPointerDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerDelete.Name = "tsbPointerDelete";
+            this.tsbPointerDelete.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerDelete.Tag = 4;
+            this.tsbPointerDelete.Text = "Remove";
+            this.tsbPointerDelete.Click += new System.EventHandler(this.tsbPointer_Click);
             // 
             // splitContainer1
             // 
@@ -399,6 +467,7 @@
             this.objectBrowser1.Name = "objectBrowser1";
             this.objectBrowser1.Size = new System.Drawing.Size(146, 368);
             this.objectBrowser1.TabIndex = 2;
+            this.objectBrowser1.UpdateWorld += new System.EventHandler(this.objectBrowser1_UpdateWorld);
             this.objectBrowser1.NavigateNode += new System.EventHandler<ulong>(this.objectBrowser1_NavigateNode);
             // 
             // tabControl1
@@ -492,7 +561,8 @@
             // lblFPS
             // 
             this.lblFPS.Name = "lblFPS";
-            this.lblFPS.Size = new System.Drawing.Size(35, 17);
+            this.lblFPS.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.lblFPS.Size = new System.Drawing.Size(55, 17);
             this.lblFPS.Text = "0 FPS";
             // 
             // statusStrip1
@@ -538,6 +608,11 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void TsbPointerNone_Click(object sender, System.EventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion
@@ -591,6 +666,12 @@
         private System.Windows.Forms.ToolStripStatusLabel lblLocation;
         private System.Windows.Forms.ToolStripStatusLabel lblFPS;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton tsbPointerNone;
+        private System.Windows.Forms.ToolStripButton tsbPointerMove;
+        private System.Windows.Forms.ToolStripButton tsbPointerHeight;
+        private System.Windows.Forms.ToolStripButton tsbPointerDelete;
     }
 }
 

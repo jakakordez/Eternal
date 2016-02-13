@@ -78,6 +78,11 @@ namespace EGE
         {
             Files = new List<RFile>();
             ArchivePath = FilePath + "\\Resources.ege";
+            LoadResources();
+        }
+
+        public static void LoadResources()
+        {
             Misc.CheckArchive(ArchivePath);
             using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Read, Global.Encoding))
             {
@@ -85,12 +90,12 @@ namespace EGE
                 foreach (var e in archive.Entries)
                 {
                     if (e.Name == "") continue;
-                    
+
                     RFile f = new RFile(e.FullName);
                     f.Size = e.Length;
-                    if(f.Type == RFile.RFileType.Texture) f.Id = LoadImage(e);
+                    if (f.Type == RFile.RFileType.Texture) f.Id = LoadImage(e);
                     else if (f.Type == RFile.RFileType.Mesh) f.obj = LoadMesh(e, f.Folder);
-                    
+
                     Files.Add(f);
                 }
             }
@@ -270,7 +275,6 @@ namespace EGE
             m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");
             m.BuildOBJ(fromFile.Folder+fromFile.Name, progressReporter);
         }
-
 
         public static RFile findFile(string name, RFile.RFileType type)
         {

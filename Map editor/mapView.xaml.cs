@@ -123,9 +123,9 @@ namespace Map_editor
             {
                 OpenTK.Vector3 prevNode = new OpenTK.Vector3();
                 EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i];
-                for (int j = 0; j < r.RoadPath.Length; j++)
+                for (int j = 0; j < r.Points.Length; j++)
                 {
-                    string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/RoadPath/" + j+ "/Ref/Location";
+                    string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/Points/" + j+ "/Ref/Location";
                     /*if (!MapObjects.Keys.Contains(path))
                     {
                         Button nodeBtn = new Button();
@@ -207,7 +207,7 @@ namespace Map_editor
                 string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
                 foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
                 {
-                    foreach (var point in road.RoadPath)
+                    foreach (var point in road.Points)
                     {
                         if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
                         {
@@ -226,7 +226,7 @@ namespace Map_editor
                 string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
                 foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
                 {
-                    foreach (var point in road.RoadPath)
+                    foreach (var point in road.Points)
                     {
                         if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
                         {

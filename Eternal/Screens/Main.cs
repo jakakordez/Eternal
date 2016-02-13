@@ -11,6 +11,7 @@ namespace Eternal
     class Main : Screen
     {
         World currentWorld;
+        bool Loaded;
 
         public Main()
         {
@@ -22,15 +23,16 @@ namespace Eternal
             currentWorld.LoadData(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\mapa");
             currentWorld.Init();
             currentWorld.Build();
+            Loaded = true;
         }
         public override void Draw()
         {
-            currentWorld.Draw(true);
+            if(Loaded) currentWorld.Draw(true);
         }
 
         public override void Update(FrameEventArgs e)
         {
-            currentWorld.Update(Focused, (float)e.Time);
+            if(Loaded) currentWorld.Update(Focused, (float)e.Time);
         }
 
         public override void Resize(float Width, float Height)

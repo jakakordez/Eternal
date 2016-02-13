@@ -55,6 +55,7 @@
             this.fileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.bcgMeshBuilder = new System.ComponentModel.BackgroundWorker();
+            this.generateCollisionMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip2.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.ctxFolders.SuspendLayout();
@@ -105,21 +106,22 @@
             this.exportToolStripMenuItem,
             this.importToolStripMenuItem,
             this.removeToolStripMenuItem,
-            this.rebuildToolStripMenuItem});
+            this.rebuildToolStripMenuItem,
+            this.generateCollisionMeshToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(142, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 136);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
@@ -127,14 +129,14 @@
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             this.removeToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // rebuildToolStripMenuItem
             // 
             this.rebuildToolStripMenuItem.Name = "rebuildToolStripMenuItem";
-            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.rebuildToolStripMenuItem.Text = "Build";
             this.rebuildToolStripMenuItem.Click += new System.EventHandler(this.rebuildToolStripMenuItem_Click);
             // 
@@ -263,6 +265,13 @@
             this.bcgMeshBuilder.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bcgMeshBuilder_ProgressChanged);
             this.bcgMeshBuilder.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bcgMeshBuilder_RunWorkerCompleted);
             // 
+            // generateCollisionMeshToolStripMenuItem
+            // 
+            this.generateCollisionMeshToolStripMenuItem.Name = "generateCollisionMeshToolStripMenuItem";
+            this.generateCollisionMeshToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.generateCollisionMeshToolStripMenuItem.Text = "Generate collision mesh";
+            this.generateCollisionMeshToolStripMenuItem.Click += new System.EventHandler(this.generateCollisionMeshToolStripMenuItem_Click);
+            // 
             // ResourceCollector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -315,5 +324,6 @@
         private System.Windows.Forms.ToolStripProgressBar stProgress;
         private System.Windows.Forms.ToolStripStatusLabel tlsStatus;
         private System.ComponentModel.BackgroundWorker bcgMeshBuilder;
+        private System.Windows.Forms.ToolStripMenuItem generateCollisionMeshToolStripMenuItem;
     }
 }

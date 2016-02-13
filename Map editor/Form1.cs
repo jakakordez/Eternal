@@ -32,7 +32,8 @@ namespace Map_editor
             for (int i = 0; i < pathParts.Length; i++)
             {
                 if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
-                else v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
+                else
+                    v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
             }
             return v;
         }

@@ -7,8 +7,15 @@ using OpenTK;
 
 namespace EGE.Environment.Paths
 {
-    public class Curve
+    public class Path
     {
+        public NodeReference[] Points { get; set; }
+
+        public Path()
+        {
+            Points = new NodeReference[0];
+        }
+
         public static Vector3[] CreateCurve(Vector2[] roadLine, int Segments, float Offset, float Height, bool Invert)
         {
             Vector2[] roadCurve = Misc.GetBezierApproximation(roadLine, Segments);

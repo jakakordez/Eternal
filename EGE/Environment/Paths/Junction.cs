@@ -10,6 +10,17 @@ namespace EGE.Environment.Paths
     public class Junction
     {
         public string ObjectMesh { set; get; }
+
+        NodeReference[] AuxiliaryNodes { set; get; }
         
+        public Junction()
+        {
+            ObjectMesh = "";
+        }
+
+        public void Load()
+        {
+
+        }
     }
 }

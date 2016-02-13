@@ -90,8 +90,6 @@ namespace Map_editor
             }
         }
 
-       
-
         private void tlsAddress_KeyUp(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Enter)
@@ -171,8 +169,15 @@ namespace Map_editor
 
         private void bcgMeshBuilder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            EGE.Resources.LoadResources();
             LoadFolder();
             MessageBox.Show("Done");
+        }
+
+        private void generateCollisionMeshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            generateCollisionMeshToolStripMenuItem.Checked = !generateCollisionMeshToolStripMenuItem.Checked;
+
         }
     }
 }

@@ -70,7 +70,7 @@ namespace EGE
             
             foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
             {
-                if(r.RoadPath.Length > 1) r.Build();
+                if(r.Points.Length > 1) r.Build();
             }
             foreach (var item in CurrentMap.CurrentTerrain.StaticModels)
             {

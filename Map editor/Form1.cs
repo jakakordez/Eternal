@@ -198,7 +198,10 @@ namespace Map_editor
             tsbPointerNone.Checked = (int)clickedButton.Tag == 1;
             tsbPointerMove.Checked = (int)clickedButton.Tag == 2;
             tsbPointerHeight.Checked = (int)clickedButton.Tag == 3;
-            tsbPointerDelete.Checked = (int)clickedButton.Tag == 4;
+            tsbPointerRotateX.Checked = (int)clickedButton.Tag == 4;
+            tsbPointerRotateY.Checked = (int)clickedButton.Tag == 5;
+            tsbPointerRotateZ.Checked = (int)clickedButton.Tag == 6;
+            tsbPointerDelete.Checked = (int)clickedButton.Tag == 7;
             mapView1.CurrentFunction = (mapView.PointerFunction)clickedButton.Tag;
         }
     }

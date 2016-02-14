@@ -25,10 +25,46 @@ namespace Map_editor
     {
         public enum PointerFunction
         {
-            None = 1, Move, Height, Delete
+            None = 1, Move, Height, RotateX, RotateY, RotateZ, Delete
         }
+        Cursor NodeCursor = Cursors.Arrow;
 
-        public PointerFunction CurrentFunction = PointerFunction.None;
+        PointerFunction currentFunction = PointerFunction.None;
+        public PointerFunction CurrentFunction{
+            get{
+                return currentFunction;
+            }
+            set{
+                switch (value)
+                {
+                    case PointerFunction.None:
+                        NodeCursor = Cursors.Arrow;
+                        break;
+                    case PointerFunction.Move:
+                        NodeCursor = Cursors.SizeAll;
+                        break;
+                    case PointerFunction.Height:
+                        NodeCursor = Cursors.SizeNS;
+                        break;
+                    case PointerFunction.RotateX:
+                        NodeCursor = Cursors.ScrollE;
+                        break;
+                    case PointerFunction.RotateY:
+                        NodeCursor = Cursors.ScrollN;
+                        break;
+                    case PointerFunction.RotateZ:
+                        NodeCursor = Cursors.ScrollSW;
+                        break;
+                    case PointerFunction.Delete:
+                        NodeCursor = Cursors.No; 
+                        break;
+                    default:
+                        break;
+                }
+                MapObjects.Where(m => m.Value.GetType() == typeof(Button)).ToList().ForEach(b => ((Button)b.Value).Cursor = NodeCursor);
+                currentFunction = value;
+            }
+        }
         ScaleTransform zoom = new ScaleTransform(10, 10);
         double Thickness = 10;
         Double PixelScale = 20;
@@ -69,8 +105,7 @@ namespace Map_editor
             Button a = (Button)MapObjects["Nodes/" + key];
             double mx = -a.Margin.Left+(ActualWidth/zoom.ScaleX/2);
             double my = -a.Margin.Top+(ActualHeight / zoom.ScaleX / 2);
-            map.Margin = new System.Windows.Thickness(mx, my, 0, 0);
-
+            map.Margin = new Thickness(mx, my, 0, 0);
         }
 
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -94,30 +129,30 @@ namespace Map_editor
         {
             foreach (var item in Nodes.NodeList)
             {
-                if(item.Value.RelativeTo == 0)
+                string path = "Nodes/" + item.Key;
+                int buttonSize = item.Value.RelativeTo == 0 ? 20 : 10;
+                if (!MapObjects.Keys.Contains(path))
                 {
-                    string path = "Nodes/" + item.Key;
-                    if (!MapObjects.Keys.Contains(path))
-                    {
-                        Button nodeBtn = new Button();
-                        nodeBtn.Height = 20;
-                        nodeBtn.Width = 20;
-                        nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
-                        nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-                        nodeBtn.BorderBrush = Brushes.Green;
+                    Button nodeBtn = new Button();
+                    nodeBtn.Height = buttonSize;
+                    nodeBtn.Width = buttonSize;
+                    nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+                    nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+                    nodeBtn.BorderBrush = item.Value.RelativeTo == 0 ? Brushes.Green:Brushes.LightGreen;
+                    nodeBtn.Cursor = NodeCursor;
 
-                        nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-                        nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
-                        nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
-                        map.Children.Add(nodeBtn);
-                        MapObjects.Add(path, nodeBtn);
-                    }
-                    OpenTK.Vector3 n = (OpenTK.Vector3)item.Value.Location;
-                    double Top = (n.Z * PixelScale) - 10;
-                    double Left = (n.X * PixelScale) - 10;
-                    ((Button)MapObjects[path]).Tag = path;
-                    ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
-                }    
+                    nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+                    nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
+                    nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
+                    map.Children.Add(nodeBtn);
+                    MapObjects.Add(path, nodeBtn);
+                }
+
+                OpenTK.Vector3 n = Nodes.GetNodeLocation(item.Key);
+                double Top = (n.Z * PixelScale) - (buttonSize/2);
+                double Left = (n.X * PixelScale) - (buttonSize/2);
+                ((Button)MapObjects[path]).Tag = path;
+                ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
             }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.Roads.Length; i++)
             {
@@ -126,24 +161,7 @@ namespace Map_editor
                 for (int j = 0; j < r.Points.Length; j++)
                 {
                     string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/Points/" + j+ "/Ref/Location";
-                    /*if (!MapObjects.Keys.Contains(path))
-                    {
-                        Button nodeBtn = new Button();
-                        nodeBtn.Height = 20;
-                        nodeBtn.Width = 20;
-                        nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
-                        nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-
-                        nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-                        nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
-                        map.Children.Add(nodeBtn);
-                        MapObjects.Add(path, nodeBtn);
-                    }*/
                     OpenTK.Vector3 n = (OpenTK.Vector3)Form1.getWorldValue(path);
-                    /*double Top = (n.Z * PixelScale) - 10;
-                    double Left = (n.X * PixelScale) - 10;
-                    ((Button)MapObjects[path]).Tag = path;
-                    ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);*/
 
                     if (j > 0)
                     {
@@ -196,52 +214,41 @@ namespace Map_editor
 
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
+            Point abs = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
+            Vector rel = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid)) / 10;
+            ulong nodeId = Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()));
             if (CurrentFunction == PointerFunction.Move)
             {
-                Point p = Mouse.GetPosition(mainGrid);
-                p = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
-                OpenTK.Vector3 Location = new OpenTK.Vector3((float)p.X, Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location.Y, (float)p.Y);
-                Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location = Location;
-                //Form1.setWorldValue(((Button)sender).Tag+"/X", Form1.currentWorld, (float)p.X);
-                //Form1.setWorldValue(((Button)sender).Tag + "/Z", Form1.currentWorld, (float)p.Y);
-                string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
-                foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
-                {
-                    foreach (var point in road.Points)
-                    {
-                        if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
-                        {
-                            road.Build();
-                            break;
-                        }
-                    }
-                }
+                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, Nodes.NodeList[nodeId].Location.Y, (float)abs.Y);
+                Nodes.SetNodeLocation(Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())), Location);
             }
             else if(CurrentFunction == PointerFunction.Height)
             {
-                Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
-                float ydif = (float)(p.Y/10);
-                OpenTK.Vector3 Location = Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location+new OpenTK.Vector3(0, ydif, 0);
-                Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location = Location;
-                string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
-                foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
+                
+                OpenTK.Vector3 Location = Nodes.NodeList[nodeId].Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
+                Nodes.SetNodeLocation(Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())), Location);
+            }
+            else
+            {
+                rel = rel / (2*Math.PI);
+                OpenTK.Vector3 RotationDif = new OpenTK.Vector3();
+                if (CurrentFunction == PointerFunction.RotateX) RotationDif = new OpenTK.Vector3((float)rel.Y, 0, 0);
+                if (CurrentFunction == PointerFunction.RotateY) RotationDif = new OpenTK.Vector3(0, (float)rel.Y, 0);
+                if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new OpenTK.Vector3(0, 0, (float)rel.Y);
+                Nodes.SetNodeRotation(nodeId, Nodes.NodeList[nodeId].Rotation+RotationDif);
+            }
+            string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
+            foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
+            {
+                foreach (var point in road.Points)
                 {
-                    foreach (var point in road.Points)
+                    if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
                     {
-                        if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
-                        {
-                            road.Build();
-                            break;
-                        }
+                        road.Build();
+                        break;
                     }
                 }
             }
-            
-           /* if (MapObjects.ContainsKey(Misc.pathUp(Misc.pathUp(((Button)sender).Tag.ToString())) + "/1/NodeLocation")) // Update only if road contains at least two nodes
-            {
-                string road = "CurrentMap/" + String.Join("/", pathParts, 1, pathParts.Length - 5);
-                Form1.invokeWorldMethod(road + "/Build");
-            }*/
             UpdateWorld();
         }
 
@@ -254,7 +261,7 @@ namespace Map_editor
                     Point p = Mouse.GetPosition(mainGrid);
                     p.X = ((p.X) / zoom.ScaleX) - map.Margin.Left;
                     p.Y = ((p.Y) / zoom.ScaleY) - map.Margin.Top;
-                    ((Button)sender).Margin = new Thickness(p.X - 10, p.Y - 10, 0, 0);
+                    ((Button)sender).Margin = new Thickness(p.X - (((Button)sender).Width/2), p.Y - (((Button)sender).Height / 2), 0, 0);
                 }
                 else if (CurrentFunction == PointerFunction.Height)
                 {
@@ -291,6 +298,5 @@ namespace Map_editor
                 grabPoint = Mouse.GetPosition(mainGrid);
             }
         }
-
     }
 }

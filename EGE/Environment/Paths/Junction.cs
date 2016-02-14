@@ -11,7 +11,7 @@ namespace EGE.Environment.Paths
     {
         public string ObjectMesh { set; get; }
 
-        NodeReference[] AuxiliaryNodes { set; get; }
+        public NodeReference[] RoadEndpoints { set; get; }
         
         public Junction()
         {

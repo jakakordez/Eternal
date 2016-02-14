@@ -69,6 +69,9 @@
             this.tsbPointerNone = new System.Windows.Forms.ToolStripButton();
             this.tsbPointerMove = new System.Windows.Forms.ToolStripButton();
             this.tsbPointerHeight = new System.Windows.Forms.ToolStripButton();
+            this.tsbPointerRotateX = new System.Windows.Forms.ToolStripButton();
+            this.tsbPointerRotateY = new System.Windows.Forms.ToolStripButton();
+            this.tsbPointerRotateZ = new System.Windows.Forms.ToolStripButton();
             this.tsbPointerDelete = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.objectBrowser1 = new Map_editor.ObjectBrowser();
@@ -347,6 +350,9 @@
             this.tsbPointerNone,
             this.tsbPointerMove,
             this.tsbPointerHeight,
+            this.tsbPointerRotateX,
+            this.tsbPointerRotateY,
+            this.tsbPointerRotateZ,
             this.tsbPointerDelete});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
@@ -431,6 +437,39 @@
             this.tsbPointerHeight.Text = "Height";
             this.tsbPointerHeight.Click += new System.EventHandler(this.tsbPointer_Click);
             // 
+            // tsbPointerRotateX
+            // 
+            this.tsbPointerRotateX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerRotateX.Image = global::Map_editor.Properties.Resources.xrotate;
+            this.tsbPointerRotateX.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerRotateX.Name = "tsbPointerRotateX";
+            this.tsbPointerRotateX.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerRotateX.Tag = 4;
+            this.tsbPointerRotateX.Text = "Rotate X";
+            this.tsbPointerRotateX.Click += new System.EventHandler(this.tsbPointer_Click);
+            // 
+            // tsbPointerRotateY
+            // 
+            this.tsbPointerRotateY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerRotateY.Image = global::Map_editor.Properties.Resources.yrotate;
+            this.tsbPointerRotateY.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerRotateY.Name = "tsbPointerRotateY";
+            this.tsbPointerRotateY.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerRotateY.Tag = 5;
+            this.tsbPointerRotateY.Text = "Rotate Y";
+            this.tsbPointerRotateY.Click += new System.EventHandler(this.tsbPointer_Click);
+            // 
+            // tsbPointerRotateZ
+            // 
+            this.tsbPointerRotateZ.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPointerRotateZ.Image = global::Map_editor.Properties.Resources.zrotate;
+            this.tsbPointerRotateZ.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPointerRotateZ.Name = "tsbPointerRotateZ";
+            this.tsbPointerRotateZ.Size = new System.Drawing.Size(23, 22);
+            this.tsbPointerRotateZ.Tag = 6;
+            this.tsbPointerRotateZ.Text = "Roatate Z";
+            this.tsbPointerRotateZ.Click += new System.EventHandler(this.tsbPointer_Click);
+            // 
             // tsbPointerDelete
             // 
             this.tsbPointerDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -438,7 +477,7 @@
             this.tsbPointerDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPointerDelete.Name = "tsbPointerDelete";
             this.tsbPointerDelete.Size = new System.Drawing.Size(23, 22);
-            this.tsbPointerDelete.Tag = 4;
+            this.tsbPointerDelete.Tag = 7;
             this.tsbPointerDelete.Text = "Remove";
             this.tsbPointerDelete.Click += new System.EventHandler(this.tsbPointer_Click);
             // 
@@ -672,6 +711,9 @@
         private System.Windows.Forms.ToolStripButton tsbPointerMove;
         private System.Windows.Forms.ToolStripButton tsbPointerHeight;
         private System.Windows.Forms.ToolStripButton tsbPointerDelete;
+        private System.Windows.Forms.ToolStripButton tsbPointerRotateY;
+        private System.Windows.Forms.ToolStripButton tsbPointerRotateX;
+        private System.Windows.Forms.ToolStripButton tsbPointerRotateZ;
     }
 }
 

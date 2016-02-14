@@ -208,6 +208,9 @@
     <Content Include="Resources\textures.png" />
     <Content Include="Resources\vector2.png" />
     <Content Include="Resources\vector3.png" />
+    <None Include="Resources\zrotate.png" />
+    <None Include="Resources\xrotate.png" />
+    <None Include="Resources\yrotate.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

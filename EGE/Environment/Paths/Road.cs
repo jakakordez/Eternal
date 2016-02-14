@@ -59,7 +59,6 @@ namespace EGE.Environment.Paths
                     float nextAngle = (Misc.getAngle(Points[i + 2].Ref.Location.Xz - Points[i + 1].Ref.Location.Xz));
                     if (angle > MathHelper.Pi && nextAngle < MathHelper.PiOver2) angle -= MathHelper.TwoPi;
                     angle = ((angle + nextAngle) / 2);
-
                 }
 
                 float segments = (Points[i + 1].Ref.Location.Xz - Points[i].Ref.Location.Xz).Length * 0.5f;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
+using OpenTK;
 
 namespace EGE.Environment
 {
@@ -15,7 +16,7 @@ namespace EGE.Environment
         [JsonProperty]
         public static Dictionary<ulong, Node> NodeList;
         [JsonProperty]
-        static ulong IdCounter = 0;
+        static ulong IdCounter = 1;
         static string FilePath;
 
         public void LoadNodes(string filePath)
@@ -71,6 +72,35 @@ namespace EGE.Environment
         public static Node GetNode(ulong id)
         {
             return NodeList[id];
+        }
+
+        public static Vector3 GetNodeLocation(ulong id)
+        {
+            return GetNodePosition(id).ExtractTranslation();
+        }
+
+        public static Matrix4 GetNodePosition(ulong id)
+        {
+            if (NodeList[id].RelativeTo == 0 || NodeList[id].RelativeTo == id) return NodeList[id].CreateTransform();
+            return NodeList[id].CreateTransform()*GetNodePosition(NodeList[id].RelativeTo);
+        }
+
+        public static void SetNodeLocation(ulong id, Vector3 Location)
+        {
+            if (NodeList[id].RelativeTo == 0 || NodeList[id].RelativeTo == id) NodeList[id].Location = Location;
+            else
+            {
+                Matrix4 m = Matrix4.CreateTranslation(Location) * Matrix4.CreateTranslation(-GetNodeLocation(NodeList[id].RelativeTo));
+                m = m * Matrix4.CreateRotationX(-NodeList[NodeList[id].RelativeTo].Rotation.X);
+                m = m * Matrix4.CreateRotationY(-NodeList[NodeList[id].RelativeTo].Rotation.Y);
+                m = m * Matrix4.CreateRotationZ(-NodeList[NodeList[id].RelativeTo].Rotation.Z);
+                NodeList[id].Location = m.ExtractTranslation();
+            }
+        }
+
+        public static void SetNodeRotation(ulong id, Vector3 rotation)
+        {
+            NodeList[id].Rotation = rotation;
         }
     }
 }

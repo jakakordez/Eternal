@@ -20,9 +20,9 @@ namespace EGE
     {
         public Road[] Roads { get; set; }
         public Junction[] Junctions { get; set; }
+        public JunctionReference[] JunctionInstances { get; set; }
 
         public Model[] StaticModels { get; set; }
-
 
         public Heightfield TerrainHeightfield { get; set; }
 
@@ -34,6 +34,7 @@ namespace EGE
             Junctions = new Junction[0];
             StaticModels = new Model[0];
             TerrainHeightfield = new Heightfield();
+            JunctionInstances = new JunctionReference[0];
         }
 
         public void Draw()
@@ -51,6 +52,11 @@ namespace EGE
             trans = World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             TerrainHeightfield.Draw();
+
+            trans = JunctionInstances[0].Location.Ref.CreateTransform() * World.WorldMatrix;
+            GL.LoadMatrix(ref trans);
+            Resources.DrawMesh(Junctions[JunctionInstances[0].ID].ObjectMesh);
+
         }
 
         public void Load(string filePath)
@@ -67,6 +73,17 @@ namespace EGE
                     entryStream.Close();
                 }
             }
+            Junctions = new Junction[1];
+            Junctions[0] = new Junction();
+            Junctions[0].ObjectMesh = "meshes/junctions/road1_t/road1t";
+            Junctions[0].RoadEndpoints = new NodeReference[1];
+            Junctions[0].RoadEndpoints[0] = new NodeReference(10);
+            Junctions[0].RoadEndpoints[0].Ref.RelativeTo = 9;
+            //Junctions[0].RoadEndpoints[0].Ref
+            JunctionInstances = new JunctionReference[1];
+            JunctionInstances[0] = new JunctionReference();
+            JunctionInstances[0].Location = new NodeReference(9);
+            JunctionInstances[0].ID = 0;
             
         }
 

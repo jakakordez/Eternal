@@ -61,7 +61,7 @@ namespace Map_editor
                     default:
                         break;
                 }
-                MapObjects.Where(m => m.Value.GetType() == typeof(Button)).ToList().ForEach(b => ((Button)b.Value).Cursor = NodeCursor);
+                MapObjects.Where(m => m.Value.GetType() == typeof(NodeObj)).ToList().ForEach(b => ((NodeObj)b.Value).Cursor = NodeCursor);
                 currentFunction = value;
             }
         }
@@ -102,7 +102,7 @@ namespace Map_editor
 
         public void FocusNode(ulong key)
         {
-            Button a = (Button)MapObjects["Nodes/" + key];
+            NodeObj a = (NodeObj)MapObjects["Nodes/" + key];
             double mx = -a.Margin.Left+(ActualWidth/zoom.ScaleX/2);
             double my = -a.Margin.Top+(ActualHeight / zoom.ScaleX / 2);
             map.Margin = new Thickness(mx, my, 0, 0);
@@ -130,12 +130,9 @@ namespace Map_editor
             foreach (var item in Nodes.NodeList)
             {
                 string path = "Nodes/" + item.Key;
-                int buttonSize = item.Value.RelativeTo == 0 ? 20 : 10;
                 if (!MapObjects.Keys.Contains(path))
                 {
-                    Button nodeBtn = new Button();
-                    nodeBtn.Height = buttonSize;
-                    nodeBtn.Width = buttonSize;
+                    NodeObj nodeBtn = new NodeObj(item.Key);
                     nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
                     nodeBtn.VerticalAlignment = VerticalAlignment.Top;
                     nodeBtn.BorderBrush = item.Value.RelativeTo == 0 ? Brushes.Green:Brushes.LightGreen;
@@ -147,12 +144,7 @@ namespace Map_editor
                     map.Children.Add(nodeBtn);
                     MapObjects.Add(path, nodeBtn);
                 }
-
-                OpenTK.Vector3 n = Nodes.GetNodeLocation(item.Key);
-                double Top = (n.Z * PixelScale) - (buttonSize/2);
-                double Left = (n.X * PixelScale) - (buttonSize/2);
-                ((Button)MapObjects[path]).Tag = path;
-                ((Button)MapObjects[path]).Margin = new Thickness(Left, Top, 0, 0);
+                ((NodeObj)MapObjects[path]).Locate(PixelScale);
             }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.Roads.Length; i++)
             {
@@ -216,17 +208,16 @@ namespace Map_editor
         {
             Point abs = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
             Vector rel = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid)) / 10;
-            ulong nodeId = Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()));
             if (CurrentFunction == PointerFunction.Move)
             {
-                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, Nodes.NodeList[nodeId].Location.Y, (float)abs.Y);
-                Nodes.SetNodeLocation(Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())), Location);
+                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, Nodes.NodeList[((NodeObj)sender).Id].Location.Y, (float)abs.Y);
+                Nodes.SetNodeLocation(((NodeObj)sender).Id, Location);
             }
             else if(CurrentFunction == PointerFunction.Height)
             {
                 
-                OpenTK.Vector3 Location = Nodes.NodeList[nodeId].Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
-                Nodes.SetNodeLocation(Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())), Location);
+                OpenTK.Vector3 Location = Nodes.NodeList[((NodeObj)sender).Id].Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
+                Nodes.SetNodeLocation(((NodeObj)sender).Id, Location);
             }
             else
             {
@@ -235,14 +226,14 @@ namespace Map_editor
                 if (CurrentFunction == PointerFunction.RotateX) RotationDif = new OpenTK.Vector3((float)rel.Y, 0, 0);
                 if (CurrentFunction == PointerFunction.RotateY) RotationDif = new OpenTK.Vector3(0, (float)rel.Y, 0);
                 if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new OpenTK.Vector3(0, 0, (float)rel.Y);
-                Nodes.SetNodeRotation(nodeId, Nodes.NodeList[nodeId].Rotation+RotationDif);
+                Nodes.SetNodeRotation(((NodeObj)sender).Id, Nodes.NodeList[((NodeObj)sender).Id].Rotation+RotationDif);
             }
-            string[] pathParts = ((Button)sender).Tag.ToString().Split('/');
+            string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
             foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
             {
                 foreach (var point in road.Points)
                 {
-                    if (point.ID == Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString())))
+                    if (point.ID == ((NodeObj)sender).Id)
                     {
                         road.Build();
                         break;
@@ -261,13 +252,13 @@ namespace Map_editor
                     Point p = Mouse.GetPosition(mainGrid);
                     p.X = ((p.X) / zoom.ScaleX) - map.Margin.Left;
                     p.Y = ((p.Y) / zoom.ScaleY) - map.Margin.Top;
-                    ((Button)sender).Margin = new Thickness(p.X - (((Button)sender).Width/2), p.Y - (((Button)sender).Height / 2), 0, 0);
+                    ((NodeObj)sender).Margin = new Thickness(p.X - (((NodeObj)sender).ActualWidth/2), p.Y - (((NodeObj)sender).ActualHeight / 2), 0, 0);
                 }
                 else if (CurrentFunction == PointerFunction.Height)
                 {
                     Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                     float ydif = (float)(p.Y / 10);
-                    OpenTK.Vector3 Location = Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((Button)sender).Tag.ToString()))].Location + new OpenTK.Vector3(0, ydif, 0);
+                    OpenTK.Vector3 Location = Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((NodeObj)sender).Tag.ToString()))].Location + new OpenTK.Vector3(0, ydif, 0);
 
                     UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, this, " H: " + Location.Y);
                 }

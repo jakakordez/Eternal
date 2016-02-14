@@ -99,6 +99,9 @@
     <Compile Include="mapView.xaml.cs">
       <DependentUpon>mapView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NodeObj.xaml.cs">
+      <DependentUpon>NodeObj.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ObjectBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -184,6 +187,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="mapView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NodeObj.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

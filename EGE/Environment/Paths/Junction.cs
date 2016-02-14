@@ -17,10 +17,5 @@ namespace EGE.Environment.Paths
         {
             ObjectMesh = "";
         }
-
-        public void Load()
-        {
-
-        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using OpenTK;
 
 namespace EGE.Environment
 {
@@ -44,6 +45,16 @@ namespace EGE.Environment
         public NodeReference(ulong id)
         {
             ID = id;
+        }
+
+        public Vector3 AbsPosition()
+        {
+            return Nodes.GetNodeLocation(ID);
+        }
+
+        public Vector3 AbsRotation()
+        {
+            return Nodes.GetNodeRotation(ID);
         }
     }
 }

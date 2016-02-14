@@ -79,6 +79,12 @@ namespace EGE.Environment
             return GetNodePosition(id).ExtractTranslation();
         }
 
+        public static Vector3 GetNodeRotation(ulong id)
+        {
+            Quaternion a = GetNodePosition(id).ExtractRotation();
+            return new Vector3(0, (float)Math.Asin(-2.0 * (a.X * a.Z - a.W * a.Y)), 0);
+        }
+
         public static Matrix4 GetNodePosition(ulong id)
         {
             if (NodeList[id].RelativeTo == 0 || NodeList[id].RelativeTo == id) return NodeList[id].CreateTransform();

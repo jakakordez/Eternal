@@ -13,7 +13,6 @@ namespace EGE.Environment.Paths
 {
     public class Road : Path, Buildable
     {
-
         public string TextureName { get; set; }
 
         public float RoadWidth { get; set; }
@@ -45,26 +44,29 @@ namespace EGE.Environment.Paths
             float Sharpness = 2;
 
             Vector3[] BezierControlPoints = new Vector3[4];
-            float angle = (Misc.getAngle(Points[1].Ref.Location.Xz - Points[0].Ref.Location.Xz));
+            float angle;
+            if (Points[0].Ref.RelativeTo == 0) angle = (Misc.getAngle(Points[1].AbsPosition().Xz - Points[0].AbsPosition().Xz));
+            else angle = Points[0].AbsRotation().Y;
             Vector2 l = Misc.getCartesian(angle) * Sharpness;
 
             for (int i = 0; i < Points.Length - 1; i++)
             {
-                BezierControlPoints[0] = Points[i].Ref.Location;
+                BezierControlPoints[0] = Points[i].AbsPosition();
                 BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
 
-                angle = (Misc.getAngle(Points[i + 1].Ref.Location.Xz - Points[i].Ref.Location.Xz));
+                angle = (Misc.getAngle(Points[i + 1].AbsPosition().Xz - Points[i].AbsPosition().Xz));
                 if (i < Points.Length - 2)
                 {
-                    float nextAngle = (Misc.getAngle(Points[i + 2].Ref.Location.Xz - Points[i + 1].Ref.Location.Xz));
+                    float nextAngle = (Misc.getAngle(Points[i + 2].AbsPosition().Xz - Points[i + 1].AbsPosition().Xz));
                     if (angle > MathHelper.Pi && nextAngle < MathHelper.PiOver2) angle -= MathHelper.TwoPi;
                     angle = ((angle + nextAngle) / 2);
                 }
+                else if (Points[i + 1].Ref.RelativeTo != 0) angle = (Points[i + 1].AbsRotation().Y);
 
-                float segments = (Points[i + 1].Ref.Location.Xz - Points[i].Ref.Location.Xz).Length * 0.5f;
-                l = Misc.getCartesian(angle) * (segments / 2);
-                BezierControlPoints[2] = Points[i + 1].Ref.Location - new Vector3(l.X, 0, l.Y);
-                BezierControlPoints[3] = Points[i + 1].Ref.Location;
+                float segments = (Points[i + 1].AbsPosition().Xz - Points[i].AbsPosition().Xz).Length * 0.5f;
+                l = Misc.getCartesian(angle) * (segments/2);
+                BezierControlPoints[2] = Points[i + 1].AbsPosition() - new Vector3(l.X, 0, l.Y);
+                BezierControlPoints[3] = Points[i + 1].AbsPosition();
 
                 Vector3[] roadEdgeRight = CreateCurve(BezierControlPoints, (int)segments, RoadWidth/2, false);
                 Vector3[] roadEdgeLeft = CreateCurve(BezierControlPoints, (int)segments, -RoadWidth/2, false);
@@ -104,6 +106,17 @@ namespace EGE.Environment.Paths
             {
                 RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, RoadMesh.CollisionShape);
             }
+        }
+
+        string GeogebraPoints(Vector3[] ps)
+        {
+            string result = "{";
+            for (int i = 0; i < ps.Length; i++)
+            {
+                result += "(" + ps[i].X.ToString(System.Globalization.CultureInfo.InvariantCulture) + "," + ps[i].Z.ToString(System.Globalization.CultureInfo.InvariantCulture) + ")";
+                if (i < ps.Length - 1) result += ",";
+            }
+            return result + "}";
         }
     }
 }

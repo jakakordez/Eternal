@@ -50,7 +50,7 @@ namespace EGE.Environment.Paths
             }
             Vector2[] heightCurve = Misc.GetBezierApproximation(heightLine, Segments);
             Vector3[] PathNodes = new Vector3[Segments + 1];
-            float kot = 0;
+            double kot = 0;
             for (int i = 0; i < Segments + 1; i++)
             {
                 /*if (i > 1 && i < roadCurve.Length - 2)
@@ -66,16 +66,16 @@ namespace EGE.Environment.Paths
                 else if (kot > -MathHelper.PiOver2) kot += MathHelper.Pi;*/
                 if (i > 1 && i < roadCurve.Length - 2)
                 {
-                    float kot1 = Misc.getAngle(roadCurve[i - 1] - roadCurve[i]);
-                    float kot2 = Misc.getAngle(roadCurve[i] - roadCurve[i+1]);
+                    double kot1 = Misc.getAngleD(roadCurve[i - 1] - roadCurve[i]);
+                    double kot2 = Misc.getAngleD(roadCurve[i] - roadCurve[i+1]);
                     kot = (kot1 + kot2) / 2;
-                    kot -= MathHelper.PiOver2;
+                    kot -= (Math.PI/2);
                 }
-                else if (i < 2) kot = Misc.getAngle(roadCurve[i] - roadCurve[i+1]) - MathHelper.PiOver2;
-                else kot = Misc.getAngle(roadCurve[i - 1] - roadCurve[i]) - MathHelper.PiOver2;
-                float y = (Offset + Offset) * (float)Math.Sin(kot);
-                float x = (Offset + Offset) * (float)Math.Cos(kot);
-                PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + x, heightCurve[i].Y, roadCurve[i].Y + y);
+                else if (i < 2) kot = Misc.getAngleD(roadCurve[i] - roadCurve[i+1]) - (Math.PI / 2);
+                else kot = Misc.getAngleD(roadCurve[i - 1] - roadCurve[i]) - (Math.PI/2);
+                double y = (Offset + Offset) * Math.Sin(kot);
+                double x = (Offset + Offset) * Math.Cos(kot);
+                PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + (float)x, heightCurve[i].Y, roadCurve[i].Y + (float)y);
             }
             return PathNodes;
         }

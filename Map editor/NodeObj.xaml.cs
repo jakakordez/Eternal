@@ -47,7 +47,7 @@ namespace Map_editor
             double Left = (n.X * PixelScale) - (buttonSize / 2);
             Tag = "Nodes/"+Id;
             Margin = new Thickness(Left, Top, 0, 0);
-            rotTrans.Angle = -Nodes.GetNode(Id).Rotation.Y*360/(2*Math.PI);
+            rotTrans.Angle = -(Nodes.GetNodeRotation(Id).Y*360/(2*Math.PI));
         }
     }
 }

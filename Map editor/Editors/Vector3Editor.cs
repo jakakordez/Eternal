@@ -23,7 +23,7 @@ namespace Map_editor.Editors
                 nmrValHolders[i].Minimum = decimal.MinValue;
                 nmrValHolders[i].Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top;
                 nmrValHolders[i].ValueChanged += NmrValueHolder_ValueChanged;
-                nmrValHolders[i].DecimalPlaces = 3;
+                nmrValHolders[i].DecimalPlaces = 5;
                 Controls.Add(nmrValHolders[i]);
             }
             Realign();

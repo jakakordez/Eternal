@@ -53,10 +53,10 @@ namespace EGE
             GL.LoadMatrix(ref trans);
             TerrainHeightfield.Draw();
 
+
             trans = JunctionInstances[0].Location.Ref.CreateTransform() * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             Resources.DrawMesh(Junctions[JunctionInstances[0].ID].ObjectMesh);
-
         }
 
         public void Load(string filePath)
@@ -84,7 +84,7 @@ namespace EGE
             JunctionInstances[0] = new JunctionReference();
             JunctionInstances[0].Location = new NodeReference(9);
             JunctionInstances[0].ID = 0;
-            
+            if(!World.StaticView) JunctionInstances[0].Load(Resources.GetMeshCollisionShape(Junctions[0].ObjectMesh));
         }
 
         public void Save(string filePath)

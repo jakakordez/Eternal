@@ -152,12 +152,10 @@ namespace Map_editor
                 EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i];
                 for (int j = 0; j < r.Points.Length; j++)
                 {
-                    string path = "CurrentMap/CurrentTerrain/Roads/" + i+"/Points/" + j+ "/Ref/Location";
-                    OpenTK.Vector3 n = (OpenTK.Vector3)Form1.getWorldValue(path);
-
+                    OpenTK.Vector3 n = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i].Points[j].AbsPosition();
                     if (j > 0)
                     {
-                        path = "CurrentMap/CurrentTerrain/Roads/" + i + "/" + j;
+                        string path = "CurrentMap/CurrentTerrain/Roads/" + i + "/" + j;
                         if (!MapObjects.Keys.Contains(path))
                         {
                             Line l = new Line();
@@ -210,12 +208,11 @@ namespace Map_editor
             Vector rel = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid)) / 10;
             if (CurrentFunction == PointerFunction.Move)
             {
-                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, Nodes.NodeList[((NodeObj)sender).Id].Location.Y, (float)abs.Y);
+                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, Nodes.GetNodeLocation(((NodeObj)sender).Id).Y, (float)abs.Y);
                 Nodes.SetNodeLocation(((NodeObj)sender).Id, Location);
             }
             else if(CurrentFunction == PointerFunction.Height)
             {
-                
                 OpenTK.Vector3 Location = Nodes.NodeList[((NodeObj)sender).Id].Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
                 Nodes.SetNodeLocation(((NodeObj)sender).Id, Location);
             }

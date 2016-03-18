@@ -146,13 +146,13 @@ namespace Map_editor
                 }
                 ((NodeObj)MapObjects[path]).Locate(PixelScale);
             }
-            for (int i = 0; i < Form1.currentWorld.CurrentMap.CurrentTerrain.Roads.Length; i++)
+            for (int i = 0; i < Form1.currentWorld.CurrentMap.Roads.Length; i++)
             {
                 OpenTK.Vector3 prevNode = new OpenTK.Vector3();
-                EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i];
+                EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.Roads[i];
                 for (int j = 0; j < r.Points.Length; j++)
                 {
-                    OpenTK.Vector3 n = Form1.currentWorld.CurrentMap.CurrentTerrain.Roads[i].Points[j].AbsPosition();
+                    OpenTK.Vector3 n = Form1.currentWorld.CurrentMap.Roads[i].Points[j].AbsPosition();
                     if (j > 0)
                     {
                         string path = "CurrentMap/CurrentTerrain/Roads/" + i + "/" + j;
@@ -179,11 +179,11 @@ namespace Map_editor
             if(heightfieldBitmap == null)
             {
                 heightfieldBitmap = new Image();
-                heightfieldBitmap.Height = Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.Size * PixelScale;
+                heightfieldBitmap.Height = Form1.currentWorld.CurrentMap.TerrainHeightfield.Size * PixelScale;
                 heightfieldBitmap.Width = heightfieldBitmap.Height;
                 heightfieldBitmap.HorizontalAlignment = HorizontalAlignment.Left;
                 heightfieldBitmap.VerticalAlignment = VerticalAlignment.Top;
-                var bmp = EGE.Resources.textureToBitmap(Form1.currentWorld.CurrentMap.CurrentTerrain.TerrainHeightfield.TextureName);
+                var bmp = EGE.Resources.textureToBitmap(Form1.currentWorld.CurrentMap.TerrainHeightfield.TextureName);
                 bmp.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
                 System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
                 BitmapImage bmpi = new BitmapImage();
@@ -226,7 +226,7 @@ namespace Map_editor
                 Nodes.SetNodeRotation(((NodeObj)sender).Id, Nodes.NodeList[((NodeObj)sender).Id].Rotation+RotationDif);
             }
             string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
-            foreach (var road in Form1.currentWorld.CurrentMap.CurrentTerrain.Roads)
+            foreach (var road in Form1.currentWorld.CurrentMap.Roads)
             {
                 foreach (var point in road.Points)
                 {

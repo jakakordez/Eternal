@@ -14,14 +14,13 @@ namespace EGE.Tools
         {
             MapPath = Path;
             new Environment.Nodes().LoadNodes(Path + "\\Nodes.ege");
-            CurrentMap.Load();
-            
+            CurrentMap.Load(Path+"\\Map.ege");
         }
 
         public static void Save(string Path, Map CurrentMap)
         {
             MapPath = Path;
-            CurrentMap.Save();
+            CurrentMap.Save(Path+"\\Map.ege");
             new Environment.Nodes().SaveNodes(Path + "\\Nodes.ege");
         }
     }

@@ -11,7 +11,7 @@ using BulletSharp;
 
 namespace EGE.Environment.Paths
 {
-    public class Road : Path, Buildable
+    public class Road : Path
     {
         public string TextureName { get; set; }
 

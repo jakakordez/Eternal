@@ -30,6 +30,7 @@ namespace Map_editor
             dataTypes.Add(typeof(bool), 0);
             dataTypes.Add(typeof(Vector2), 2);
             dataTypes.Add(typeof(Vector3), 3);
+            dataTypes.Add(typeof(ulong), 0);
         }
 
         private void ObjectBrowser_Load(object sender, EventArgs e)
@@ -42,6 +43,8 @@ namespace Map_editor
             treeView1.Nodes.Clear();
             currentObject = obj;
             AddNode(obj, treeView1.Nodes, title, title);
+            treeView1.Sort();
+            treeView1.Nodes[0].Expand();
         }
 
         void AddNode(object obj, TreeNodeCollection node, string Title, string path)
@@ -60,6 +63,17 @@ namespace Map_editor
                     t.Nodes[i].ContextMenuStrip = ctxNode;
                 }
             }
+            else if (typeof(EGE.Environment.ObjectCollection).IsAssignableFrom(type))
+            {
+                var a = ((EGE.Environment.ObjectCollection)obj).GetNodes();
+                t = new TreeNode(Title, 5, 5);
+                t.ContextMenuStrip = ctxCollection;
+                for (int i = 0; i < a.Length; i++)
+                {
+                    AddNode(a[i].Value, t.Nodes, a[i].Key, path + "/" + a[i].Key);
+                    t.Nodes[i].ContextMenuStrip = ctxCollectionItem;
+                }
+            }
             else if (dataTypes.ContainsKey(type))
             {
                 /*int index = dataTypes.FirstOrDefault(x => x.Value == type).Key;*/
@@ -67,7 +81,7 @@ namespace Map_editor
             }
             else
             {
-                PropertyInfo[] properties = obj.GetType().GetProperties();
+                PropertyInfo[] properties = type.GetProperties();
                 for (int i = 0; i < properties.Length; i++)
                 {
                     AddNode(properties[i].GetValue(obj), t.Nodes, properties[i].Name, path + "/" + properties[i].Name);
@@ -105,9 +119,11 @@ namespace Map_editor
             object v = currentObject;
             for (int i = 0; i < pathParts.Length; i++)
             {
-                if (pathParts[i] == "" || i >= pathParts.Length) break;
-                if (v.GetType().IsArray && i < pathParts.Length) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
-                else if (v.GetType().GetProperty(pathParts[i]) != null) v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
+                Type t = v.GetType();
+                if (pathParts[i] == "") break;
+                if (t.IsArray && i < pathParts.Length) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
+                if (typeof(EGE.Environment.ObjectCollection).IsAssignableFrom(t)) v = ((EGE.Environment.ObjectCollection)v).Get(pathParts[i]);
+                else if (t.GetProperty(pathParts[i]) != null) v = t.GetProperty(pathParts[i]).GetValue(v);
             }
             return v;
         }
@@ -126,10 +142,16 @@ namespace Map_editor
         public object setValue(string[] path, object v, object o, int i)
         {
             if (i >= path.Length) return o;
-            if (v.GetType().IsArray)
+            Type t = v.GetType();
+            if (t.IsArray)
             {
                 object currentValue = ((Array)v).GetValue(Convert.ToInt32(path[i]));
                 ((Array)v).SetValue(setValue(path, currentValue, o, i+1), Convert.ToInt32(path[i]));
+            }
+            else if (typeof(EGE.Environment.ObjectCollection).IsAssignableFrom(t))
+            {
+                var collection = ((EGE.Environment.ObjectCollection)v);
+                collection.Set(path[i], (EGE.Environment.Object)setValue(path, collection.Get(path[i]), o, i + 1));
             }
             else
             {
@@ -137,16 +159,16 @@ namespace Map_editor
                 PropertyInfo prop = null;
                 for (k = i; k < path.Length; k++)
                 {
-                    prop = v.GetType().GetProperty(path[k]);
+                    prop = t.GetProperty(path[k]);
                     if (prop != null) break;
                 }
                 if (prop != null) prop.SetValue(v, setValue(path, prop.GetValue(v), o, k+1));
                 else
                 {
-                    FieldInfo field = v.GetType().GetField(path[0]);
+                    FieldInfo field = t.GetField(path[0]);
                     k = i;
                     
-                    while (field == null && k < path.Length) field = v.GetType().GetField(path[k++]);
+                    while (field == null && k < path.Length) field = t.GetField(path[k++]);
                     if (field != null) field.SetValue(v, setValue(path, field.GetValue(v), o, k+1));
                 }
             }
@@ -206,7 +228,9 @@ namespace Map_editor
             TreeNode parent = nod.Parent;
             parent.Nodes.Remove(nod);
             AddNode(getValue(path), parent.Nodes, nod.Name, path);
-            
+            treeView1.Sort();
+            treeView1.SelectedNode = parent;
+            parent.Expand();
         }
 
         private void buildToolStripMenuItem_Click(object sender, EventArgs e)
@@ -264,6 +288,39 @@ namespace Map_editor
             else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), 0);
             setValue(treeView1.SelectedNode.Tag.ToString().Split('/'), currentObject, copyArray, 0);
             UpdateArray(treeView1.SelectedNode.Tag.ToString());
+            UpdateWorld.Invoke(this, null);
+        }
+
+        private void changeKeyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enter_text et = new Enter_text("Change key", pathName(treeView1.SelectedNode.Tag.ToString()));
+            if(et.ShowDialog() == DialogResult.OK)
+            {
+                EGE.Environment.ObjectCollection collection = (EGE.Environment.ObjectCollection)getValue(pathUp(treeView1.SelectedNode.Tag.ToString()));
+                collection.Add(et.NewValue, collection.Get(et.OldValue));
+                collection.Remove(et.OldValue);
+                UpdateArray(pathUp(treeView1.SelectedNode.Tag.ToString()));
+                UpdateWorld.Invoke(this, null);
+            }
+        }
+
+        private void insertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enter_text et = new Enter_text("Enter key", "");
+            if (et.ShowDialog() == DialogResult.OK)
+            {
+                EGE.Environment.ObjectCollection collection = (EGE.Environment.ObjectCollection)getValue(treeView1.SelectedNode.Tag.ToString());
+                collection.Add(et.NewValue, new EGE.Environment.Object());
+                UpdateArray(pathUp(treeView1.SelectedNode.Tag.ToString()));
+                UpdateWorld.Invoke(this, null);
+            }
+        }
+
+        private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            EGE.Environment.ObjectCollection collection = (EGE.Environment.ObjectCollection)getValue(pathUp(treeView1.SelectedNode.Tag.ToString()));
+            collection.Remove(pathName(treeView1.SelectedNode.Tag.ToString()));
+            UpdateArray(pathUp(treeView1.SelectedNode.Tag.ToString()));
             UpdateWorld.Invoke(this, null);
         }
     }

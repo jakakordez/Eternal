@@ -33,6 +33,7 @@ namespace Map_editor
             buttonSize = n.RelativeTo == 0 ? 20 : 10;
             btn.Height = buttonSize;
             btn.Width = buttonSize;
+            btn.BorderBrush = (n.RelativeTo==0)?Brushes.Red:Brushes.Green;
             rotTrans = new RotateTransform();
             TransformGroup g = new TransformGroup();
             g.Children.Add(rotTrans);

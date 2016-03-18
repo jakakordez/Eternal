@@ -19,7 +19,7 @@ namespace Map_editor.Editors
             txtText.Top = 5;
             txtText.Left = 50;
             txtText.Width = 140;
-            txtText.Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top;
+            txtText.Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top|AnchorStyles.Right;
             txtText.TextChanged += TxtText_TextChanged;
             Controls.Add(txtText);
 

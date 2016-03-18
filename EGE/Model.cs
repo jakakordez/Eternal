@@ -10,7 +10,7 @@ using BulletSharp;
 
 namespace EGE
 {
-    public class Model : Buildable
+    public class Model 
     {
         public string MeshName { get; set; }
 

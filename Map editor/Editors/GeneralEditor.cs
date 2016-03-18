@@ -25,5 +25,10 @@ namespace Map_editor.Editors
             lblTitle.Text = value.ToString();
             base.SetValue(value);
         }
+
+        public override void Realign()
+        {
+            lblTitle.Width = Width;
+        }
     }
 }

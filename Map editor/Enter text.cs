@@ -18,6 +18,7 @@ namespace Map_editor
         }
         public Enter_text(string title, string Value)
         {
+            InitializeComponent();
             OldValue = Value;
             textBox1.Text = Value;
             Text = title;
@@ -28,7 +29,24 @@ namespace Map_editor
         {
             DialogResult = DialogResult.OK;
             Text = textBox1.Text;
+            NewValue = Text;
             Close();
+        }
+
+        private void textBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                DialogResult = DialogResult.OK;
+                Text = textBox1.Text;
+                NewValue = Text;
+                Close();
+            }
+            if(e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

@@ -31,8 +31,8 @@ namespace EGE.Environment.Paths
                 }
                 else if (i < 2) kot = (float)Math.Atan((roadCurve[i + 1].Y - roadCurve[i].Y) / (roadCurve[i + 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
                 else kot = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
-                float y = (Offset + Offset) * (float)Math.Sin(kot);
-                float x = (Offset + Offset) * (float)Math.Cos(kot);
+                float y = Offset * (float)Math.Sin(kot);
+                float x = Offset * (float)Math.Cos(kot);
                 PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + x, Height, roadCurve[i].Y + y);
             }
             return PathNodes;
@@ -73,8 +73,8 @@ namespace EGE.Environment.Paths
                 }
                 else if (i < 2) kot = Misc.getAngleD(roadCurve[i] - roadCurve[i+1]) - (Math.PI / 2);
                 else kot = Misc.getAngleD(roadCurve[i - 1] - roadCurve[i]) - (Math.PI/2);
-                double y = (Offset + Offset) * Math.Sin(kot);
-                double x = (Offset + Offset) * Math.Cos(kot);
+                double y = Offset * Math.Sin(kot);
+                double x = Offset * Math.Cos(kot);
                 PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + (float)x, heightCurve[i].Y, roadCurve[i].Y + (float)y);
             }
             return PathNodes;

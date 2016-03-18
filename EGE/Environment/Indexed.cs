@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace EGE.Environment
 {
-    public interface Buildable
+    public class Indexed
     {
-        void Build();
+        
     }
 }

@@ -138,6 +138,8 @@ namespace EGE.Environment
 
         public void Draw()
         {
+            Matrix4 trans = World.WorldMatrix;
+            GL.LoadMatrix(ref trans);
 
             Resources.BindTexture(TextureName);
             HeightfieldMesh.Draw();

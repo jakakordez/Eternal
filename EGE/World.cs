@@ -68,18 +68,19 @@ namespace EGE
         {
             //CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
             
-            foreach (Environment.Paths.Road r in CurrentMap.CurrentTerrain.Roads)
+            foreach (Environment.Paths.Road r in CurrentMap.Roads)
             {
                 if(r.Points.Length > 1) r.Build();
             }
-            foreach (var item in CurrentMap.CurrentTerrain.StaticModels)
+            foreach (var item in CurrentMap.StaticModels)
             {
                 item.Load();
             }
-            CurrentMap.CurrentTerrain.TerrainHeightfield.Load();
+            CurrentMap.TerrainHeightfield.Load();
 
             if (!StaticView)
             {
+                CurrentMap.ObjectCollection.Load();
                 var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo"); 
                 (car as Vehicles.Car).Load(new Vector3(693, 15, 284));
                 VehicleList.Add(car);
@@ -120,7 +121,6 @@ namespace EGE
 
         public void Resize(float Width, float Height)
         {
-
             Tools.Graphics.Resize(Width, Height);
         }
 
@@ -134,7 +134,7 @@ namespace EGE
             MainCharacter.Draw();
             
 
-            CurrentMap.CurrentTerrain.Draw();
+            CurrentMap.Draw();
 
             foreach (var v in VehicleList) v.Draw();
         }

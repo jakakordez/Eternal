@@ -13,7 +13,7 @@ namespace EGE.Environment
         public Vector3 Location { get; set; }
         public Vector3 Rotation { get;set; }
 
-        public ulong RelativeTo;
+        public ulong RelativeTo { get; set; }
 
         public Node() {
             Location = Vector3.Zero;

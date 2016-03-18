@@ -38,9 +38,16 @@
             this.ctxNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxCollection = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.insertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxCollectionItem = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.changeKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.valueEditor1 = new Map_editor.Editors.ValueEditor();
+            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxArray.SuspendLayout();
             this.ctxNode.SuspendLayout();
+            this.ctxCollection.SuspendLayout();
+            this.ctxCollectionItem.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeView1
@@ -113,6 +120,35 @@
             this.buildToolStripMenuItem.Text = "Build";
             this.buildToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
             // 
+            // ctxCollection
+            // 
+            this.ctxCollection.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.insertToolStripMenuItem});
+            this.ctxCollection.Name = "ctxCollection";
+            this.ctxCollection.Size = new System.Drawing.Size(104, 26);
+            // 
+            // insertToolStripMenuItem
+            // 
+            this.insertToolStripMenuItem.Name = "insertToolStripMenuItem";
+            this.insertToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.insertToolStripMenuItem.Text = "Insert";
+            this.insertToolStripMenuItem.Click += new System.EventHandler(this.insertToolStripMenuItem_Click);
+            // 
+            // ctxCollectionItem
+            // 
+            this.ctxCollectionItem.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeKeyToolStripMenuItem,
+            this.deleteToolStripMenuItem1});
+            this.ctxCollectionItem.Name = "ctxCollectionItem";
+            this.ctxCollectionItem.Size = new System.Drawing.Size(153, 70);
+            // 
+            // changeKeyToolStripMenuItem
+            // 
+            this.changeKeyToolStripMenuItem.Name = "changeKeyToolStripMenuItem";
+            this.changeKeyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.changeKeyToolStripMenuItem.Text = "Change key";
+            this.changeKeyToolStripMenuItem.Click += new System.EventHandler(this.changeKeyToolStripMenuItem_Click);
+            // 
             // valueEditor1
             // 
             this.valueEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -121,6 +157,13 @@
             this.valueEditor1.Name = "valueEditor1";
             this.valueEditor1.Size = new System.Drawing.Size(202, 30);
             this.valueEditor1.TabIndex = 3;
+            // 
+            // deleteToolStripMenuItem1
+            // 
+            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
+            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem1.Text = "Delete";
+            this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
             // 
             // ObjectBrowser
             // 
@@ -133,6 +176,8 @@
             this.Load += new System.EventHandler(this.ObjectBrowser_Load);
             this.ctxArray.ResumeLayout(false);
             this.ctxNode.ResumeLayout(false);
+            this.ctxCollection.ResumeLayout(false);
+            this.ctxCollectionItem.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -148,5 +193,10 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem prependToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip ctxCollection;
+        private System.Windows.Forms.ToolStripMenuItem insertToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip ctxCollectionItem;
+        private System.Windows.Forms.ToolStripMenuItem changeKeyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
     }
 }

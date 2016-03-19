@@ -507,7 +507,7 @@
             this.objectBrowser1.Size = new System.Drawing.Size(146, 368);
             this.objectBrowser1.TabIndex = 2;
             this.objectBrowser1.UpdateWorld += new System.EventHandler(this.objectBrowser1_UpdateWorld);
-            this.objectBrowser1.NavigateNode += new System.EventHandler<ulong>(this.objectBrowser1_NavigateNode);
+            this.objectBrowser1.NavigateNode += new System.EventHandler<string>(this.objectBrowser1_NavigateNode);
             // 
             // tabControl1
             // 

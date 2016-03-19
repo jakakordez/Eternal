@@ -21,15 +21,16 @@ namespace Map_editor
     /// </summary>
     public partial class NodeObj : UserControl
     {
-        public ulong Id;
+        public string Id;
         int buttonSize;
         RotateTransform rotTrans;
         
-        public NodeObj(ulong Id)
+        public NodeObj(string Id)
         {
             InitializeComponent();
             this.Id = Id;
-            Node n = Nodes.GetNode(Id);
+
+            Node n = getNode();
             buttonSize = n.RelativeTo == 0 ? 20 : 10;
             btn.Height = buttonSize;
             btn.Width = buttonSize;
@@ -41,14 +42,21 @@ namespace Map_editor
             rotationIndicator.RenderTransform = g;
         }
 
+        public Node getNode()
+        {
+            string[] pathParts = Id.Split('/');
+            return Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
+        }
+
         public void Locate(double PixelScale)
         {
-            OpenTK.Vector3 n = Nodes.GetNodeLocation(Id);
+            Node node = getNode();
+            OpenTK.Vector3 n = node.Location;
             double Top = (n.Z * PixelScale) - (buttonSize / 2);
             double Left = (n.X * PixelScale) - (buttonSize / 2);
-            Tag = "Nodes/"+Id;
+            Tag = Id;
             Margin = new Thickness(Left, Top, 0, 0);
-            rotTrans.Angle = -(Nodes.GetNodeRotation(Id).Y*360/(2*Math.PI));
+            rotTrans.Angle = -(node.Rotation.Y*360/(2*Math.PI));
         }
     }
 }

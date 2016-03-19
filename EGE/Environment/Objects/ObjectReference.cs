@@ -11,12 +11,12 @@ namespace EGE.Environment
     public class ObjectReference
     {
         public RigidBody CollisionObject;
-        public NodeReference Location { get; set; }
+        public Node Location{ get; set; }
         public string Object { get; set; }
 
         public ObjectReference()
         {
-            Location = new NodeReference();
+            Location = new Node();
             Object = "";
         }
     }

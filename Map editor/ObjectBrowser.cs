@@ -19,7 +19,7 @@ namespace Map_editor
         public object currentObject;
         public event EventHandler ValueChanged;
         public event EventHandler UpdateWorld;
-        public event EventHandler<ulong> NavigateNode;
+        public event EventHandler<string> NavigateNode;
 
         public ObjectBrowser()
         {
@@ -110,7 +110,7 @@ namespace Map_editor
             if (valueEditor1.GetType() != typeof(Editors.GeneralEditor)) previousPath = e.Node.Tag.ToString();
             else previousPath = "";
 
-            if (val.GetType() == typeof(EGE.Environment.NodeReference)) NavigateNode.Invoke(this, ((EGE.Environment.NodeReference)val).ID);
+            if (val.GetType() == typeof(EGE.Environment.Node)) NavigateNode.Invoke(this, e.Node.Tag.ToString());
         }
 
         object getValue(string path)
@@ -182,12 +182,7 @@ namespace Map_editor
             Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length + 1);
             Array.Copy(arrayObject, 0, copyArray, 0, arrayObject.Length);
 
-
-            if (arr.GetType().GetElementType() == typeof(EGE.Environment.NodeReference))
-            {
-                copyArray.SetValue(new EGE.Environment.NodeReference(Vector3.Zero), arrayObject.Length);
-            }
-            else if (arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static) != null)
+            if (arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static) != null)
             {
                 object newObj = arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
                 copyArray.SetValue(newObj, arrayObject.Length);
@@ -275,12 +270,7 @@ namespace Map_editor
             Array copyArray = Array.CreateInstance(arr.GetType().GetElementType(), arrayObject.Length + 1);
             Array.Copy(arrayObject, 0, copyArray, 1, arrayObject.Length);
 
-
-            if (arr.GetType().GetElementType() == typeof(EGE.Environment.NodeReference))
-            {
-                copyArray.SetValue(new EGE.Environment.NodeReference(Vector3.Zero), 0);
-            }
-            else if (arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static) != null)
+            if (arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static) != null)
             {
                 object newObj = arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
                 copyArray.SetValue(newObj, 0);

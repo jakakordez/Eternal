@@ -13,7 +13,6 @@ namespace EGE.Tools
         public static void Load(string Path, Map CurrentMap)
         {
             MapPath = Path;
-            new Environment.Nodes().LoadNodes(Path + "\\Nodes.ege");
             CurrentMap.Load(Path+"\\Map.ege");
         }
 
@@ -21,7 +20,6 @@ namespace EGE.Tools
         {
             MapPath = Path;
             CurrentMap.Save(Path+"\\Map.ege");
-            new Environment.Nodes().SaveNodes(Path + "\\Nodes.ege");
         }
     }
 }

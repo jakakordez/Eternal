@@ -14,7 +14,7 @@ namespace EGE
     {
         public string MeshName { get; set; }
 
-        public Environment.NodeReference Center { get; set; }
+        public Node Center { get; set; }
 
         public Model()
         {
@@ -23,7 +23,7 @@ namespace EGE
 
         public static Model Create(){
             Model n = new Model();
-            n.Center = new NodeReference(new Node());
+            n.Center = new Node();
             return n;    
         }
 
@@ -35,7 +35,7 @@ namespace EGE
         public void Draw()
         {
             Matrix4 trans = World.WorldMatrix;
-            trans = Center.Ref.CreateTransform() * World.WorldMatrix;
+            trans = Center.CreateTransform() * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             Resources.DrawMesh(MeshName);
         }

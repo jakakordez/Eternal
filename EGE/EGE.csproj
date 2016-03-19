@@ -103,14 +103,13 @@
     <Compile Include="Environment\Indexed.cs" />
     <Compile Include="Environment\Heightfield.cs" />
     <Compile Include="Environment\Node.cs" />
-    <Compile Include="Environment\NodeReference.cs" />
-    <Compile Include="Environment\Nodes.cs" />
     <Compile Include="Environment\Objects\Object.cs" />
     <Compile Include="Environment\Objects\ObjectCollection.cs" />
     <Compile Include="Environment\Objects\ObjectManager.cs" />
     <Compile Include="Environment\Objects\ObjectReference.cs" />
     <Compile Include="Environment\Paths\Lane.cs" />
     <Compile Include="Environment\Paths\Path.cs" />
+    <Compile Include="Environment\Paths\PathEndpoint.cs" />
     <Compile Include="Environment\Paths\RoadNode.cs" />
     <Compile Include="Environment\Paths\Road.cs" />
     <Compile Include="Meshes\Material.cs" />

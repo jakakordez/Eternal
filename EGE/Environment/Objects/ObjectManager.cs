@@ -29,7 +29,7 @@ namespace EGE.Environment
                 if (o.CollisionMesh == "") shape = Resources.GetMeshCollisionShape(o.ObjectMesh);
                 else shape = Resources.GetMeshCollisionShape(o.CollisionMesh);
 
-                ObjectReferences[i].CollisionObject = World.CreateRigidBody(0, ObjectReferences[i].Location.Ref.CreateTransform(), shape);
+                ObjectReferences[i].CollisionObject = World.CreateRigidBody(0, ObjectReferences[i].Location.CreateTransform(), shape);
             }
         }
 
@@ -37,7 +37,7 @@ namespace EGE.Environment
         {
             for (int i = 0; i < ObjectReferences.Length; i++)
             {
-                Matrix4 trans = ObjectReferences[i].Location.Ref.CreateTransform() * World.WorldMatrix;
+                Matrix4 trans = ObjectReferences[i].Location.CreateTransform() * World.WorldMatrix;
                 GL.LoadMatrix(ref trans);
                 Object o = Objects.Get(ObjectReferences[i].Object);
                 Resources.DrawMesh(o.ObjectMesh);

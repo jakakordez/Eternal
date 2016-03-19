@@ -100,9 +100,9 @@ namespace Map_editor
             map.Children.Add(heightfieldCanvas);
         }
 
-        public void FocusNode(ulong key)
+        public void FocusNode(string Id)
         {
-            NodeObj a = (NodeObj)MapObjects["Nodes/" + key];
+            NodeObj a = (NodeObj)MapObjects[Id];
             double mx = -a.Margin.Left+(ActualWidth/zoom.ScaleX/2);
             double my = -a.Margin.Top+(ActualHeight / zoom.ScaleX / 2);
             map.Margin = new Thickness(mx, my, 0, 0);
@@ -127,35 +127,32 @@ namespace Map_editor
 
         public void UpdateWorld()
         {
-            foreach (var item in Nodes.NodeList)
-            {
-                string path = "Nodes/" + item.Key;
-                if (!MapObjects.Keys.Contains(path))
-                {
-                    NodeObj nodeBtn = new NodeObj(item.Key);
-                    nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
-                    nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-                    nodeBtn.BorderBrush = item.Value.RelativeTo == 0 ? Brushes.Green:Brushes.LightGreen;
-                    nodeBtn.Cursor = NodeCursor;
-
-                    nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-                    nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
-                    nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
-                    map.Children.Add(nodeBtn);
-                    MapObjects.Add(path, nodeBtn);
-                }
-                ((NodeObj)MapObjects[path]).Locate(PixelScale);
-            }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.Roads.Length; i++)
             {
                 OpenTK.Vector3 prevNode = new OpenTK.Vector3();
                 EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.Roads[i];
                 for (int j = 0; j < r.Points.Length; j++)
                 {
-                    OpenTK.Vector3 n = Form1.currentWorld.CurrentMap.Roads[i].Points[j].AbsPosition();
+                    string path = "CurrentMap/Roads/" + i + "/Points/" + j;
+                    OpenTK.Vector3 n = Form1.currentWorld.CurrentMap.Roads[i].Points[j].Location;
+                    if (!MapObjects.Keys.Contains(path))
+                    {
+                        NodeObj nodeBtn = new NodeObj(path);
+                        nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+                        nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+                        nodeBtn.Cursor = NodeCursor;
+
+                        nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+                        nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
+                        nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
+                        map.Children.Add(nodeBtn);
+                        MapObjects.Add(path, nodeBtn);
+                    }
+                    ((NodeObj)MapObjects[path]).Locate(PixelScale);
+
                     if (j > 0)
                     {
-                        string path = "CurrentMap/CurrentTerrain/Roads/" + i + "/" + j;
+                        path = "CurrentMap/Roads/" + i + "/" + (j-1) +"-"+j;
                         if (!MapObjects.Keys.Contains(path))
                         {
                             Line l = new Line();
@@ -204,17 +201,19 @@ namespace Map_editor
 
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
+            string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
+            Node n = Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
             Point abs = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
             Vector rel = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid)) / 10;
             if (CurrentFunction == PointerFunction.Move)
             {
-                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, Nodes.GetNodeLocation(((NodeObj)sender).Id).Y, (float)abs.Y);
-                Nodes.SetNodeLocation(((NodeObj)sender).Id, Location);
+                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, n.Location.Y, (float)abs.Y);
+                n.Location = Location;
             }
             else if(CurrentFunction == PointerFunction.Height)
             {
-                OpenTK.Vector3 Location = Nodes.NodeList[((NodeObj)sender).Id].Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
-                Nodes.SetNodeLocation(((NodeObj)sender).Id, Location);
+                OpenTK.Vector3 Location = n.Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
+                n.Location = Location;
             }
             else
             {
@@ -223,20 +222,10 @@ namespace Map_editor
                 if (CurrentFunction == PointerFunction.RotateX) RotationDif = new OpenTK.Vector3((float)rel.Y, 0, 0);
                 if (CurrentFunction == PointerFunction.RotateY) RotationDif = new OpenTK.Vector3(0, (float)rel.Y, 0);
                 if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new OpenTK.Vector3(0, 0, (float)rel.Y);
-                Nodes.SetNodeRotation(((NodeObj)sender).Id, Nodes.NodeList[((NodeObj)sender).Id].Rotation+RotationDif);
+                n.Rotation = n.Rotation+RotationDif;
             }
-            string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
-            foreach (var road in Form1.currentWorld.CurrentMap.Roads)
-            {
-                foreach (var point in road.Points)
-                {
-                    if (point.ID == ((NodeObj)sender).Id)
-                    {
-                        road.Build();
-                        break;
-                    }
-                }
-            }
+
+            Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build();
             UpdateWorld();
         }
 
@@ -253,10 +242,11 @@ namespace Map_editor
                 }
                 else if (CurrentFunction == PointerFunction.Height)
                 {
+                    string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
+                    Node n = Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
                     Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                     float ydif = (float)(p.Y / 10);
-                    OpenTK.Vector3 Location = Nodes.NodeList[Convert.ToUInt64(Misc.pathName(((NodeObj)sender).Tag.ToString()))].Location + new OpenTK.Vector3(0, ydif, 0);
-
+                    OpenTK.Vector3 Location = n.Location + new OpenTK.Vector3(0, ydif, 0);
                     UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, this, " H: " + Location.Y);
                 }
             }

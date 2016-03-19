@@ -45,28 +45,28 @@ namespace EGE.Environment.Paths
 
             Vector3[] BezierControlPoints = new Vector3[4];
             float angle;
-            if (Points[0].Ref.RelativeTo == 0) angle = (Misc.getAngle(Points[1].AbsPosition().Xz - Points[0].AbsPosition().Xz));
-            else angle = Points[0].AbsRotation().Y;
+            if (Points[0].RelativeTo == 0) angle = (Misc.getAngle(Points[1].Location.Xz - Points[0].Location.Xz));
+            else angle = Points[0].Location.Y;
             Vector2 l = Misc.getCartesian(angle) * Sharpness;
 
             for (int i = 0; i < Points.Length - 1; i++)
             {
-                BezierControlPoints[0] = Points[i].AbsPosition();
+                BezierControlPoints[0] = Points[i].Location;
                 BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
 
-                angle = (Misc.getAngle(Points[i + 1].AbsPosition().Xz - Points[i].AbsPosition().Xz));
+                angle = (Misc.getAngle(Points[i + 1].Location.Xz - Points[i].Location.Xz));
                 if (i < Points.Length - 2)
                 {
-                    float nextAngle = (Misc.getAngle(Points[i + 2].AbsPosition().Xz - Points[i + 1].AbsPosition().Xz));
+                    float nextAngle = (Misc.getAngle(Points[i + 2].Location.Xz - Points[i + 1].Location.Xz));
                     if (angle > MathHelper.Pi && nextAngle < MathHelper.PiOver2) angle -= MathHelper.TwoPi;
                     angle = ((angle + nextAngle) / 2);
                 }
-                else if (Points[i + 1].Ref.RelativeTo != 0) angle = (Points[i + 1].AbsRotation().Y);
+                else if (Points[i + 1].RelativeTo != 0) angle = (Points[i + 1].Location.Y);
 
-                float segments = (Points[i + 1].AbsPosition().Xz - Points[i].AbsPosition().Xz).Length * 0.5f;
+                float segments = (Points[i + 1].Location.Xz - Points[i].Location.Xz).Length * 0.5f;
                 l = Misc.getCartesian(angle) * (segments/2);
-                BezierControlPoints[2] = Points[i + 1].AbsPosition() - new Vector3(l.X, 0, l.Y);
-                BezierControlPoints[3] = Points[i + 1].AbsPosition();
+                BezierControlPoints[2] = Points[i + 1].Location - new Vector3(l.X, 0, l.Y);
+                BezierControlPoints[3] = Points[i + 1].Location;
 
                 Vector3[] roadEdgeRight = CreateCurve(BezierControlPoints, (int)segments, RoadWidth/2, false);
                 Vector3[] roadEdgeLeft = CreateCurve(BezierControlPoints, (int)segments, -RoadWidth/2, false);

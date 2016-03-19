@@ -9,11 +9,11 @@ namespace EGE.Environment.Paths
     public class Lane
     {
         public float LaneOffset { get; set; }
-        public NodeReference[] LaneWaypoints;
+        public Node[] LaneWaypoints;
 
         public Lane()
         {
-            LaneWaypoints = new NodeReference[0];
+            LaneWaypoints = new Node[0];
         }
 
         public Lane(float Offset)

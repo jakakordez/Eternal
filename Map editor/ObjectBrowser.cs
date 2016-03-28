@@ -246,7 +246,7 @@ namespace Map_editor
             {
                 if (v.GetType().IsArray) v = ((Array)v).GetValue(Convert.ToInt32(pathParts[i]));
                 else if (v.GetType().GetProperty(pathParts[i]) != null) v = v.GetType().GetProperty(pathParts[i]).GetValue(v);
-                else if(v.GetType().GetMethod(pathParts[i]) != null) v.GetType().GetMethod(pathParts[i]).Invoke(v, null);
+                else if(v.GetType().GetMethod(pathParts[i]) != null) v.GetType().GetMethod(pathParts[i]).Invoke(v, new object[] { Form1.currentWorld.CurrentMap.ObjectCollection});
             }
             return v;
         }

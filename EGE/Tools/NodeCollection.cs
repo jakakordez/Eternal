@@ -25,6 +25,11 @@ namespace EGE.Tools
             return storage[id];
         }
 
+        public bool Contains(string id)
+        {
+            return storage.ContainsKey(id);
+        }
+
         public void Add(string id, object o)
         {
             storage.Add(id, o);

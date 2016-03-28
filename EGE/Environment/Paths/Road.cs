@@ -48,7 +48,7 @@ namespace EGE.Environment.Paths
             int c = 0;
             Node first = FirstEndpoint.getPosition(objects);
             if (first != null) c++;
-            Node last = FirstEndpoint.getPosition(objects);
+            Node last = LastEndpoint.getPosition(objects);
             if (last != null) c++;
             Node[] Points = new Node[this.Points.Length + c];
             Array.Copy(this.Points, 0, Points, (first != null)?1:0, this.Points.Length);

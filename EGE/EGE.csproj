@@ -118,7 +118,7 @@
     <Compile Include="Meshes\RotatableMesh.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Tools\CollectionSerializer.cs" />
-    <Compile Include="Tools\INodeCollection.cs" />
+    <Compile Include="Tools\NodeCollection.cs" />
     <Compile Include="Tools\Contruction.cs" />
     <Compile Include="Tools\Global.cs" />
     <Compile Include="Environment\Map.cs" />

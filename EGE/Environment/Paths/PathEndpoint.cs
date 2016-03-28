@@ -9,12 +9,12 @@ namespace EGE.Environment.Paths
 {
     public class PathEndpoint
     {
-        public ulong ObjectID { get; set; }
+        public string ObjectID { get; set; }
         public int NodeID { get; set; }
 
         public PathEndpoint() { }
 
-        public PathEndpoint(ulong objectID, int node)
+        public PathEndpoint(string objectID, int node)
         {
             ObjectID = objectID;
             NodeID = node;
@@ -22,12 +22,12 @@ namespace EGE.Environment.Paths
 
         public Node getPosition(ObjectManager objects)
         {
-            /*if (objects.ObjectReferences.ContainsKey(ObjectID)){
-                Object o = objects.Objects.Get(objects.ObjectReferences[ObjectID].Object);
+            if (objects.ObjectReferences.Contains(ObjectID)){
+                Object o = (Object)objects.Objects.Get(((ObjectReference)objects.ObjectReferences.Get(ObjectID)).Object);
                 if(o.RoadEndpoints.Length > NodeID)
                 {
                     Node relative = o.RoadEndpoints[NodeID];
-                    Node bs = objects.ObjectReferences[ObjectID].Position;
+                    Node bs = ((ObjectReference)objects.ObjectReferences.Get(ObjectID)).Position;
                     Node result = new Node();
                     Matrix4 r = relative.CreateTransform() * bs.CreateTransform();
                     result.Location = r.ExtractTranslation();
@@ -35,7 +35,7 @@ namespace EGE.Environment.Paths
                     result.Rotation = new Vector3(0, (float)Math.Asin(-2.0 * (a.X * a.Z - a.W * a.Y)), 0);
                     return result;
                 }
-            }*///todo
+            }
 
             return null;
         }

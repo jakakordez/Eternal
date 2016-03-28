@@ -133,7 +133,7 @@ namespace Map_editor
             foreach (var item in Form1.currentWorld.CurrentMap.ObjectCollection.ObjectReferences.GetNodes())
             {
                 ObjectReference r = (ObjectReference)item.Value;
-                string path = "CurrentMap/ObjectCollection/ObjectReferences/" + 0 + "/Position";//todo
+                string path = "CurrentMap/ObjectCollection/ObjectReferences/" + item.Key + "/Position";
                 OpenTK.Vector3 n = r.Position.Location;
                 if (!MapObjects.Keys.Contains(path))
                 {

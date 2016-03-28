@@ -44,8 +44,9 @@ namespace Map_editor
 
         public Node getNode()
         {
-            string[] pathParts = Id.Split('/');
-            return Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
+            //string[] pathParts = Id.Split('/');
+            return (Node)ObjectBrowser.getValue(Id, Form1.currentWorld);
+            //return Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
         }
 
         public void Locate(double PixelScale)

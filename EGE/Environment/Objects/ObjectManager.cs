@@ -12,34 +12,34 @@ namespace EGE.Environment
     public class ObjectManager
     {
         public ObjectCollection Objects { get; set; }
-        public ObjectReference[] ObjectReferences { get; set; }
+        public ObjectReferenceCollection ObjectReferences { get; set; }
 
         public ObjectManager()
         {
             Objects = new ObjectCollection();
-            ObjectReferences = new ObjectReference[0];
+            ObjectReferences = new ObjectReferenceCollection();
         }
 
         public void Load()
         {
-            for (int i = 0; i < ObjectReferences.Length; i++)
+            foreach (var obref in ObjectReferences.GetNodes().ToArray())
             {
-                Object o = Objects.Get(ObjectReferences[i].Object);
+                Object o = (Object)Objects.Get(((ObjectReference)obref.Value).Object);
                 CollisionShape shape;
                 if (o.CollisionMesh == "") shape = Resources.GetMeshCollisionShape(o.ObjectMesh);
                 else shape = Resources.GetMeshCollisionShape(o.CollisionMesh);
 
-                ObjectReferences[i].CollisionObject = World.CreateRigidBody(0, ObjectReferences[i].Location.CreateTransform(), shape);
+                ((ObjectReference)obref.Value).CollisionObject = World.CreateRigidBody(0, ((ObjectReference)obref.Value).Position.CreateTransform(), shape);
             }
         }
 
         public void Draw()
         {
-            for (int i = 0; i < ObjectReferences.Length; i++)
+            foreach (var obref in ObjectReferences.GetNodes())
             {
-                Matrix4 trans = ObjectReferences[i].Location.CreateTransform() * World.WorldMatrix;
+                Matrix4 trans = ((ObjectReference)obref.Value).Position.CreateTransform() * World.WorldMatrix;
                 GL.LoadMatrix(ref trans);
-                Object o = Objects.Get(ObjectReferences[i].Object);
+                Object o = (Object)Objects.Get(((ObjectReference)obref.Value).Object);
                 Resources.DrawMesh(o.ObjectMesh);
             }
         }

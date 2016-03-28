@@ -102,10 +102,13 @@ namespace Map_editor
 
         public void FocusNode(string Id)
         {
-            NodeObj a = (NodeObj)MapObjects[Id];
-            double mx = -a.Margin.Left+(ActualWidth/zoom.ScaleX/2);
-            double my = -a.Margin.Top+(ActualHeight / zoom.ScaleX / 2);
-            map.Margin = new Thickness(mx, my, 0, 0);
+            if (MapObjects.ContainsKey(Id))
+            {
+                NodeObj a = (NodeObj)MapObjects[Id];
+                double mx = -a.Margin.Left + (ActualWidth / zoom.ScaleX / 2);
+                double my = -a.Margin.Top + (ActualHeight / zoom.ScaleX / 2);
+                map.Margin = new Thickness(mx, my, 0, 0);
+            }
         }
 
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -127,6 +130,26 @@ namespace Map_editor
 
         public void UpdateWorld()
         {
+            foreach (var item in Form1.currentWorld.CurrentMap.ObjectCollection.ObjectReferences.GetNodes())
+            {
+                ObjectReference r = (ObjectReference)item.Value;
+                string path = "CurrentMap/ObjectCollection/ObjectReferences/" + 0 + "/Position";//todo
+                OpenTK.Vector3 n = r.Position.Location;
+                if (!MapObjects.Keys.Contains(path))
+                {
+                    NodeObj nodeBtn = new NodeObj(path);
+                    nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+                    nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+                    nodeBtn.Cursor = NodeCursor;
+
+                    nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+                    nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
+                    nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
+                    map.Children.Add(nodeBtn);
+                    MapObjects.Add(path, nodeBtn);
+                }
+                ((NodeObj)MapObjects[path]).Locate(PixelScale);
+            }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.Roads.Length; i++)
             {
                 OpenTK.Vector3 prevNode = new OpenTK.Vector3();
@@ -202,7 +225,7 @@ namespace Map_editor
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
-            Node n = Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
+            Node n = (Node)ObjectBrowser.getValue(((NodeObj)sender).Tag.ToString(), Form1.currentWorld);
             Point abs = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
             Vector rel = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid)) / 10;
             if (CurrentFunction == PointerFunction.Move)
@@ -224,8 +247,7 @@ namespace Map_editor
                 if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new OpenTK.Vector3(0, 0, (float)rel.Y);
                 n.Rotation = n.Rotation+RotationDif;
             }
-
-            Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build();
+            if(pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
         }
 
@@ -242,8 +264,7 @@ namespace Map_editor
                 }
                 else if (CurrentFunction == PointerFunction.Height)
                 {
-                    string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
-                    Node n = Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Points[Convert.ToInt32(pathParts[4])];
+                    Node n = (Node)ObjectBrowser.getValue(((NodeObj)sender).Tag.ToString(), Form1.currentWorld);
                     Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                     float ydif = (float)(p.Y / 10);
                     OpenTK.Vector3 Location = n.Location + new OpenTK.Vector3(0, ydif, 0);

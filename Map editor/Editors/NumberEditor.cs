@@ -10,7 +10,7 @@ namespace Map_editor.Editors
     class NumberEditor:ValueEditor
     {
         NumericUpDown nmrValueHolder;
-        bool IntegerType;
+        Type numberType;
 
         public NumberEditor()
         {
@@ -27,14 +27,15 @@ namespace Map_editor.Editors
 
         private void NmrValueHolder_ValueChanged(object sender, EventArgs e)
         {
-            if (IntegerType) SetValue(Convert.ToInt32(nmrValueHolder.Value));
+            if (numberType == typeof(int)) SetValue(Convert.ToInt32(nmrValueHolder.Value));
+            else if (numberType == typeof(ulong)) SetValue(Convert.ToUInt64(nmrValueHolder.Value));
             else SetValue(Convert.ToSingle(nmrValueHolder.Value));
         }
 
         public override void SetValue(object value)
         {
-            IntegerType = value.GetType() == typeof(int);
-            nmrValueHolder.DecimalPlaces = IntegerType ? 0 : 3;
+            numberType = value.GetType();
+            nmrValueHolder.DecimalPlaces = numberType==typeof(Single) ? 3 : 0;
             nmrValueHolder.Value = Convert.ToDecimal(value);
             base.SetValue(value);
         }

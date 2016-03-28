@@ -38,15 +38,23 @@ namespace EGE.Environment.Paths
             RoadMesh.Draw();
         }
 
-        public void Build()
+        public void Build(ObjectManager objects)
         {
             List<Vector3> BezierCurve = new List<Vector3>();
             float Sharpness = 2;
 
             Vector3[] BezierControlPoints = new Vector3[4];
             float angle;
-            if (Points[0].RelativeTo == 0) angle = (Misc.getAngle(Points[1].Location.Xz - Points[0].Location.Xz));
-            else angle = Points[0].Location.Y;
+            int c = 0;
+            Node first = FirstEndpoint.getPosition(objects);
+            if (first != null) c++;
+            Node last = FirstEndpoint.getPosition(objects);
+            if (last != null) c++;
+            Node[] Points = new Node[this.Points.Length + c];
+            Array.Copy(this.Points, 0, Points, (first != null)?1:0, this.Points.Length);
+            if (first != null) Points[0] = first;
+            if (last != null) Points[Points.Length - 1] = last;
+            angle = Points[0].Location.Y;
             Vector2 l = Misc.getCartesian(angle) * Sharpness;
 
             for (int i = 0; i < Points.Length - 1; i++)
@@ -61,7 +69,7 @@ namespace EGE.Environment.Paths
                     if (angle > MathHelper.Pi && nextAngle < MathHelper.PiOver2) angle -= MathHelper.TwoPi;
                     angle = ((angle + nextAngle) / 2);
                 }
-                else if (Points[i + 1].RelativeTo != 0) angle = (Points[i + 1].Location.Y);
+                else angle = (Points[i + 1].Location.Y);
 
                 float segments = (Points[i + 1].Location.Xz - Points[i].Location.Xz).Length * 0.5f;
                 l = Misc.getCartesian(angle) * (segments/2);

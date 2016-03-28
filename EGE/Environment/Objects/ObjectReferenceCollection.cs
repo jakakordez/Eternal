@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace EGE.Environment
 {
-    public class ObjectCollection : Tools.NodeCollection
+    public class ObjectReferenceCollection : Tools.NodeCollection
     {
-        public ObjectCollection():base(false, typeof(Object))
+        public ObjectReferenceCollection():base(true, typeof(ObjectReference))
         {
+
         }
 
         public static Dictionary<string, object> Deserialize(string data)
         {
-            Dictionary<string, Object> tmp = new Dictionary<string, Object>();
+            Dictionary<string, ObjectReference> tmp = new Dictionary<string, ObjectReference>();
             Newtonsoft.Json.JsonConvert.PopulateObject(data, tmp, Global.SerializerSettings);
             return tmp.ToDictionary(item => item.Key, item => (object)item.Value);
         }

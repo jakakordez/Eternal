@@ -9,13 +9,15 @@ namespace EGE.Environment.Paths
 {
     public class Path
     {
-        public PathEndpoint FirstEndpoint;
-        public PathEndpoint LastEndpoint;
+        public PathEndpoint FirstEndpoint { get; set; }
+        public PathEndpoint LastEndpoint { get; set; }
         public Node[] Points { get; set; }
 
         public Path()
         {
             Points = new Node[0];
+            FirstEndpoint = new PathEndpoint();
+            LastEndpoint = new PathEndpoint();
         }
 
         public static Vector3[] CreateCurve(Vector2[] roadLine, int Segments, float Offset, float Height, bool Invert)

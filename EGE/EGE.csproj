@@ -107,6 +107,7 @@
     <Compile Include="Environment\Objects\ObjectCollection.cs" />
     <Compile Include="Environment\Objects\ObjectManager.cs" />
     <Compile Include="Environment\Objects\ObjectReference.cs" />
+    <Compile Include="Environment\Objects\ObjectReferenceCollection.cs" />
     <Compile Include="Environment\Paths\Lane.cs" />
     <Compile Include="Environment\Paths\Path.cs" />
     <Compile Include="Environment\Paths\PathEndpoint.cs" />
@@ -116,6 +117,8 @@
     <Compile Include="Meshes\MovableMesh.cs" />
     <Compile Include="Meshes\RotatableMesh.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="Tools\CollectionSerializer.cs" />
+    <Compile Include="Tools\INodeCollection.cs" />
     <Compile Include="Tools\Contruction.cs" />
     <Compile Include="Tools\Global.cs" />
     <Compile Include="Environment\Map.cs" />

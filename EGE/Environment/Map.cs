@@ -66,10 +66,10 @@ namespace EGE
                     JsonConvert.PopulateObject(Misc.StreamToString(entryStream), this, Global.SerializerSettings);
                     entryStream.Close();
 
-                    // Load object collection
+                    /*// Load object collection
                     entryStream = archive.GetEntry("ObjectCollection.json").Open();
                     ObjectCollection.Objects.Deserialize(Misc.StreamToString(entryStream));
-                    entryStream.Close();
+                    entryStream.Close();*/
                 }
             }
         }
@@ -88,11 +88,11 @@ namespace EGE
                 entryStream.Write(entryBytes, 0, entryBytes.Length);
                 entryStream.Close();
 
-                // Save object collection
+                /*// Save object collection
                 entryStream = archive.CreateEntry("ObjectCollection.json").Open();
                 entryBytes = Global.Encoding.GetBytes(ObjectCollection.Objects.Serialize());
                 entryStream.Write(entryBytes, 0, entryBytes.Length);
-                entryStream.Close();
+                entryStream.Close();*/
             }
             if (File.Exists(filePath + "bkp")) File.Delete(filePath + "bkp");
         }

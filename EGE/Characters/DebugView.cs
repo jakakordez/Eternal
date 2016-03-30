@@ -24,7 +24,7 @@ namespace EGE.Characters
 
         public DebugView()
         {
-            CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition)};
+            CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition), new TopDownCamera(defaultCameraDefinition)};
             CurrentCamera = 0;
         }
 
@@ -33,6 +33,7 @@ namespace EGE.Characters
             CameraList[0].Update();
 
             Matrix4 Movement = Matrix4.Identity;
+            
             float sp = (Controller.Val(Func.FastMode) * 1) + 0.5f;
             Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Forward) * sp, 0, 0));
             Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Backward) * -sp, 0, 0));
@@ -40,8 +41,12 @@ namespace EGE.Characters
             Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.Val(Func.Right) * sp));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.Val(Func.Up) * sp, 0));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.Val(Func.Down) * -sp, 0));
-            Movement *= Matrix4.CreateRotationY(CameraList[0].Orientation.Y);
-            centerPoint += Movement.ExtractTranslation();   
+            if (CurrentCamera == 0)
+            {
+                Movement *= Matrix4.CreateRotationY(CameraList[0].Orientation.Y);
+                centerPoint += Movement.ExtractTranslation();
+            }
+            else centerPoint -= Movement.ExtractTranslation();
 
             if (Controller.In(Func.View) && !inn)
             {
@@ -56,6 +61,8 @@ namespace EGE.Characters
         {
             
             GL.MatrixMode(MatrixMode.Modelview);
+
+            if (Controller.Pressed(Func.SwitchView)) CurrentCamera = (CurrentCamera + 1) % CameraList.Length;
 
             CameraList[CurrentCamera].GenerateLookAt(centerPoint);
             GL.LoadMatrix(ref World.WorldMatrix);

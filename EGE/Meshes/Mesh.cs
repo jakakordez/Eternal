@@ -67,7 +67,7 @@ namespace EGE.Meshes
                 switch (Settings.CurrentDrawingMode)
                 {
                     case Settings.DrawingModes.Wireframe:
-                        GL.DrawElements(PrimitiveType.Points, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.DrawElements(PrimitiveType.LineStrip, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
                         break;
                     case Settings.DrawingModes.Full:
                         GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);

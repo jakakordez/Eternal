@@ -30,11 +30,14 @@ namespace Map_editor
         Cursor NodeCursor = Cursors.Arrow;
 
         PointerFunction currentFunction = PointerFunction.None;
-        public PointerFunction CurrentFunction{
-            get{
+        public PointerFunction CurrentFunction
+        {
+            get
+            {
                 return currentFunction;
             }
-            set{
+            set
+            {
                 switch (value)
                 {
                     case PointerFunction.None:
@@ -56,7 +59,7 @@ namespace Map_editor
                         NodeCursor = Cursors.ScrollSW;
                         break;
                     case PointerFunction.Delete:
-                        NodeCursor = Cursors.No; 
+                        NodeCursor = Cursors.No;
                         break;
                     default:
                         break;
@@ -84,7 +87,7 @@ namespace Map_editor
             TransformGroup g = new TransformGroup();
             g.Children.Add(zoom);
             mapContainer.LayoutTransform = g;
-            
+
             Line unitX = new Line();
             unitX.X2 = 10;
             unitX.StrokeThickness = 1;
@@ -113,19 +116,19 @@ namespace Map_editor
 
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            slider.Value -= e.Delta/500f;
+            slider.Value -= e.Delta / 500f;
         }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            double xhalf = ActualWidth/zoom.ScaleX / 2;
+            double xhalf = ActualWidth / zoom.ScaleX / 2;
             double yhalf = ActualHeight / zoom.ScaleY / 2;
-            map.Margin = new Thickness(map.Margin.Left-xhalf, map.Margin.Top-yhalf, 0, 0);
-            zoom.ScaleX = 1/e.NewValue;
-            zoom.ScaleY = 1/e.NewValue;
+            map.Margin = new Thickness(map.Margin.Left - xhalf, map.Margin.Top - yhalf, 0, 0);
+            zoom.ScaleX = 1 / e.NewValue;
+            zoom.ScaleY = 1 / e.NewValue;
             xhalf = ActualWidth / zoom.ScaleX / 2;
             yhalf = ActualHeight / zoom.ScaleY / 2;
-            map.Margin = new Thickness(map.Margin.Left+xhalf, map.Margin.Top+yhalf, 0, 0);
+            map.Margin = new Thickness(map.Margin.Left + xhalf, map.Margin.Top + yhalf, 0, 0);
         }
 
         public void UpdateWorld()
@@ -175,28 +178,28 @@ namespace Map_editor
 
                     if (j > 0)
                     {
-                        path = "CurrentMap/Roads/" + i + "/" + (j-1) +"-"+j;
+                        path = "CurrentMap/Roads/" + i + "/" + (j - 1) + "-" + j;
                         if (!MapObjects.Keys.Contains(path))
                         {
                             Line l = new Line();
                             l.StrokeThickness = Thickness;
                             l.Stroke = Brushes.DarkGray;
-                            
+
                             map.Children.Add(l);
                             MapObjects.Add(path, l);
                         }
-                        
-                        ((Line)MapObjects[path]).X1 = prevNode.X*PixelScale;
+
+                        ((Line)MapObjects[path]).X1 = prevNode.X * PixelScale;
                         ((Line)MapObjects[path]).Y1 = prevNode.Z * PixelScale;
-                        ((Line)MapObjects[path]).X2 = n.X*PixelScale;
-                        ((Line)MapObjects[path]).Y2 = n.Z*PixelScale;
+                        ((Line)MapObjects[path]).X2 = n.X * PixelScale;
+                        ((Line)MapObjects[path]).Y2 = n.Z * PixelScale;
                         Canvas.SetZIndex(((Line)MapObjects[path]), -1);
                     }
                     prevNode = n;
                 }
             }
 
-            if(heightfieldBitmap == null)
+            if (heightfieldBitmap == null)
             {
                 heightfieldBitmap = new Image();
                 heightfieldBitmap.Height = Form1.currentWorld.CurrentMap.TerrainHeightfield.Size * PixelScale;
@@ -213,7 +216,7 @@ namespace Map_editor
                 heightfieldBitmap.Source = bmpi;
                 map.Children.Add(heightfieldBitmap);
             }
-            
+
             Canvas.SetZIndex(heightfieldBitmap, -5);
         }
 
@@ -233,21 +236,21 @@ namespace Map_editor
                 OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, n.Location.Y, (float)abs.Y);
                 n.Location = Location;
             }
-            else if(CurrentFunction == PointerFunction.Height)
+            else if (CurrentFunction == PointerFunction.Height)
             {
-                OpenTK.Vector3 Location = n.Location+new OpenTK.Vector3(0, (float)rel.Y, 0);
+                OpenTK.Vector3 Location = n.Location + new OpenTK.Vector3(0, (float)rel.Y, 0);
                 n.Location = Location;
             }
             else
             {
-                rel = rel / (2*Math.PI);
+                rel = rel / (2 * Math.PI);
                 OpenTK.Vector3 RotationDif = new OpenTK.Vector3();
                 if (CurrentFunction == PointerFunction.RotateX) RotationDif = new OpenTK.Vector3((float)rel.Y, 0, 0);
                 if (CurrentFunction == PointerFunction.RotateY) RotationDif = new OpenTK.Vector3(0, (float)rel.Y, 0);
                 if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new OpenTK.Vector3(0, 0, (float)rel.Y);
-                n.Rotation = n.Rotation+RotationDif;
+                n.Rotation = n.Rotation + RotationDif;
             }
-            if(pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
+            if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
         }
 
@@ -260,7 +263,7 @@ namespace Map_editor
                     Point p = Mouse.GetPosition(mainGrid);
                     p.X = ((p.X) / zoom.ScaleX) - map.Margin.Left;
                     p.Y = ((p.Y) / zoom.ScaleY) - map.Margin.Top;
-                    ((NodeObj)sender).Margin = new Thickness(p.X - (((NodeObj)sender).ActualWidth/2), p.Y - (((NodeObj)sender).ActualHeight / 2), 0, 0);
+                    ((NodeObj)sender).Margin = new Thickness(p.X - (((NodeObj)sender).ActualWidth / 2), p.Y - (((NodeObj)sender).ActualHeight / 2), 0, 0);
                 }
                 else if (CurrentFunction == PointerFunction.Height)
                 {
@@ -280,7 +283,7 @@ namespace Map_editor
                 UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, this, "");
             }
         }
-        
+
         private void mainGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             grabPoint = Mouse.GetPosition(mainGrid);
@@ -290,7 +293,7 @@ namespace Map_editor
         {
             if (e.RightButton == MouseButtonState.Pressed)
             {
-                Vector p = Point.Subtract(grabPoint,Mouse.GetPosition(mainGrid));
+                Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                 p.X = p.X / zoom.ScaleX;
                 p.Y = p.Y / zoom.ScaleY;
                 map.Margin = new Thickness(map.Margin.Left - p.X, map.Margin.Top - p.Y, 0, 0);

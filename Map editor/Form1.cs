@@ -37,7 +37,6 @@ namespace Map_editor
             }
             return v;
         }
-
         #region Files
         public void LoadMap(string path)
         {
@@ -45,10 +44,10 @@ namespace Map_editor
             MapPath = path;
             currentWorld.LoadData(path);
             objectBrowser1.LoadNodes(currentWorld.CurrentMap, "CurrentMap");
-            
+
             currentWorld.Init();
             currentWorld.Build();
-            mapView1.UpdateWorld();
+            hostedComponent1.UpdateWorld();
         }
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -86,7 +85,7 @@ namespace Map_editor
             OpenGLLoaded = true;
             currentWorld.Resize(glControl1.Width, glControl1.Height);
             tmrPreview.Start();
-            
+
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)
@@ -102,7 +101,7 @@ namespace Map_editor
         }
         System.Diagnostics.Stopwatch fpsCounter = new System.Diagnostics.Stopwatch();
         private void tmpPreview_Tick(object sender, EventArgs e)
-        {           
+        {
             try
             {
                 currentWorld.Update(tabControl1.SelectedIndex == 1, 0);
@@ -110,10 +109,10 @@ namespace Map_editor
                 currentWorld.Draw(tabControl1.SelectedIndex == 1);
                 fpsCounter.Stop();
                 if (fpsCounter.ElapsedMilliseconds == 0) lblFPS.Text = "<1000 FPS";
-                else lblFPS.Text = (1f / fpsCounter.ElapsedMilliseconds*1000f) + " FPS";
+                else lblFPS.Text = (1f / fpsCounter.ElapsedMilliseconds * 1000f) + " FPS";
             }
             catch { }
-            
+
             glControl1.SwapBuffers();
         }
 
@@ -147,13 +146,14 @@ namespace Map_editor
         {
             objectBrowser1.Realign();
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
+
             tabPage2.Show(); // Switch to page 2 for OpenGL control load
             tabPage1.Show(); // Switch back to page 1
-            mapView1.UpdateLocation += MapView1_UpdateLocation;
-            mapView1.MoveNode += MapView1_MoveNode;
+            hostedComponent1.UpdateLocation += MapView1_UpdateLocation;
+            hostedComponent1.MoveNode += MapView1_MoveNode;
             LoadMap(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\mapa");
         }
 
@@ -179,17 +179,17 @@ namespace Map_editor
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(System.Environment.CurrentDirectory+"\\..\\..\\..\\Eternal\\bin\\Debug\\Eternal.exe");
+            System.Diagnostics.Process.Start(Environment.CurrentDirectory+"\\..\\..\\..\\Eternal\\bin\\Debug\\Eternal.exe");
         }
 
         private void objectBrowser1_NavigateNode(object sender, string e)
         {
-            mapView1.FocusNode(e);
+            hostedComponent1.FocusNode(e);
         }
 
         private void objectBrowser1_UpdateWorld(object sender, EventArgs e)
         {
-            mapView1.UpdateWorld();
+            hostedComponent1.UpdateWorld();
         }
 
         public void tsbPointer_Click(object sender, EventArgs e)
@@ -202,7 +202,7 @@ namespace Map_editor
             tsbPointerRotateY.Checked = (int)clickedButton.Tag == 5;
             tsbPointerRotateZ.Checked = (int)clickedButton.Tag == 6;
             tsbPointerDelete.Checked = (int)clickedButton.Tag == 7;
-            mapView1.CurrentFunction = (mapView.PointerFunction)clickedButton.Tag;
+            hostedComponent1.CurrentFunction = (mapView.PointerFunction)clickedButton.Tag;
         }
     }
 }

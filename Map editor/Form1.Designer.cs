@@ -78,7 +78,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.mapView1 = new Map_editor.mapView();
+            this.hostedComponent1 = new Map_editor.mapView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.glControl1 = new OpenTK.GLControl();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
@@ -540,7 +540,7 @@
             this.elementHost1.Size = new System.Drawing.Size(519, 336);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.mapView1;
+            this.elementHost1.Child = this.hostedComponent1;
             // 
             // tabPage2
             // 
@@ -696,7 +696,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Timer tmrPreview;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private mapView mapView1;
+        private mapView hostedComponent1;
         private System.Windows.Forms.ToolStripButton tsbResources;
         private System.Windows.Forms.ToolStripButton tsbVehicles;
         private System.Windows.Forms.ToolStripButton tlsRun;

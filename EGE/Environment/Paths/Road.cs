@@ -41,7 +41,6 @@ namespace EGE.Environment.Paths
         public void Build(ObjectManager objects)
         {
             List<Vector3> BezierCurve = new List<Vector3>();
-            float Sharpness = 2;
 
             Vector3[] BezierControlPoints = new Vector3[4];
             float angle;
@@ -54,11 +53,13 @@ namespace EGE.Environment.Paths
             Array.Copy(this.Points, 0, Points, (first != null)?1:0, this.Points.Length);
             if (first != null) Points[0] = first;
             if (last != null) Points[Points.Length - 1] = last;
-            angle = Points[0].Location.Y;
-            Vector2 l = Misc.getCartesian(angle) * Sharpness;
+            angle = Points[0].Rotation.Y;
+            Vector2 l;
 
             for (int i = 0; i < Points.Length - 1; i++)
             {
+                float segments = (Points[i + 1].Location.Xz - Points[i].Location.Xz).Length * 0.5f;
+                l = Misc.getCartesian(angle) * (segments / 2);
                 BezierControlPoints[0] = Points[i].Location;
                 BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
 
@@ -71,7 +72,7 @@ namespace EGE.Environment.Paths
                 }
                 else angle = (Points[i + 1].Location.Y);
 
-                float segments = (Points[i + 1].Location.Xz - Points[i].Location.Xz).Length * 0.5f;
+                
                 l = Misc.getCartesian(angle) * (segments/2);
                 BezierControlPoints[2] = Points[i + 1].Location - new Vector3(l.X, 0, l.Y);
                 BezierControlPoints[3] = Points[i + 1].Location;

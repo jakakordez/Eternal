@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EGE;
-using System.Reflection;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -119,6 +118,7 @@ namespace Map_editor
         private void glControl1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) tabControl1.SelectedIndex = 0;
+            else hostedComponent1.ProcessInput(System.Windows.Input.KeyInterop.KeyFromVirtualKey((int)e.KeyCode));
         }
 
         private void glControl1_Enter(object sender, EventArgs e)

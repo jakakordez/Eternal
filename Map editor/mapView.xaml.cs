@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using EGE;
 using EGE.Environment;
 using System.IO;
+using OpenTK;
 
 namespace Map_editor
 {
@@ -72,6 +73,7 @@ namespace Map_editor
         double Thickness = 10;
         Double PixelScale = 20;
         Point grabPoint;
+        string selectedNode;
 
         public delegate void LocationUpdate(double X, double Y, object argument, string additionalData);
         public event LocationUpdate UpdateLocation;
@@ -114,6 +116,50 @@ namespace Map_editor
             }
         }
 
+        public void ProcessInput(Key key)
+        {
+            switch (key)
+            {
+                case Key.NumPad0:
+                    break;
+                case Key.NumPad1:
+                    moveNode(PointerFunction.Move, new Vector3(-1, 0, 0));
+                    break;
+                case Key.NumPad2:
+                    moveNode(PointerFunction.Move, new Vector3(0, 0, 1));
+                    break;
+                case Key.NumPad3:
+                    moveNode(PointerFunction.Move, new Vector3(1, 0, 0));
+                    break;
+                case Key.NumPad4:
+                    break;
+                case Key.NumPad5:
+                    moveNode(PointerFunction.Move, new Vector3(0, 0, -1));
+                    break;
+                case Key.NumPad6:
+                    break;
+                case Key.NumPad7:
+                    break;
+                case Key.NumPad8:
+                    break;
+                case Key.NumPad9:
+                    break;
+                case Key.Multiply:
+                    break;
+                case Key.Add:
+                    break;
+                case Key.Separator:
+                    break;
+                case Key.Subtract:
+                    break;
+                case Key.Decimal:
+                    break;
+                case Key.Divide:
+                    break;
+
+            }
+        }
+
         private void UserControl_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             slider.Value -= e.Delta / 500f;
@@ -131,51 +177,48 @@ namespace Map_editor
             map.Margin = new Thickness(map.Margin.Left + xhalf, map.Margin.Top + yhalf, 0, 0);
         }
 
+        private void UpdateNode(Vector3 n, string path)
+        {
+            if (!MapObjects.Keys.Contains(path))
+            {
+                NodeObj nodeBtn = new NodeObj(path);
+                nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
+                nodeBtn.VerticalAlignment = VerticalAlignment.Top;
+                nodeBtn.Cursor = NodeCursor;
+
+                nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
+                nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
+                nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
+                nodeBtn.PreviewKeyDown += NodeBtn_PreviewKeyDown;
+                map.Children.Add(nodeBtn);
+                MapObjects.Add(path, nodeBtn);
+            }
+            ((NodeObj)MapObjects[path]).Locate(PixelScale);
+        }
+
+        private void NodeBtn_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            ProcessInput(e.Key);
+        }
+
         public void UpdateWorld()
         {
             foreach (var item in Form1.currentWorld.CurrentMap.ObjectCollection.ObjectReferences.GetNodes())
             {
                 ObjectReference r = (ObjectReference)item.Value;
                 string path = "CurrentMap/ObjectCollection/ObjectReferences/" + item.Key + "/Position";
-                OpenTK.Vector3 n = r.Position.Location;
-                if (!MapObjects.Keys.Contains(path))
-                {
-                    NodeObj nodeBtn = new NodeObj(path);
-                    nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
-                    nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-                    nodeBtn.Cursor = NodeCursor;
-
-                    nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-                    nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
-                    nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
-                    map.Children.Add(nodeBtn);
-                    MapObjects.Add(path, nodeBtn);
-                }
-                ((NodeObj)MapObjects[path]).Locate(PixelScale);
+                UpdateNode(r.Position.Location, path);
             }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.Roads.Length; i++)
             {
-                OpenTK.Vector3 prevNode = new OpenTK.Vector3();
+                Vector3 prevNode = new Vector3();
                 EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.Roads[i];
                 for (int j = 0; j < r.Points.Length; j++)
                 {
                     string path = "CurrentMap/Roads/" + i + "/Points/" + j;
-                    OpenTK.Vector3 n = Form1.currentWorld.CurrentMap.Roads[i].Points[j].Location;
-                    if (!MapObjects.Keys.Contains(path))
-                    {
-                        NodeObj nodeBtn = new NodeObj(path);
-                        nodeBtn.HorizontalAlignment = HorizontalAlignment.Left;
-                        nodeBtn.VerticalAlignment = VerticalAlignment.Top;
-                        nodeBtn.Cursor = NodeCursor;
-
-                        nodeBtn.PreviewMouseMove += NodeBtn_PreviewMouseMove;
-                        nodeBtn.PreviewMouseUp += NodeBtn_PreviewMouseUp;
-                        nodeBtn.PreviewMouseDown += NodeBtn_PreviewMouseDown;
-                        map.Children.Add(nodeBtn);
-                        MapObjects.Add(path, nodeBtn);
-                    }
-                    ((NodeObj)MapObjects[path]).Locate(PixelScale);
-
+                    Vector3 n = Form1.currentWorld.CurrentMap.Roads[i].Points[j].Location;
+                    UpdateNode(n, path);
+                    
                     if (j > 0)
                     {
                         path = "CurrentMap/Roads/" + i + "/" + (j - 1) + "-" + j;
@@ -222,33 +265,53 @@ namespace Map_editor
 
         private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            selectedNode = ((NodeObj)sender).Tag.ToString();
             grabPoint = Mouse.GetPosition(mainGrid);
         }
 
         private void NodeBtn_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             string[] pathParts = ((NodeObj)sender).Tag.ToString().Split('/');
+            
             Node n = (Node)ObjectBrowser.getValue(((NodeObj)sender).Tag.ToString(), Form1.currentWorld);
             Point abs = new Point((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale);
             Vector rel = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid)) / 10;
+
             if (CurrentFunction == PointerFunction.Move)
             {
-                OpenTK.Vector3 Location = new OpenTK.Vector3((float)abs.X, n.Location.Y, (float)abs.Y);
-                n.Location = Location;
+                n.Location = new Vector3((float)abs.X, n.Location.Y, (float)abs.Y);
             }
             else if (CurrentFunction == PointerFunction.Height)
             {
-                OpenTK.Vector3 Location = n.Location + new OpenTK.Vector3(0, (float)rel.Y, 0);
-                n.Location = Location;
+                n.Location = n.Location + new Vector3(0, (float)rel.Y, 0);
             }
             else
             {
                 rel = rel / (2 * Math.PI);
-                OpenTK.Vector3 RotationDif = new OpenTK.Vector3();
-                if (CurrentFunction == PointerFunction.RotateX) RotationDif = new OpenTK.Vector3((float)rel.Y, 0, 0);
-                if (CurrentFunction == PointerFunction.RotateY) RotationDif = new OpenTK.Vector3(0, (float)rel.Y, 0);
-                if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new OpenTK.Vector3(0, 0, (float)rel.Y);
+                Vector3 RotationDif = new Vector3();
+                if (CurrentFunction == PointerFunction.RotateX) RotationDif = new Vector3((float)rel.Y, 0, 0);
+                if (CurrentFunction == PointerFunction.RotateY) RotationDif = new Vector3(0, (float)rel.Y, 0);
+                if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new Vector3(0, 0, (float)rel.Y);
                 n.Rotation = n.Rotation + RotationDif;
+            }
+
+            if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
+            UpdateWorld();
+        }
+
+        private void moveNode(PointerFunction action, Vector3 value)
+        {
+            Node n = (Node)ObjectBrowser.getValue(selectedNode, Form1.currentWorld);
+            string[] pathParts = selectedNode.Split('/');
+            if (action == PointerFunction.Move || action == PointerFunction.Height) n.Location += value;
+            else
+            {
+                value = value / (float)(2 * Math.PI);
+                Vector3 RotationDif = new Vector3();
+                if (CurrentFunction == PointerFunction.RotateX) RotationDif = new Vector3(value.Y, 0, 0);
+                if (CurrentFunction == PointerFunction.RotateY) RotationDif = new Vector3(0, value.Y, 0);
+                if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new Vector3(0, 0, value.Y);
+                n.Rotation += RotationDif;
             }
             if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
@@ -270,7 +333,7 @@ namespace Map_editor
                     Node n = (Node)ObjectBrowser.getValue(((NodeObj)sender).Tag.ToString(), Form1.currentWorld);
                     Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                     float ydif = (float)(p.Y / 10);
-                    OpenTK.Vector3 Location = n.Location + new OpenTK.Vector3(0, ydif, 0);
+                    Vector3 Location = n.Location + new Vector3(0, ydif, 0);
                     UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, this, " H: " + Location.Y);
                 }
             }

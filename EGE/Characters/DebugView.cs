@@ -35,18 +35,21 @@ namespace EGE.Characters
             Matrix4 Movement = Matrix4.Identity;
             
             float sp = (Controller.Val(Func.FastMode) * 1) + 0.5f;
-            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Forward) * sp, 0, 0));
-            Movement *= Matrix4.CreateTranslation(new Vector3(Controller.Val(Func.Backward) * -sp, 0, 0));
-            Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.Val(Func.Left) * -sp));
-            Movement *= Matrix4.CreateTranslation(new Vector3(0, 0, Controller.Val(Func.Right) * sp));
+            Vector3 forward = Vector3.UnitX;
+            Vector3 right = Vector3.UnitZ;
+            if(CurrentCamera > 0)
+            {
+                forward = -Vector3.UnitZ;
+                right = Vector3.UnitX;
+            }
+            Movement *= Matrix4.CreateTranslation(forward * Controller.Val(Func.Forward) * sp);
+            Movement *= Matrix4.CreateTranslation(forward * Controller.Val(Func.Backward) * -sp);
+            Movement *= Matrix4.CreateTranslation(right * Controller.Val(Func.Left) * -sp);
+            Movement *= Matrix4.CreateTranslation(right * Controller.Val(Func.Right) * sp);
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.Val(Func.Up) * sp, 0));
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.Val(Func.Down) * -sp, 0));
-            if (CurrentCamera == 0)
-            {
-                Movement *= Matrix4.CreateRotationY(CameraList[0].Orientation.Y);
-                centerPoint += Movement.ExtractTranslation();
-            }
-            else centerPoint -= Movement.ExtractTranslation();
+            if (CurrentCamera == 0) Movement *= Matrix4.CreateRotationY(CameraList[0].Orientation.Y);
+            centerPoint += Movement.ExtractTranslation();
 
             if (Controller.In(Func.View) && !inn)
             {

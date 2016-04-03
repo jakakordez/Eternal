@@ -12,7 +12,9 @@ namespace EGE.Environment.Paths
         public string ObjectID { get; set; }
         public int NodeID { get; set; }
 
-        public PathEndpoint() { }
+        public PathEndpoint() {
+            ObjectID = "";
+        }
 
         public PathEndpoint(string objectID, int node)
         {

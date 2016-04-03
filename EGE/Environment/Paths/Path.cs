@@ -54,32 +54,15 @@ namespace EGE.Environment.Paths
             }
             Vector2[] heightCurve = Misc.GetBezierApproximation(heightLine, Segments);
             Vector3[] PathNodes = new Vector3[Segments + 1];
-            double kot = 0;
             for (int i = 0; i < Segments + 1; i++)
             {
-                /*if (i > 1 && i < roadCurve.Length - 2)
-                {
-                    float kot1 = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
-                    float kot2 = (float)Math.Atan((roadCurve[i + 1].Y - roadCurve[i].Y) / (roadCurve[i + 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
-                    kot = (kot1 + kot2) / 2;
-                }
-                else if (i < 2) kot = (float)Math.Atan((roadCurve[i + 1].Y - roadCurve[i].Y) / (roadCurve[i + 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
-                else kot = (float)Math.Atan((roadCurve[i - 1].Y - roadCurve[i].Y) / (roadCurve[i - 1].X - roadCurve[i].X)) - MathHelper.PiOver2;
-                /*if (kot < MathHelper.PiOver2)
-                    kot -= MathHelper.Pi;
-                else if (kot > -MathHelper.PiOver2) kot += MathHelper.Pi;*/
-                if (i > 1 && i < roadCurve.Length - 2)
-                {
-                    double kot1 = Misc.getAngleD(roadCurve[i - 1] - roadCurve[i]);
-                    double kot2 = Misc.getAngleD(roadCurve[i] - roadCurve[i+1]);
-                    kot = (kot1 + kot2) / 2;
-                    kot -= (Math.PI/2);
-                }
-                else if (i < 2) kot = Misc.getAngleD(roadCurve[i] - roadCurve[i+1]) - (Math.PI / 2);
-                else kot = Misc.getAngleD(roadCurve[i - 1] - roadCurve[i]) - (Math.PI/2);
-                double y = Offset * Math.Sin(kot);
-                double x = Offset * Math.Cos(kot);
-                PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + (float)x, heightCurve[i].Y, roadCurve[i].Y + (float)y);
+                Vector2 dir = new Vector2();
+                if (i== 0) dir = (roadCurve[i] - roadCurve[i+1]);
+                else if (i == Segments) dir = (roadCurve[i - 1] - roadCurve[i]);
+                else dir = (roadCurve[i - 1] - roadCurve[i]) + (roadCurve[i] - roadCurve[i + 1]);
+                dir.Normalize();
+                dir *= Offset;
+                PathNodes[(Invert) ? Segments - i : i] = new Vector3(roadCurve[i].X + dir.Y, heightCurve[i].Y, roadCurve[i].Y - dir.X);
             }
             return PathNodes;
         }

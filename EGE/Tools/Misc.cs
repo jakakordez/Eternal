@@ -104,10 +104,9 @@ namespace EGE
             return new Vector2((float)((1 - t) * P0.X + t * P1.X), (float)((1 - t) * P0.Y + t * P1.Y));
         }
         public static float normalizeAngle(float angle)
-        { 
-            angle%=MathHelper.Pi*2;
-            if (angle < 0) angle += MathHelper.TwoPi;
-            if (angle > (3.145f*2)) angle = 0;
+        {
+            angle += MathHelper.TwoPi;
+            angle %= MathHelper.TwoPi;
             return angle;
         }
 
@@ -120,10 +119,10 @@ namespace EGE
 
         public static double getAngleD(Vector2 vector)
         {
-            if (vector.Y >= 0 && vector.X >= 0) return (float)Math.Asin(vector.Y / vector.Length);
-            if (vector.Y >= 0 && vector.X <= 0) return MathHelper.Pi-(float)Math.Asin(vector.Y / vector.Length);
-            if (vector.Y <= 0 && vector.X >= 0) return (MathHelper.Pi*2) + (float)Math.Asin(vector.Y / vector.Length);
-            if (vector.Y <= 0 && vector.X <= 0) return MathHelper.Pi - (float)Math.Asin(vector.Y / vector.Length);
+            if (vector.Y >= 0 && vector.X >= 0) return Math.Asin(vector.Y / vector.Length);
+            if (vector.Y >= 0 && vector.X <= 0) return Math.PI-Math.Asin(vector.Y / vector.Length);
+            if (vector.Y <= 0 && vector.X >= 0) return (Math.PI*2) + Math.Asin(vector.Y / vector.Length);
+            if (vector.Y <= 0 && vector.X <= 0) return Math.PI - Math.Asin(vector.Y / vector.Length);
             return 0;
         }
 

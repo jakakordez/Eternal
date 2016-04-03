@@ -41,42 +41,50 @@ namespace EGE.Environment.Paths
         public void Build(ObjectManager objects)
         {
             List<Vector3> BezierCurve = new List<Vector3>();
-
+            List<Node> PointsForPath = new List<Node>();
             Vector3[] BezierControlPoints = new Vector3[4];
-            float angle;
-            int c = 0;
+
+            Vector2 dir = new Vector2();
             Node first = FirstEndpoint.getPosition(objects);
-            if (first != null) c++;
-            Node last = LastEndpoint.getPosition(objects);
-            if (last != null) c++;
-            Node[] Points = new Node[this.Points.Length + c];
-            Array.Copy(this.Points, 0, Points, (first != null)?1:0, this.Points.Length);
-            if (first != null) Points[0] = first;
-            if (last != null) Points[Points.Length - 1] = last;
-            angle = Points[0].Rotation.Y;
-            Vector2 l;
-
-            for (int i = 0; i < Points.Length - 1; i++)
+            if (first != null)
             {
-                float segments = (Points[i + 1].Location.Xz - Points[i].Location.Xz).Length * 0.5f;
-                l = Misc.getCartesian(angle) * (segments / 2);
-                BezierControlPoints[0] = Points[i].Location;
-                BezierControlPoints[1] = BezierControlPoints[0] + new Vector3(l.X, 0, l.Y);
+                dir = Misc.getCartesian(first.Rotation.Y);
+                first.Rotation = new Vector3(dir.X, 0, dir.Y);
+                PointsForPath.Add(first); // First endpoint exists, so add it to the list
+            }
+            PointsForPath.AddRange(Points);
+            Node last = LastEndpoint.getPosition(objects);
+            if (last != null)
+            {
+                // Set rotation for the last endpoint
+                dir = Misc.getCartesian(last.Rotation.Y);
+                last.Rotation = new Vector3(-dir.X, 0, -dir.Y);
+                PointsForPath.Add(last); // Last endpoint exists, so add it to the list
+            }
 
-                angle = (Misc.getAngle(Points[i + 1].Location.Xz - Points[i].Location.Xz));
-                if (i < Points.Length - 2)
+            for (int i = 0; i < PointsForPath.Count; i++)
+            {
+                if((i > 0 || first == null)&&(i < PointsForPath.Count-1 || last == null))
                 {
-                    float nextAngle = (Misc.getAngle(Points[i + 2].Location.Xz - Points[i + 1].Location.Xz));
-                    if (angle > MathHelper.Pi && nextAngle < MathHelper.PiOver2) angle -= MathHelper.TwoPi;
-                    angle = ((angle + nextAngle) / 2);
+                    if (i == 0) dir = PointsForPath[i + 1].Location.Xz - PointsForPath[i].Location.Xz;
+                    else if(i == PointsForPath.Count - 1) dir = PointsForPath[i].Location.Xz - PointsForPath[i - 1].Location.Xz;
+                    else
+                    {
+                        dir = (PointsForPath[i].Location.Xz - PointsForPath[i - 1].Location.Xz);
+                        dir += (PointsForPath[i + 1].Location.Xz - PointsForPath[i].Location.Xz);
+                    }
+                    dir.Normalize();
+                    PointsForPath[i].Rotation = new Vector3(dir.X, 0, dir.Y);
                 }
-                else angle = (Points[i + 1].Location.Y);
-
+            }
+            for (int i = 0; i < PointsForPath.Count - 1; i++)
+            {
+                float segments = (PointsForPath[i + 1].Location.Xz - PointsForPath[i].Location.Xz).Length * 0.25f;
+                BezierControlPoints[0] = PointsForPath[i].Location;
+                BezierControlPoints[1] = PointsForPath[i].Location + (PointsForPath[i].Rotation*segments);
+                BezierControlPoints[2] = PointsForPath[i + 1].Location - (PointsForPath[i + 1].Rotation*segments);
+                BezierControlPoints[3] = PointsForPath[i + 1].Location;
                 
-                l = Misc.getCartesian(angle) * (segments/2);
-                BezierControlPoints[2] = Points[i + 1].Location - new Vector3(l.X, 0, l.Y);
-                BezierControlPoints[3] = Points[i + 1].Location;
-
                 Vector3[] roadEdgeRight = CreateCurve(BezierControlPoints, (int)segments, RoadWidth/2, false);
                 Vector3[] roadEdgeLeft = CreateCurve(BezierControlPoints, (int)segments, -RoadWidth/2, false);
                 for (int j = 0; j < roadEdgeLeft.Length; j++)
@@ -108,7 +116,7 @@ namespace EGE.Environment.Paths
                 TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.2f);
                 TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
             }
-            RoadMesh.GenerateCollisionShape = true;
+            RoadMesh.GenerateCollisionShape = !World.StaticView;
             RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureName, TextureCoordinates);
 
             if (!World.StaticView)
@@ -117,7 +125,7 @@ namespace EGE.Environment.Paths
             }
         }
 
-        string GeogebraPoints(Vector3[] ps)
+        public static string GeogebraPoints(Vector3[] ps)
         {
             string result = "{";
             for (int i = 0; i < ps.Length; i++)

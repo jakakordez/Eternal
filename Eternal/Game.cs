@@ -12,10 +12,12 @@ namespace Eternal
     class Game:GameWindow
     {
         Screen currentScreen;
+        double frames, time;
+
         public Game()
         {
             this.Title = "Eternal";
-            WindowState = WindowState.Fullscreen;
+            WindowState = WindowState.Maximized;
             VSync = VSyncMode.On;
             System.Windows.Forms.Cursor.Hide();
         }
@@ -41,6 +43,13 @@ namespace Eternal
             currentScreen.Draw();
             base.OnRenderFrame(e);
             SwapBuffers();
+            time += e.Time;
+            frames++;
+            if(time > 1){
+                Title = Math.Round(frames / time, 2) + " FPS";
+                frames = 0;
+                time = 0.0001;
+            }
         }
 
         protected override void OnResize(EventArgs e)

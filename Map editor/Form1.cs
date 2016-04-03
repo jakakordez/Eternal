@@ -133,7 +133,13 @@ namespace Map_editor
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedIndex == 1) glControl1.Focus();
+            if (tabControl1.SelectedIndex == 1)
+            {
+                int h = (int)(System.Windows.SystemParameters.PrimaryScreenWidth / 2);
+                int w = (int)(System.Windows.SystemParameters.PrimaryScreenHeight / 2);
+                Cursor.Position = new Point(h, w);
+                glControl1.Focus();
+            }
         }
         #endregion
 

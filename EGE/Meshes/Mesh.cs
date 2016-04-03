@@ -43,7 +43,6 @@ namespace EGE.Meshes
         {
             for (int i = 0; i < ElementArraySizes.Length; i++)
             {
-                if (Materials[i].Brush== Color4.Black) System.Diagnostics.Debugger.Break();
                 if (Materials[i].Texture != "")
                 {
                     GL.Color4(Color.White);
@@ -311,8 +310,13 @@ namespace EGE.Meshes
 
         public void LoadMTL(string name)
         {
+            LoadMTL(new MemoryStream(Resources.GetFile(name)));
+        }
+
+        public void LoadMTL(Stream inputStream)
+        {
             Materials = new Material[0];
-            string[] file = Encoding.Default.GetString(Resources.GetFile(name)).Replace("\r", "").Split('\n');
+            string[] file = Misc.StreamToString(inputStream).Replace("\r", "").Split('\n');
             Material currentMaterial = null;
             for (int i = 0; i < file.Length; i++)
             {

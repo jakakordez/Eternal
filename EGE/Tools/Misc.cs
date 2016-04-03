@@ -142,7 +142,7 @@ namespace EGE
         public static string StreamToString(Stream stream)
         {
             //stream.Position = 0;
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            using (StreamReader reader = new StreamReader(stream, Encoding.Default))
             {
                 return reader.ReadToEnd();
             }

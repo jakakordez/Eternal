@@ -109,10 +109,13 @@ namespace Map_editor
         {
             if (MapObjects.ContainsKey(Id))
             {
+                selectedNode = Id;
                 NodeObj a = (NodeObj)MapObjects[Id];
                 double mx = -a.Margin.Left + (ActualWidth / zoom.ScaleX / 2);
                 double my = -a.Margin.Top + (ActualHeight / zoom.ScaleX / 2);
                 map.Margin = new Thickness(mx, my, 0, 0);
+                Node n = (Node)ObjectBrowser.getValue(Id, Form1.currentWorld);
+                ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).Navigate(n.Location);
             }
         }
 
@@ -265,7 +268,7 @@ namespace Map_editor
 
         private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            selectedNode = ((NodeObj)sender).Tag.ToString();
+            FocusNode(((NodeObj)sender).Tag.ToString());
             grabPoint = Mouse.GetPosition(mainGrid);
         }
 
@@ -297,6 +300,7 @@ namespace Map_editor
 
             if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
+            
         }
 
         private void moveNode(PointerFunction action, Vector3 value)
@@ -315,6 +319,7 @@ namespace Map_editor
             }
             if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
+            ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).PointerLocation = n.Location;
         }
 
         private void NodeBtn_PreviewMouseMove(object sender, MouseEventArgs e)

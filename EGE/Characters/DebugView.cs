@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
+using System.IO.Compression;
 
 namespace EGE.Characters
 {
-    class DebugView:Character
+    public class DebugView:Character
     {
         Vector3 centerPoint = new Vector3(673, 5, 274);
         bool inn = false;
@@ -22,10 +23,20 @@ namespace EGE.Characters
             Style = DrawingStyle.Wireframe
         };
 
+        public Vector3 PointerLocation = new Vector3();
+        Meshes.Mesh PointerMesh;
+
         public DebugView()
         {
             CameraList = new Camera[] { new FirstPersonCamera(defaultCameraDefinition), new TopDownCamera(defaultCameraDefinition)};
             CurrentCamera = 0;
+        }
+
+        public void Load()
+        {
+            PointerMesh = new Meshes.Mesh();
+            PointerMesh.LoadMTL(new System.IO.MemoryStream(EGEResources.pointermtl));
+            PointerMesh.LoadMesh(new ZipArchive(new System.IO.MemoryStream(EGEResources.pointermesh), ZipArchiveMode.Read));
         }
 
         public override void Update(float elaspedTime)
@@ -68,7 +79,25 @@ namespace EGE.Characters
             if (Controller.Pressed(Func.SwitchView)) CurrentCamera = (CurrentCamera + 1) % CameraList.Length;
 
             CameraList[CurrentCamera].GenerateLookAt(centerPoint);
+            
+            Matrix4 trans = Matrix4.CreateTranslation(PointerLocation) * World.WorldMatrix;
+            GL.LoadMatrix(ref trans);
+            PointerMesh.Draw();
             GL.LoadMatrix(ref World.WorldMatrix);
+        }
+
+        public void Navigate(Vector3 Point)
+        {
+            PointerLocation = Point;
+            if(CurrentCamera == 0)
+            {
+                centerPoint = Point + new Vector3(-2, 2, 2);
+                CameraList[0].Orientation = new Vector3(-MathHelper.PiOver4, MathHelper.PiOver4, -MathHelper.PiOver4);
+            }
+            else
+            {
+                centerPoint = Point+new Vector3(0, 10, 0);
+            }
         }
     }
 }

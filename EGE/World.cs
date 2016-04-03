@@ -17,7 +17,7 @@ namespace EGE
         private MeshCollector MeshCollection;
 
         public Map CurrentMap { get; set;}
-        Characters.Character MainCharacter;
+        public Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
 
         List<Vehicles.Vehicle> VehicleList;
@@ -63,6 +63,7 @@ namespace EGE
             Resources.LoadResources(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
             Vehicles.Vehicles.LoadVehicles(Path + "\\Map");
+            if (StaticView) ((Characters.DebugView)MainCharacter).Load();
         }
         public void Build()
         {

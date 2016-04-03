@@ -101,6 +101,11 @@
     <Compile Include="Characters\DebugView.cs" />
     <Compile Include="Characters\Person.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="EGEResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGEResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Environment\Indexed.cs" />
     <Compile Include="Environment\Heightfield.cs" />
     <Compile Include="Environment\Node.cs" />
@@ -136,6 +141,16 @@
     <Compile Include="Vehicles\Vehicle.cs" />
     <Compile Include="Vehicles\Vehicles.cs" />
     <Compile Include="World.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EGEResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGEResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pointer.mesh" />
+    <None Include="Resources\pointer.mtl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

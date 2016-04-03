@@ -52,7 +52,6 @@ namespace Map_editor
         {
             Type type = obj.GetType();
             TreeNode t = new TreeNode(Title, 4, 4);
-           // if (typeof(EGE.Environment.ObjectCollection).IsAssignableFrom(type)) System.Diagnostics.Debugger.Break();
             if (type.IsArray)
             {
                 Array objectArray = (Array)obj;

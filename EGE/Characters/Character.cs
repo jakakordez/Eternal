@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EGE.Characters
 {
-    abstract class Character
+    public abstract class Character
     {
         protected Camera[] CameraList;
         protected int CurrentCamera;

@@ -33,6 +33,11 @@ namespace EGE.Vehicles
                             JsonConvert.PopulateObject(Misc.StreamToString(entryStream), c, Global.SerializerSettings);
                             VehicleCollection.Add(e.FullName, c);
                             break;
+                        case "Ship":
+                            Ship s = new Ship();
+                            JsonConvert.PopulateObject(Misc.StreamToString(entryStream), s, Global.SerializerSettings);
+                            VehicleCollection.Add(e.FullName, s);
+                            break;
                         default:
                             Vehicle v = new Vehicle();
                             JsonConvert.PopulateObject(Misc.StreamToString(entryStream), v, Global.SerializerSettings);

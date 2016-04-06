@@ -20,7 +20,8 @@ namespace EGE.Vehicles
 
         public VehicleController ControllerType;
 
-        public string vehicleMesh { get; set; } 
+        public string vehicleMesh { get; set; }
+        public string lowPolyVehicleMesh { get; set; }
 
         public RigidBody vehicleBody;
 
@@ -46,6 +47,7 @@ namespace EGE.Vehicles
             ThirdPersonCamera = new ThirdPersonCamera(defaultCameraDefinition);
             CameraList = new Camera[0];
             vehicleMesh = "";
+            lowPolyVehicleMesh = "";
             CurrentCamera = 1;
         }
 

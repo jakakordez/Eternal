@@ -88,6 +88,9 @@ namespace EGE
                 car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90");
                 (car as Vehicles.Car).Load(new Vector3(693, 15, 294));
                 VehicleList.Add(car);
+                car = Vehicles.Vehicles.getKey("Ship/Ferry/Guarda");
+                (car as Vehicles.Ship).Load(new Vector3(670, 5, 200));
+                VehicleList.Add(car);
             }
         }
 

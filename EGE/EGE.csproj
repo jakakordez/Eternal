@@ -132,6 +132,7 @@
     <Compile Include="Meshes\MeshCollector.cs" />
     <Compile Include="Tools\Graphics.cs" />
     <Compile Include="Tools\Misc.cs" />
+    <Compile Include="Tools\PhysicsDebugDrawer.cs" />
     <Compile Include="Tools\Resources.cs" />
     <Compile Include="Tools\Settings.cs" />
     <Compile Include="Tools\VectorSerializer.cs" />

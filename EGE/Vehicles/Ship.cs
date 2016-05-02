@@ -15,7 +15,7 @@ namespace EGE.Vehicles
         public float SteeringClamp { get; set; }
         public void Load(Vector3 Location)
         {
-            TriangleMeshShape m = Resources.GetMeshCollisionShape(lowPolyVehicleMesh);
+            CollisionShape m = Resources.GetMeshCollisionShape(lowPolyVehicleMesh);
 
             vehicleBody = World.CreateRigidBody(Mass, Matrix4.CreateTranslation(Location), (m != null)? m : (CollisionShape)new BoxShape(5));
             vehicleBody.LinearFactor = new Vector3(1, 0, 1);

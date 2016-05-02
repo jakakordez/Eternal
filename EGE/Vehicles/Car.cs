@@ -58,7 +58,7 @@ namespace EGE.Vehicles
             //localTrans effectively shifts the center of mass with respect to the chassis
             Matrix4 localTrans = Matrix4.CreateTranslation(0 * Vector3.UnitY);
             ((CompoundShape)collisionShape).AddChildShape(localTrans, chassisShape);
-
+            if(lowPolyVehicleMesh != "") collisionShape = Resources.GetMeshCollisionShape(lowPolyVehicleMesh);
             vehicleBody = World.CreateRigidBody(Mass, Matrix4.CreateTranslation(Location), collisionShape);
             
             // create vehicle

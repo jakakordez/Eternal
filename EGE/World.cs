@@ -49,6 +49,8 @@ namespace EGE
                 DynamicsWorld.Gravity = new Vector3(0, -9.81f, 0);
 
                 MainCharacter = new Characters.Person(new Vector3(403, 5, 274));
+                DynamicsWorld.DebugDrawer = new Tools.PhysicsDebugDrawer();
+                
             }
         }
 
@@ -83,7 +85,7 @@ namespace EGE
             {
                 CurrentMap.ObjectCollection.Load();
                 var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo"); 
-                (car as Vehicles.Car).Load(new Vector3(693, 15, 284));
+                (car as Vehicles.Car).Load(new Vector3(693, 10, 284));
                 VehicleList.Add(car);
                 car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90");
                 (car as Vehicles.Car).Load(new Vector3(693, 15, 294));
@@ -137,9 +139,9 @@ namespace EGE
 
             MainCharacter.Draw();
             
-
+            DynamicsWorld.DebugDrawWorld();
             CurrentMap.Draw();
-
+            
             foreach (var v in VehicleList) v.Draw();
         }
 

@@ -85,7 +85,8 @@ namespace EGE.Environment
                     float Extreme = (Math.Abs(Minimum) > Math.Abs(Maximum)) ? Math.Abs(Minimum) : Maximum;
                     HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -Extreme, Extreme, 1, PhyScalarType.PhyFloat, true);
                     heightfield.LocalScaling = Scale;
-                    World.CreateRigidBody(0, Matrix4.CreateTranslation(new Vector3(Size / 2, 0, Size / 2)), heightfield);
+                    GroundBody = World.CreateRigidBody(0, Matrix4.CreateTranslation(new Vector3(Size / 2, 0, Size / 2)), heightfield);
+                    GroundBody.CollisionFlags |= CollisionFlags.DisableVisualizeObject;
                 }
 
                 entryStream.Close();

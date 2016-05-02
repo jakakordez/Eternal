@@ -16,7 +16,7 @@ namespace EGE.Meshes
 {
     public class Mesh
     {
-        public TriangleMeshShape CollisionShape;
+        public CollisionShape CollisionShape;
         Material[] Materials;
         uint[] ElementArrays;
         int[] ElementArraySizes;
@@ -163,7 +163,16 @@ namespace EGE.Meshes
                 }
                 s.Close();
             }
-            CollisionShape = new BvhTriangleMeshShape(mesh, true);
+
+            ConvexHullShape convexShape;
+            using (var tmpConvexShape = new ConvexTriangleMeshShape(mesh))
+            {
+                var hull = new ShapeHull(tmpConvexShape);
+                hull.BuildHull(tmpConvexShape.Margin);
+                convexShape = new ConvexHullShape(hull.Vertices);
+            }
+       
+            CollisionShape = convexShape; //new BvhTriangleMeshShape(mesh, false)
         }
 
         public void BuildOBJ(string exportFilePath, Resources.ProgressReport progressReporter)

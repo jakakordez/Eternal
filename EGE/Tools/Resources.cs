@@ -267,7 +267,7 @@ namespace EGE
             if(m != null)m.Draw();
         }
 
-        public static BulletSharp.TriangleMeshShape GetMeshCollisionShape(string name)
+        public static BulletSharp.CollisionShape GetMeshCollisionShape(string name)
         {
             Mesh m = (Mesh)findFile(name + ".mesh", RFile.RFileType.Mesh).obj;
             if (m != null) return m.CollisionShape;

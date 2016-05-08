@@ -141,6 +141,9 @@
     <Compile Include="Vehicles\RoadVehicle.cs" />
     <Compile Include="Vehicles\Ship.cs" />
     <Compile Include="Vehicles\Vehicle.cs" />
+    <Compile Include="Vehicles\VehicleCollection.cs" />
+    <Compile Include="Vehicles\VehicleInstanceCollection.cs" />
+    <Compile Include="Vehicles\VehicleManager.cs" />
     <Compile Include="Vehicles\Vehicles.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>

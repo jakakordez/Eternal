@@ -84,10 +84,10 @@ namespace EGE
             if (!StaticView)
             {
                 CurrentMap.ObjectCollection.Load();
-                var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo"); 
+                var car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90"); 
                 (car as Vehicles.Car).Load(new Vector3(693, 10, 284));
                 VehicleList.Add(car);
-                car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90");
+                car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo");
                 (car as Vehicles.Car).Load(new Vector3(693, 15, 294));
                 VehicleList.Add(car);
                 car = Vehicles.Vehicles.getKey("Ship/Ferry/Guarda");

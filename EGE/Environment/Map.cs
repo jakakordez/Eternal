@@ -12,6 +12,7 @@ using System.Drawing;
 using System.ComponentModel;
 using EGE.Environment.Paths;
 using EGE.Environment;
+using EGE.Vehicles;
 using EGE.Meshes;
 
 namespace EGE
@@ -24,6 +25,8 @@ namespace EGE
 
         public ObjectManager ObjectCollection { get; set; }
 
+        public VehicleManager VehicleCollection { get; set; }
+
         public Heightfield TerrainHeightfield { get; set; }
 
         string FilePath;
@@ -34,6 +37,7 @@ namespace EGE
             StaticModels = new Model[0];
             TerrainHeightfield = new Heightfield();
             ObjectCollection = new ObjectManager();
+            VehicleCollection = new VehicleManager();
         }
 
         public void Draw()
@@ -51,6 +55,7 @@ namespace EGE
         
             TerrainHeightfield.Draw();
             ObjectCollection.Draw();
+            VehicleCollection.Draw();
         }
 
         public void Load(string filePath)

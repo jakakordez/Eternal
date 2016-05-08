@@ -41,14 +41,16 @@ namespace EGE.Vehicles
         public float MaxEnginePower { get; set; }
         public float MaxEngineRPM { get; set; }
         public float[] GearRatio { get; set; }
-        float Throttle, RPM, CurrentGear, Clutch;
+        float Throttle, RPM, Clutch;
+        public int CurrentGear;
 
         public Car()
         {
             SteeringWheel = new Meshes.MovableMesh();
             VelocityNeedle = new Meshes.RotatableMesh();
             RPMNeedle = new Meshes.RotatableMesh();
-            GearRatio = new float[0];
+            GearRatio = new float[] { -1, 1 };
+            CurrentGear = 1;
         }
 
         public void Load(Vector3 Location)
@@ -105,7 +107,7 @@ namespace EGE.Vehicles
             
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Resources.DrawMesh(vehicleMesh);
+            Resources.DrawMesh(lowPolyVehicleMesh);
             SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
             if (CurrentCamera == 0)
             {
@@ -134,8 +136,8 @@ namespace EGE.Vehicles
         public override void Update()
         {
             base.Update();
-            raycastVehicle.ApplyEngineForce(Thrust * 5000, 2);
-            raycastVehicle.ApplyEngineForce(Thrust * 5000, 3);
+            raycastVehicle.ApplyEngineForce(/*GearRatio[CurrentGear] **/ Thrust * 5000, 2);
+            raycastVehicle.ApplyEngineForce(/*GearRatio[CurrentGear] **/ Thrust * 5000, 3);
             raycastVehicle.SetSteeringValue(Steering, 0);
             raycastVehicle.SetSteeringValue(Steering, 1);
             //raycastVehicle.SetBrake(Brake*100, 0);

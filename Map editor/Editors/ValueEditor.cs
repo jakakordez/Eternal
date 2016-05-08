@@ -25,7 +25,7 @@ namespace Map_editor.Editors
         public static ValueEditor GetAppropriateEditor(object Value)
         {
             ValueEditor ed;
-            if (types.ContainsKey(Value.GetType())) ed = types[Value.GetType()];
+            if (Value != null && types.ContainsKey(Value.GetType())) ed = types[Value.GetType()];
             else ed = new GeneralEditor();
             ed.SetValue(Value);
             return ed;

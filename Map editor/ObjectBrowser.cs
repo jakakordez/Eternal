@@ -65,14 +65,9 @@ namespace Map_editor
             }
             else if (typeof(EGE.Tools.NodeCollection).IsAssignableFrom(type))
             {
-                var a = ((EGE.Tools.NodeCollection)obj).GetNodes();
                 t = new TreeNode(Title, 5, 5);
                 t.ContextMenuStrip = ctxCollection;
-                for (int i = 0; i < a.Length; i++)
-                {
-                    AddNode(a[i].Value, t.Nodes, a[i].Key, path + "/" + a[i].Key);
-                    t.Nodes[i].ContextMenuStrip = ctxCollectionItem;
-                }
+                AddNodeCollections(obj, t.Nodes, path, "");
             }
             else if (dataTypes.ContainsKey(type))
             {
@@ -90,6 +85,26 @@ namespace Map_editor
             t.Tag = path;
             t.Name = Title;
             node.Add(t);
+        }
+
+        void AddNodeCollections(object obj, TreeNodeCollection node, string path, string collectionPath)
+        {
+            var a = ((EGE.Tools.NodeCollection)obj).GetDirectories(collectionPath);
+            for (int i = 0; i < a.Length; i++)
+            {
+                TreeNode t = new TreeNode(a[i], 4, 4);
+                AddNodeCollections(obj, t.Nodes, path, collectionPath + a[i] + ";");
+                t.ContextMenuStrip = ctxCollectionItem;
+                t.Tag = path + "/" + collectionPath + a[i];
+                t.Name = a[i];
+                node.Add(t);
+            }
+            var b = ((EGE.Tools.NodeCollection)obj).GetNodes(collectionPath);
+            for (int i = 0; i < b.Length; i++)
+            {
+                AddNode(b[i].Value, node, b[i].Key, path + "/" + collectionPath + b[i].Key);;
+            }
+            
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -110,7 +125,7 @@ namespace Map_editor
             if (valueEditor1.GetType() != typeof(Editors.GeneralEditor)) previousPath = e.Node.Tag.ToString();
             else previousPath = "";
 
-            if (val.GetType() == typeof(EGE.Environment.Node)) NavigateNode.Invoke(this, e.Node.Tag.ToString());
+            if (val != null && val.GetType() == typeof(EGE.Environment.Node)) NavigateNode.Invoke(this, e.Node.Tag.ToString());
         }
 
         object getValue(string path)
@@ -217,7 +232,7 @@ namespace Map_editor
 
         private void UpdateArray(string path)
         {
-            string[] pathParts = path.Split('/');
+            string[] pathParts = path.Replace(';', '/').Split('/');
             TreeNode nod = treeView1.Nodes[0];
 
             for (int i = 1; i < pathParts.Length; i++)

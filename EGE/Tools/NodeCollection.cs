@@ -22,7 +22,8 @@ namespace EGE.Tools
 
         public object Get(string id)
         {
-            return storage[id];
+            if(storage.ContainsKey(id)) return storage[id];
+            return null;
         }
 
         public bool Contains(string id)
@@ -52,7 +53,29 @@ namespace EGE.Tools
 
         public KeyValuePair<string, object>[] GetNodes()
         {
-            return storage.Select(t => new KeyValuePair<string, object>(t.Key, (object)t.Value)).ToArray();
+            return storage.Select(t => new KeyValuePair<string, object>(t.Key, t.Value))
+                          .ToArray();
+        }
+
+        public KeyValuePair<string, object>[] GetNodes(string path)
+        {
+            int semicolons = path.Count(t => t == ';');
+            return storage.Where(t => t.Key.Count(s => s == ';') == semicolons)
+                          .Where(t => t.Key.StartsWith(path))
+                          .Select(t => new KeyValuePair<string, object>(t.Key.Split(';')[semicolons], t.Value))
+                          .OrderBy(t => t.Key)
+                          .ToArray();
+        }
+
+        public string[] GetDirectories(string path)
+        {
+            int semicolons = path.Count(t => t == ';');
+            return storage.Where(t => t.Key.Count(s => s == ';') > semicolons)
+                          .Where(t => t.Key.StartsWith(path))
+                          .Select(t => t.Key.Split(';')[semicolons])
+                          .Distinct()
+                          .OrderBy(t => t)
+                          .ToArray();
         }
 
         public void Set(string id, object val)

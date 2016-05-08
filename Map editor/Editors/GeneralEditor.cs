@@ -22,7 +22,8 @@ namespace Map_editor.Editors
 
         public override void SetValue(object value)
         {
-            lblTitle.Text = value.ToString();
+            if (value == null) lblTitle.Text = "";
+            else lblTitle.Text = value.ToString();
             base.SetValue(value);
         }
 

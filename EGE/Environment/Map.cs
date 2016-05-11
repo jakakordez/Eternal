@@ -40,7 +40,7 @@ namespace EGE
             VehicleCollection = new VehicleManager();
         }
 
-        public void Draw()
+        public void Draw(Vector3 eye)
         {
             Matrix4 trans = World.WorldMatrix;
             foreach (Road road in Roads)
@@ -55,7 +55,7 @@ namespace EGE
         
             TerrainHeightfield.Draw();
             ObjectCollection.Draw();
-            VehicleCollection.Draw();
+            VehicleCollection.Draw(eye);
         }
 
         public void Load(string filePath)

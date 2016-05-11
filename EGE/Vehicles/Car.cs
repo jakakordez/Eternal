@@ -53,7 +53,7 @@ namespace EGE.Vehicles
             CurrentGear = 1;
         }
 
-        public void Load(Vector3 Location)
+        public override void Load(Vector3 Location)
         {
             CollisionShape chassisShape = new BoxShape(Dimensions.Y / 2, Dimensions.Z / 2, Dimensions.X / 2);
             collisionShape = new CompoundShape();
@@ -69,7 +69,7 @@ namespace EGE.Vehicles
 
             vehicleBody.ActivationState = ActivationState.DisableDeactivation;
 
-
+            
             bool isFrontWheel = true;
             float CUBE_HALF_EXTENTS = Dimensions.Y / 2;
             // choose coordinate system
@@ -101,13 +101,13 @@ namespace EGE.Vehicles
             World.DynamicsWorld.AddAction(raycastVehicle);
         }
 
-        public override void Draw()
+        public override void Draw(Vector3 eye)
         {
             Matrix4 trans = World.WorldMatrix;
             
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Resources.DrawMesh(lowPolyVehicleMesh);
+            Resources.DrawMesh((vehicleBody.CenterOfMassPosition-eye).LengthSquared>900?lowPolyVehicleMesh:vehicleMesh);
             SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
             if (CurrentCamera == 0)
             {
@@ -174,6 +174,8 @@ namespace EGE.Vehicles
                 if (Steering < -SteeringClamp) Steering = -SteeringClamp;
             }
             if(!Controller.In(Func.Right) && !Controller.In(Func.Left)) Steering *= 0.8f;
+
+            //if(Controller.Pressed(Func.GearUp)) CurrentGear += 
         }
     }
 }

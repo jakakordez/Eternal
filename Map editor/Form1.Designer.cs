@@ -64,7 +64,6 @@
             this.tlsRun = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbResources = new System.Windows.Forms.ToolStripButton();
-            this.tsbVehicles = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbPointerNone = new System.Windows.Forms.ToolStripButton();
             this.tsbPointerMove = new System.Windows.Forms.ToolStripButton();
@@ -345,7 +344,6 @@
             this.tlsRun,
             this.toolStripSeparator6,
             this.tsbResources,
-            this.tsbVehicles,
             this.toolStripSeparator7,
             this.tsbPointerNone,
             this.tsbPointerMove,
@@ -385,17 +383,6 @@
             this.tsbResources.Text = "toolStripButton1";
             this.tsbResources.ToolTipText = "Resources";
             this.tsbResources.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // tsbVehicles
-            // 
-            this.tsbVehicles.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbVehicles.Image = ((System.Drawing.Image)(resources.GetObject("tsbVehicles.Image")));
-            this.tsbVehicles.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbVehicles.Name = "tsbVehicles";
-            this.tsbVehicles.Size = new System.Drawing.Size(23, 22);
-            this.tsbVehicles.Text = "toolStripButton1";
-            this.tsbVehicles.ToolTipText = "Vehicles";
-            this.tsbVehicles.Click += new System.EventHandler(this.tsbVehicles_Click);
             // 
             // toolStripSeparator7
             // 
@@ -698,7 +685,6 @@
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private mapView hostedComponent1;
         private System.Windows.Forms.ToolStripButton tsbResources;
-        private System.Windows.Forms.ToolStripButton tsbVehicles;
         private System.Windows.Forms.ToolStripButton tlsRun;
         private ObjectBrowser objectBrowser1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;

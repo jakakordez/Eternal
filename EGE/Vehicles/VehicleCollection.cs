@@ -10,6 +10,7 @@ namespace EGE.Vehicles
     {
         public VehicleCollection():base(false, typeof(Vehicle))
         {
+            AvaliableTypes = new List<Type>(new Type[] { typeof(Car), typeof(Ship)});
         }
 
         public static Dictionary<string, object> Deserialize(string data)

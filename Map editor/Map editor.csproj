@@ -116,12 +116,6 @@
     <Compile Include="ResourceCollection.Designer.cs">
       <DependentUpon>ResourceCollection.cs</DependentUpon>
     </Compile>
-    <Compile Include="VehicleCollection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VehicleCollection.Designer.cs">
-      <DependentUpon>VehicleCollection.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Editors\NumberEditor.resx">
       <DependentUpon>NumberEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -158,9 +152,6 @@
     </Compile>
     <EmbeddedResource Include="ResourceCollection.resx">
       <DependentUpon>ResourceCollection.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VehicleCollection.resx">
-      <DependentUpon>VehicleCollection.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

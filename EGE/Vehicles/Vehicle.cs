@@ -51,24 +51,17 @@ namespace EGE.Vehicles
             CurrentCamera = 1;
         }
 
-        public virtual void Draw()
+        public virtual void Draw(Vector3 eye)
         {
         }
 
-        public virtual void Update()
-        {
-           
-        }
+        public virtual void Update() { }
 
-        public virtual void HandleInput()
-        {
+        public virtual void Load(Vector3 center) { }
 
-        }
+        public virtual void HandleInput() { }
 
-        protected virtual void HandleAI()
-        {
-
-        }
+        protected virtual void HandleAI() { }
 
         public void NextCamera()
         {

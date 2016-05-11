@@ -178,11 +178,6 @@ namespace Map_editor
             new ResourceCollector().Show();
         }
 
-        private void tsbVehicles_Click(object sender, EventArgs e)
-        {
-            new VehicleCollection().Show();
-        }
-
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(Environment.CurrentDirectory+"\\..\\..\\..\\Eternal\\bin\\Debug\\Eternal.exe");

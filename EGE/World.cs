@@ -9,6 +9,7 @@ using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Drawing;
+using EGE.Vehicles;
 
 namespace EGE
 {
@@ -19,8 +20,6 @@ namespace EGE
         public Map CurrentMap { get; set;}
         public Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
-
-        List<Vehicles.Vehicle> VehicleList;
 
         public static bool StaticView;
         
@@ -35,7 +34,6 @@ namespace EGE
             World.StaticView = StaticView;
             CurrentMap = new Map();
             MeshCollection = new MeshCollector();
-            VehicleList = new List<Vehicles.Vehicle>();
 
             if (StaticView) MainCharacter = new Characters.DebugView();
             else
@@ -64,7 +62,6 @@ namespace EGE
         {
             Resources.LoadResources(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
-            Vehicles.Vehicles.LoadVehicles(Path + "\\Map");
             if (StaticView) ((Characters.DebugView)MainCharacter).Load();
         }
         public void Build()
@@ -84,15 +81,18 @@ namespace EGE
             if (!StaticView)
             {
                 CurrentMap.ObjectCollection.Load();
-                var car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90"); 
-                (car as Vehicles.Car).Load(new Vector3(693, 10, 284));
+                /*var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo"); 
+                car.Load(new Vector3(693, 10, 284));
                 VehicleList.Add(car);
-                car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo");
+                /*car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90");
                 (car as Vehicles.Car).Load(new Vector3(693, 15, 294));
                 VehicleList.Add(car);
                 car = Vehicles.Vehicles.getKey("Ship/Ferry/Guarda");
                 (car as Vehicles.Ship).Load(new Vector3(670, 5, 200));
-                VehicleList.Add(car);
+                VehicleList.Add(car);*/
+                CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(693, 10, 284));
+                CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 15, 294));
+                
             }
         }
 
@@ -108,20 +108,15 @@ namespace EGE
             {
                 if (!StaticView)
                 {
-                    if (Controller.Pressed(Func.Enter))
+                    foreach (var item in CurrentMap.VehicleCollection.VehicleInstances.GetNodes())
                     {
-                        if ((MainCharacter as Characters.Person).ControlledVehicle == null)
-                        {
-                            (MainCharacter as Characters.Person).ControlledVehicle = VehicleList[0];
-                        }
-                        else (MainCharacter as Characters.Person).ControlledVehicle = null;
+                        ((Vehicle)item.Value).Update();
                     }
-                    foreach (var v in VehicleList) v.Update();
                     DynamicsWorld.StepSimulation(elaspedTime);
                 }
                 Controller.Update();
                 KeyboardState keyboardState = Keyboard.GetState();
-                MainCharacter.Update(elaspedTime);
+                MainCharacter.Update(elaspedTime, CurrentMap);
             }
         }
 
@@ -139,10 +134,8 @@ namespace EGE
 
             MainCharacter.Draw();
             
-            DynamicsWorld.DebugDrawWorld();
-            CurrentMap.Draw();
-            
-            foreach (var v in VehicleList) v.Draw();
+            if(DynamicsWorld != null) DynamicsWorld.DebugDrawWorld();
+            CurrentMap.Draw(MainCharacter.GetEye());
         }
 
         public static RigidBody CreateRigidBody(float mass, Matrix4 startTransform, CollisionShape shape)

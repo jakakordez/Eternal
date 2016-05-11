@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace EGE.Characters
 {
@@ -17,7 +18,9 @@ namespace EGE.Characters
             CurrentCamera = 0;
         }
 
-        public abstract void Update(float elaspedTime);
+        public abstract Vector3 GetEye();
+
+        public abstract void Update(float elaspedTime, Map map);
 
         public abstract void Draw();
     }

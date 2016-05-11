@@ -12,12 +12,15 @@ namespace EGE.Tools
         ulong key;
         public bool AutoIncrement;
         public Type contentType;
+        public List<Type> AvaliableTypes;
 
         public NodeCollection(bool AI, Type contentType)
         {
             AutoIncrement = AI;
             this.contentType = contentType;
             storage = new Dictionary<string, object>();
+            AvaliableTypes = new List<Type>();
+            AvaliableTypes.Add(contentType);
         }
 
         public object Get(string id)

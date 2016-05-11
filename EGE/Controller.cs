@@ -61,6 +61,8 @@ namespace EGE
             ControllerMapping.Add(Func.Jump, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Space });
             ControllerMapping.Add(Func.Enter, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.F });
             ControllerMapping.Add(Func.SwitchView, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
+            ControllerMapping.Add(Func.GearUp, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.PageUp });
+            ControllerMapping.Add(Func.GearDown, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.PageDown });
         }
 
         public static void Update()

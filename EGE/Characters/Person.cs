@@ -7,6 +7,7 @@ using OpenTK.Input;
 using BulletSharp;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using EGE.Vehicles;
 
 namespace EGE.Characters
 {
@@ -43,7 +44,7 @@ namespace EGE.Characters
             GL.LoadMatrix(ref World.WorldMatrix);
         }
 
-        public override void Update(float elaspedTime)
+        public override void Update(float elaspedTime, Map map)
         {
             Vector2 direction = Misc.getCartesian(-CameraList[0].Orientation.Y);
             Vector2 sideDirection = Misc.getCartesian(-CameraList[0].Orientation.Y+MathHelper.PiOver2);
@@ -66,22 +67,31 @@ namespace EGE.Characters
                     CharacterBody.LinearVelocity += new Vector3(-sideDirection.X * WalkingSpeed, CharacterBody.LinearVelocity.Y, -sideDirection.Y * WalkingSpeed);
                 CharacterBody.LinearVelocity = new Vector3(CharacterBody.LinearVelocity.X, y, CharacterBody.LinearVelocity.Z);
                 if (Controller.In(Func.Jump)) CharacterBody.ApplyCentralImpulse(new Vector3(0, 40, 0));
-            }
-            else ControlledVehicle.HandleInput();
 
-            if (ControlledVehicle == null)
-            {
                 CameraList[CurrentCamera].Update();
                 if (Controller.Pressed(Func.SwitchView))
                 {
                     CurrentCamera = (CurrentCamera + 1) % CameraList.Length;
                 }
+
+                if (Controller.Pressed(Func.Enter))
+                {
+                    string v = map.VehicleCollection.VehicleInstances.nearestVehicle(CharacterBody.CenterOfMassPosition);
+                    ControlledVehicle = (Vehicle)map.VehicleCollection.VehicleInstances.Get(v);
+                }
             }
-            else
-            {
+            else {
+                ControlledVehicle.HandleInput();
                 ControlledVehicle.UpdateCamera();
                 if (Controller.Pressed(Func.SwitchView)) ControlledVehicle.NextCamera();
+                if (Controller.Pressed(Func.Enter)) ControlledVehicle = null;
             }
+        }
+
+        public override Vector3 GetEye()
+        {
+            if(ControlledVehicle == null) return CharacterBody.CenterOfMassPosition;
+            return ControlledVehicle.vehicleBody.CenterOfMassPosition;
         }
     }
 }

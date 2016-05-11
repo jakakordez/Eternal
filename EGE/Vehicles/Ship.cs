@@ -13,7 +13,7 @@ namespace EGE.Vehicles
     {
         protected float Thrust, Steering;
         public float SteeringClamp { get; set; }
-        public void Load(Vector3 Location)
+        public override void Load(Vector3 Location)
         {
             CollisionShape m = Resources.GetMeshCollisionShape(lowPolyVehicleMesh);
 
@@ -24,7 +24,7 @@ namespace EGE.Vehicles
             World.DynamicsWorld.AddRigidBody(vehicleBody);
         }
 
-        public override void Draw()
+        public override void Draw(Vector3 eye)
         {
             Matrix4 trans = World.WorldMatrix;
 

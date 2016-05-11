@@ -13,7 +13,7 @@ namespace EGE.Tools
     public class PhysicsDebugDrawer : IDebugDraw
     {
         public static bool DrawRoads = false;
-        DebugDrawModes currentMode= DebugDrawModes.DrawWireframe;
+        DebugDrawModes currentMode = DebugDrawModes.None;//DebugDrawModes.DrawWireframe;
         public DebugDrawModes DebugMode
         {
             get

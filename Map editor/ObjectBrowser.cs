@@ -324,10 +324,10 @@ namespace Map_editor
             }
             else
             {
-                Enter_text et = new Enter_text("Enter key", "");
+                Enter_text et = new Enter_text("Enter key", "", collection.AvaliableTypes.Select(t => t.ToString()).ToArray());
                 if (et.ShowDialog() == DialogResult.OK)
                 {
-                    collection.Add(et.NewValue, Activator.CreateInstance(collection.contentType));
+                    collection.Add(et.NewValue, Activator.CreateInstance(collection.AvaliableTypes[et.selectedOption]));
                     UpdateArray(pathUp(treeView1.SelectedNode.Tag.ToString()));
                     UpdateWorld.Invoke(this, null);
                 }

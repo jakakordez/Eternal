@@ -39,7 +39,7 @@ namespace EGE.Characters
             PointerMesh.LoadMesh(new ZipArchive(new System.IO.MemoryStream(EGEResources.pointermesh), ZipArchiveMode.Read));
         }
 
-        public override void Update(float elaspedTime)
+        public override void Update(float elaspedTime, Map map)
         {
             CameraList[0].Update();
 
@@ -98,6 +98,11 @@ namespace EGE.Characters
             {
                 centerPoint = Point+new Vector3(0, 10, 0);
             }
+        }
+
+        public override Vector3 GetEye()
+        {
+            return centerPoint;
         }
     }
 }

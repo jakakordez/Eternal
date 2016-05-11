@@ -23,13 +23,26 @@ namespace Map_editor
             textBox1.Text = Value;
             Text = title;
         }
+
+        public Enter_text(string title, string Value, string[] options)
+        {
+            InitializeComponent();
+            OldValue = Value;
+            textBox1.Text = Value;
+            Text = title;
+            comboBox1.Enabled = true;
+            comboBox1.Items.AddRange(options);
+            comboBox1.SelectedIndex = 0;
+        }
         public string NewValue, OldValue;
+        public int selectedOption = 0;
 
         private void button1_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Text = textBox1.Text;
             NewValue = Text;
+            selectedOption = comboBox1.SelectedIndex;
             Close();
         }
 
@@ -40,6 +53,7 @@ namespace Map_editor
                 DialogResult = DialogResult.OK;
                 Text = textBox1.Text;
                 NewValue = Text;
+                selectedOption = comboBox1.SelectedIndex;
                 Close();
             }
             if(e.KeyCode == Keys.Escape)

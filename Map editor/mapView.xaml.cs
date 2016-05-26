@@ -77,7 +77,7 @@ namespace Map_editor
         Point grabPoint;
         string selectedNode;
 
-        public delegate void LocationUpdate(double X, double Y, double? Z, float Step, object argument, string additionalData);
+        public delegate void LocationUpdate(double X, double Y, double? Z, object argument, string additionalData);
         public event LocationUpdate UpdateLocation;
         public event LocationUpdate MoveNode;
         public Dictionary<string, UIElement> MapObjects;
@@ -318,7 +318,7 @@ namespace Map_editor
 
         void ReportLocation(Vector3 l)
         {
-            UpdateLocation.Invoke(l.X, l.Y, l.Z, Step, null, "");
+            UpdateLocation.Invoke(l.X, l.Y, l.Z, null, "");
         }
 
         private void moveNode(PointerFunction action, Vector3 value)
@@ -357,7 +357,7 @@ namespace Map_editor
                     Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                     float ydif = (float)(p.Y / 10);
                     Vector3 Location = n.Location + new Vector3(0, ydif, 0);
-                    UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, Location.Y, Step, this, "");
+                    UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, Location.Y, this, "");
                 }
             }
         }
@@ -366,7 +366,7 @@ namespace Map_editor
         {
             if (e.LeftButton == MouseButtonState.Released || CurrentFunction != PointerFunction.Height)
             {
-                UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, null, Step, this, "");
+                UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, null, this, "");
             }
         }
 

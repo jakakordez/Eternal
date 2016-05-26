@@ -28,7 +28,7 @@ namespace EGE
         Enter,
         SwitchView
     }
-    class Controller
+    public class Controller
     {
         class ControlSource
         {
@@ -42,7 +42,7 @@ namespace EGE
             public float CurrentState;
         }
 
-        private static float MouseX, MouseY, MouseScroll;
+        public static float MouseX, MouseY, MouseScroll;
 
         private static Dictionary<Func, ControlSource> ControllerMapping;
 

@@ -87,6 +87,7 @@
             this.lblLocation = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblFPS = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblStep = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -596,12 +597,19 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus,
             this.lblLocation,
+            this.lblStep,
             this.lblFPS});
             this.statusStrip1.Location = new System.Drawing.Point(0, 417);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(683, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStep
+            // 
+            this.lblStep.Name = "lblStep";
+            this.lblStep.Size = new System.Drawing.Size(25, 17);
+            this.lblStep.Text = "S: 1";
             // 
             // Form1
             // 
@@ -700,6 +708,7 @@
         private System.Windows.Forms.ToolStripButton tsbPointerRotateY;
         private System.Windows.Forms.ToolStripButton tsbPointerRotateX;
         private System.Windows.Forms.ToolStripButton tsbPointerRotateZ;
+        private System.Windows.Forms.ToolStripStatusLabel lblStep;
     }
 }
 

@@ -84,7 +84,6 @@ namespace Map_editor
             OpenGLLoaded = true;
             currentWorld.Resize(glControl1.Width, glControl1.Height);
             tmrPreview.Start();
-
         }
 
         private void glControl1_Paint(object sender, PaintEventArgs e)
@@ -103,11 +102,14 @@ namespace Map_editor
         {
             try
             {
-                currentWorld.Update(tabControl1.SelectedIndex == 1, 0);
-                fpsCounter.Restart();
+                fpsCounter.Reset();
+                fpsCounter.Start();
+                currentWorld.Update(tabControl1.SelectedIndex == 1, 0);   
                 currentWorld.Draw(tabControl1.SelectedIndex == 1);
                 fpsCounter.Stop();
-                if (fpsCounter.ElapsedMilliseconds == 0) lblFPS.Text = "<1000 FPS";
+                hostedComponent1.Step = (float)Math.Pow(2, Controller.MouseScroll / 10f);
+                lblStep.Text = string.Format("S:{0,7:0.00}", hostedComponent1.Step);
+                if (fpsCounter.ElapsedMilliseconds == 0) lblFPS.Text = "∞ FPS";
                 else lblFPS.Text = (1f / fpsCounter.ElapsedMilliseconds * 1000f) + " FPS";
             }
             catch { }
@@ -168,11 +170,11 @@ namespace Map_editor
             
         }*/
 
-        private void MapView1_UpdateLocation(double X, double Y, double? Z, float Step, object arg, string additionalData)
+        private void MapView1_UpdateLocation(double X, double Y, double? Z, object arg, string additionalData)
         {
             string output;
-            if(Z == null) output = string.Format("X:{0,7:0.00}  Y:{1,7:0.00}  S:{2,7:0.00}"+additionalData, X, Y, Step);
-            else output = string.Format("X:{0,7:0.00}  Y:{1,7:0.00}  Z:{2,7:0.00}  S:{3,7:0.00}" + additionalData, X, Y, Z, Step);
+            if(Z == null) output = string.Format("X:{0,7:0.00}  Y:{1,7:0.00}"+additionalData, X, Y);
+            else output = string.Format("X:{0,7:0.00}  Y:{1,7:0.00}  Z:{2,7:0.00}" + additionalData, X, Y, Z);
             lblLocation.Text = output;
         }
 

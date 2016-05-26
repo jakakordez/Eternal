@@ -17,9 +17,8 @@ namespace EGE.Vehicles
         CollisionShape collisionShape;
         public Vector3 Dimensions { get; set; }
         public Vector2 SteeringWheelAngle { get; set; }
-        public Vector2 FrontWheelLocation { get; set; }
         public Node FrontWheel { get; set; }
-        public Vector2 RearWheelLocation { get; set; }
+        public Node RearWheel { get; set; }
         public float WheelRadius { get; set; }
         public float WheelWidth { get; set; }
         public float WheelFriction { get; set; }
@@ -27,7 +26,6 @@ namespace EGE.Vehicles
         public float SuspensionDamping { get; set; }
         public float SuspensionCompression { get; set; }
         public float RollInfluence { get; set; }
-        public float SuspensionHeight { get; set; }
         public float SuspensionRestLength { get; set; }
 
         public Vector3 wheelDirectionCS0 = new Vector3(0, -1, 0);
@@ -58,6 +56,7 @@ namespace EGE.Vehicles
             PrimaryColors = new Color4[] { Color4.White};
             CurrentGear = 1;
             FrontWheel = new Node();
+            RearWheel = new Node();
         }
 
         public override void Load(Vector3 Location)
@@ -81,16 +80,16 @@ namespace EGE.Vehicles
             // choose coordinate system
             raycastVehicle.SetCoordinateSystem(rightIndex, upIndex, forwardIndex);
 
-            Vector3 connectionPointCS0 = new Vector3(FrontWheelLocation.Y, SuspensionHeight, FrontWheelLocation.X);
+            Vector3 connectionPointCS0 = FrontWheel.Location+(Vector3.UnitY*SuspensionRestLength); // Front left
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
-            connectionPointCS0 = new Vector3(-FrontWheelLocation.Y, SuspensionHeight, FrontWheelLocation.X);
+            connectionPointCS0 = FrontWheel.Location * new Vector3(-1, 1, 1) + (Vector3.UnitY * SuspensionRestLength); // Front right
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
-            connectionPointCS0 = new Vector3(-RearWheelLocation.Y, SuspensionHeight, -RearWheelLocation.X);
+            connectionPointCS0 = RearWheel.Location * new Vector3(-1, 1, 1) + (Vector3.UnitY * SuspensionRestLength); // Rear right
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
 
-            connectionPointCS0 = new Vector3(RearWheelLocation.Y, SuspensionHeight, -RearWheelLocation.X);
+            connectionPointCS0 = RearWheel.Location + (Vector3.UnitY * SuspensionRestLength); // Rear left
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
 
             for (int i = 0; i < raycastVehicle.NumWheels; i++)

@@ -78,7 +78,7 @@ namespace EGE.Environment
                     }
                 }
                 HeightfieldMesh.Load(points, indicies, TextureName, texturecoords);
-                if (!World.StaticView)
+                if (!Graphics.StaticView)
                 {
                     // Generate rigid body
                     entryStream.Position = 0;
@@ -96,7 +96,7 @@ namespace EGE.Environment
         public Bitmap GetBitmap()
         {
             Bitmap result = new Bitmap(Size, Size);
-            Graphics g = Graphics.FromImage(result);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(result);
             g.Clear(Color.Black);
             Stream entryStream = new MemoryStream(Resources.GetFile(HeightfieldName));
             if (entryStream != null)

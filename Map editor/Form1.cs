@@ -159,18 +159,21 @@ namespace Map_editor
             tabPage2.Show(); // Switch to page 2 for OpenGL control load
             tabPage1.Show(); // Switch back to page 1
             hostedComponent1.UpdateLocation += MapView1_UpdateLocation;
-            hostedComponent1.MoveNode += MapView1_MoveNode;
+            //hostedComponent1.MoveNode += MapView1_MoveNode;
             LoadMap(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\mapa");
         }
 
-        private void MapView1_MoveNode(double X, double Y, object argument, string additionalData)
+        /*private void MapView1_MoveNode(double X, double Y, double Z, double Step, object argument, string additionalData)
         {
             
-        }
+        }*/
 
-        private void MapView1_UpdateLocation(double X, double Y, object arg, string additionalData)
+        private void MapView1_UpdateLocation(double X, double Y, double? Z, float Step, object arg, string additionalData)
         {
-            lblLocation.Text= string.Format("X: {0,7:0.00} Y: {1,7:0.00}"+additionalData, X, Y);
+            string output;
+            if(Z == null) output = string.Format("X:{0,7:0.00}  Y:{1,7:0.00}  S:{2,7:0.00}"+additionalData, X, Y, Step);
+            else output = string.Format("X:{0,7:0.00}  Y:{1,7:0.00}  Z:{2,7:0.00}  S:{3,7:0.00}" + additionalData, X, Y, Z, Step);
+            lblLocation.Text = output;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)

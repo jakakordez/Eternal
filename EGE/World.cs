@@ -20,8 +20,6 @@ namespace EGE
         public Map CurrentMap { get; set;}
         public Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
-
-        public static bool StaticView;
         
         public static DiscreteDynamicsWorld DynamicsWorld;
 
@@ -31,7 +29,7 @@ namespace EGE
 
         public World(bool StaticView)
         {
-            World.StaticView = StaticView;
+            Graphics.StaticView = StaticView;
             CurrentMap = new Map();
             MeshCollection = new MeshCollector();
 
@@ -54,7 +52,7 @@ namespace EGE
 
         public void Init()
         {
-            Tools.Graphics.Init();
+            Graphics.Init();
             Controller.InitController();
         }
 
@@ -62,7 +60,7 @@ namespace EGE
         {
             Resources.LoadResources(Path + "\\Map");
             Tools.Contruction.Load(Path + "\\Map", CurrentMap);
-            if (StaticView) ((Characters.DebugView)MainCharacter).Load();
+            if (Graphics.StaticView) ((Characters.DebugView)MainCharacter).Load();
         }
         public void Build()
         {
@@ -78,7 +76,7 @@ namespace EGE
             }
             CurrentMap.TerrainHeightfield.Load();
 
-            if (!StaticView)
+            if (!Graphics.StaticView)
             {
                 CurrentMap.ObjectCollection.Load();
                 /*var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo"); 
@@ -91,8 +89,11 @@ namespace EGE
                 (car as Vehicles.Ship).Load(new Vector3(670, 5, 200));
                 VehicleList.Add(car);*/
                 CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(693, 10, 284));
-                CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 15, 294));
-                
+                //CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 15, 294));
+                /*for(int i = 0; i < 2; i++)
+                {
+                    CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(650-i*5, 10, 284));
+                }*/
             }
         }
 
@@ -106,7 +107,7 @@ namespace EGE
         {
             if (focused)
             {
-                if (!StaticView)
+                if (!Graphics.StaticView)
                 {
                     foreach (var item in CurrentMap.VehicleCollection.VehicleInstances.GetNodes())
                     {
@@ -122,7 +123,7 @@ namespace EGE
 
         public void Resize(float Width, float Height)
         {
-            Tools.Graphics.Resize(Width, Height);
+            Graphics.Resize(Width, Height);
         }
 
         public void Draw(bool Focused)
@@ -130,12 +131,15 @@ namespace EGE
             GL.ClearColor(Color.CornflowerBlue);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            Tools.Graphics.SetProjection();
+            Graphics.SetProjection();
 
             MainCharacter.Draw();
-            
-            if(DynamicsWorld != null) DynamicsWorld.DebugDrawWorld();
-            CurrentMap.Draw(MainCharacter.GetEye());
+            if (Graphics.EditMesh == null)
+            {
+                if (DynamicsWorld != null) DynamicsWorld.DebugDrawWorld();
+                CurrentMap.Draw(MainCharacter.GetEye());
+            }
+            else Resources.DrawMesh(Graphics.EditMesh);
         }
 
         public static RigidBody CreateRigidBody(float mass, Matrix4 startTransform, CollisionShape shape)

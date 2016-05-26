@@ -116,10 +116,10 @@ namespace EGE.Environment.Paths
                 TextureCoordinates[(i * 4) + 2] = new Vector2(1, 0.2f);
                 TextureCoordinates[(i * 4) + 3] = new Vector2(0, 0.2f);
             }
-            RoadMesh.GenerateCollisionShape = !World.StaticView;
+            RoadMesh.GenerateCollisionShape = !Graphics.StaticView;
             RoadMesh.Load(BezierCurve.ToArray(), Indices, TextureName, TextureCoordinates);
 
-            if (!World.StaticView)
+            if (!Graphics.StaticView)
             {
                 RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, RoadMesh.CollisionShape);
                 if (!Tools.PhysicsDebugDrawer.DrawRoads) RoadSurface.CollisionFlags |= CollisionFlags.DisableVisualizeObject;

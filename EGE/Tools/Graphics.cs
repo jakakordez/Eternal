@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
-namespace EGE.Tools
+namespace EGE
 {
-    class Graphics
+    public class Graphics
     {
         public static bool Initialized = false;
-        static float AspectRatio;
+        private static float AspectRatio;
+        public static Environment.Node PointerLocation = new Environment.Node();
+        public static string EditMesh;
+        public static bool StaticView;
 
         public static void Init()
         {

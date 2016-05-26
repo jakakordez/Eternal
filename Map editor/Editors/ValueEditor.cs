@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Graphics;
 
 namespace Map_editor.Editors
 {
@@ -20,7 +21,8 @@ namespace Map_editor.Editors
             {typeof(ulong), new NumberEditor() },
             {typeof(string), new StringEditor() },
             {typeof(Vector3), new Vector3Editor() },
-            {typeof(Vector2), new Vector2Editor() }
+            {typeof(Vector2), new Vector2Editor() },
+            {typeof(Color4), new Color4Editor() }
         };
         public static ValueEditor GetAppropriateEditor(object Value)
         {

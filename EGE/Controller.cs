@@ -48,21 +48,21 @@ namespace EGE
 
         public static void InitController() {
             ControllerMapping = new Dictionary<Func, ControlSource>();
-            ControllerMapping.Add(Func.Acceleration, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard) , ControlIndex=(int)Key.W});
-            ControllerMapping.Add(Func.Brake, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.S });
-            ControllerMapping.Add(Func.Forward, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.W });
-            ControllerMapping.Add(Func.Backward, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.S });
-            ControllerMapping.Add(Func.Left, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.A });
-            ControllerMapping.Add(Func.Right, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.D });
-            ControllerMapping.Add(Func.Up, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.E });
-            ControllerMapping.Add(Func.Down, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Q });
-            ControllerMapping.Add(Func.View, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.X });
-            ControllerMapping.Add(Func.FastMode, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.LShift });
-            ControllerMapping.Add(Func.Jump, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Space });
-            ControllerMapping.Add(Func.Enter, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.F });
-            ControllerMapping.Add(Func.SwitchView, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
-            ControllerMapping.Add(Func.GearUp, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.PageUp });
-            ControllerMapping.Add(Func.GearDown, new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.PageDown });
+            ControllerMapping.Add(Func.Acceleration,    new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard) , ControlIndex=(int)Key.W});
+            ControllerMapping.Add(Func.Brake,           new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.S });
+            ControllerMapping.Add(Func.Forward,         new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.W });
+            ControllerMapping.Add(Func.Backward,        new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.S });
+            ControllerMapping.Add(Func.Left,            new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.A });
+            ControllerMapping.Add(Func.Right,           new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.D });
+            ControllerMapping.Add(Func.Up,              new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.E });
+            ControllerMapping.Add(Func.Down,            new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Q });
+            ControllerMapping.Add(Func.View,            new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.X });
+            ControllerMapping.Add(Func.FastMode,        new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.LShift });
+            ControllerMapping.Add(Func.Jump,            new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.Space });
+            ControllerMapping.Add(Func.Enter,           new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.F });
+            ControllerMapping.Add(Func.SwitchView,      new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.V });
+            ControllerMapping.Add(Func.GearUp,          new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.PageUp });
+            ControllerMapping.Add(Func.GearDown,        new ControlSource() { DeviceIndex = 0, DeviceType = typeof(Keyboard), ControlIndex = (int)Key.PageDown });
         }
 
         public static void Update()

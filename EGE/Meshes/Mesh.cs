@@ -41,12 +41,23 @@ namespace EGE.Meshes
 
         public void Draw()
         {
+            Draw(Color4.Transparent);
+        }
+
+        public void Draw(Color4 color)
+        {
             for (int i = 0; i < ElementArraySizes.Length; i++)
             {
                 if (Materials[i].Texture != "")
                 {
                     GL.Color4(Color.White);
                     Resources.BindTexture(MeshFolder+Materials[i].Texture);
+                }
+                else if(color != Color4.Transparent && Materials[i].Name == "primary_color")
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.Color4(color);
+                    color = Color4.Transparent;
                 }
                 else
                 {
@@ -63,25 +74,15 @@ namespace EGE.Meshes
                 GL.EnableClientState(ArrayCap.VertexArray);
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArrays[i]);
 
-                switch (Settings.CurrentDrawingMode)
-                {
-                    case Settings.DrawingModes.Wireframe:
-                        GL.DrawElements(PrimitiveType.LineStrip, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
-                        break;
-                    case Settings.DrawingModes.Full:
-                        GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
-                        break;
-                    case Settings.DrawingModes.Textured:
-                        GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
-                        // Set the Pointer to the current bound array describing how the data ia stored
-                        GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
-                        // Enable the client state so it will use this array buffer pointer
-                        GL.EnableClientState(ArrayCap.TextureCoordArray);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
+                // Set the Pointer to the current bound array describing how the data ia stored
+                GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
+                // Enable the client state so it will use this array buffer pointer
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-                        GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
-                        GL.BindTexture(TextureTarget.Texture2D, 0);
-                        break;
-                }
+                GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
+                GL.BindTexture(TextureTarget.Texture2D, 0);
+
                 // Restore the state
                 GL.PopClientAttrib();
             }

@@ -11,6 +11,7 @@ namespace EGE
     {
         public static Encoding Encoding = Encoding.UTF8;
         public static string Version = "0.0.0";
+        public static Random RNG = new Random();
 
         public static JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()
         {

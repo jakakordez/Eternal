@@ -23,7 +23,7 @@ namespace EGE.Characters
             Style = DrawingStyle.Wireframe
         };
 
-        public Vector3 PointerLocation = new Vector3();
+        
         Meshes.Mesh PointerMesh;
 
         public DebugView()
@@ -61,14 +61,6 @@ namespace EGE.Characters
             Movement *= Matrix4.CreateTranslation(new Vector3(0, Controller.Val(Func.Down) * -sp, 0));
             if (CurrentCamera == 0) Movement *= Matrix4.CreateRotationY(CameraList[0].Orientation.Y);
             centerPoint += Movement.ExtractTranslation();
-
-            if (Controller.In(Func.View) && !inn)
-            {
-                inn = true;
-                if (Settings.CurrentDrawingMode == Settings.DrawingModes.Textured) Settings.CurrentDrawingMode = Settings.DrawingModes.Wireframe;
-                else Settings.CurrentDrawingMode = Settings.DrawingModes.Textured;
-            }
-            else if(!Controller.In(Func.View)) inn = false;
         }
 
         public override void Draw()
@@ -80,23 +72,24 @@ namespace EGE.Characters
 
             CameraList[CurrentCamera].GenerateLookAt(centerPoint);
             
-            Matrix4 trans = Matrix4.CreateTranslation(PointerLocation) * World.WorldMatrix;
+            Matrix4 trans = Graphics.PointerLocation.CreateTransform() * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             PointerMesh.Draw();
             GL.LoadMatrix(ref World.WorldMatrix);
         }
 
-        public void Navigate(Vector3 Point)
+        public void Navigate(Environment.Node Point, string editMesh)
         {
-            PointerLocation = Point;
+            Graphics.PointerLocation = Point;
+            Graphics.EditMesh = editMesh;
             if(CurrentCamera == 0)
             {
-                centerPoint = Point + new Vector3(-2, 2, 2);
+                centerPoint = Point.Location + new Vector3(-2, 2, 2);
                 CameraList[0].Orientation = new Vector3(-MathHelper.PiOver4, MathHelper.PiOver4, -MathHelper.PiOver4);
             }
             else
             {
-                centerPoint = Point+new Vector3(0, 10, 0);
+                centerPoint = Point.Location+new Vector3(0, 10, 0);
             }
         }
 

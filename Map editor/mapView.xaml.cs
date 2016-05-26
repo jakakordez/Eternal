@@ -26,7 +26,7 @@ namespace Map_editor
     {
         public enum PointerFunction
         {
-            None = 1, Move, Height, RotateX, RotateY, RotateZ, Delete
+            None = 1, Move, Height, RotateX, RotateY, RotateZ, Rotate, Delete
         }
         Cursor NodeCursor = Cursors.Arrow;
 
@@ -69,13 +69,15 @@ namespace Map_editor
                 currentFunction = value;
             }
         }
+
+        public float Step = 1;
         ScaleTransform zoom = new ScaleTransform(10, 10);
         double Thickness = 10;
         Double PixelScale = 20;
         Point grabPoint;
         string selectedNode;
 
-        public delegate void LocationUpdate(double X, double Y, object argument, string additionalData);
+        public delegate void LocationUpdate(double X, double Y, double? Z, float Step, object argument, string additionalData);
         public event LocationUpdate UpdateLocation;
         public event LocationUpdate MoveNode;
         public Dictionary<string, UIElement> MapObjects;
@@ -115,7 +117,14 @@ namespace Map_editor
                 double my = -a.Margin.Top + (ActualHeight / zoom.ScaleX / 2);
                 map.Margin = new Thickness(mx, my, 0, 0);
                 Node n = (Node)ObjectBrowser.getValue(Id, Form1.currentWorld);
-                ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).Navigate(n.Location);
+                ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).Navigate(n, null);
+            }
+            else if (Id.StartsWith("CurrentMap/VehicleCollection/Vehicles"))
+            {
+                selectedNode = Id;
+                Node n = (Node)ObjectBrowser.getValue(Id, Form1.currentWorld);
+                var mesh = ObjectBrowser.getValue(string.Join("/", Id.Split('/').Take(4)) + "/vehicleMesh", Form1.currentWorld);
+                ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).Navigate(n, (string)mesh);
             }
         }
 
@@ -126,20 +135,22 @@ namespace Map_editor
                 case Key.NumPad0:
                     break;
                 case Key.NumPad1:
-                    moveNode(PointerFunction.Move, new Vector3(-1, 0, 0));
+                    moveNode(PointerFunction.Move, -Vector3.UnitX * Step);
                     break;
                 case Key.NumPad2:
-                    moveNode(PointerFunction.Move, new Vector3(0, 0, 1));
+                    moveNode(PointerFunction.Move, Vector3.UnitZ * Step);
                     break;
                 case Key.NumPad3:
-                    moveNode(PointerFunction.Move, new Vector3(1, 0, 0));
+                    moveNode(PointerFunction.Move, Vector3.UnitX * Step);
                     break;
                 case Key.NumPad4:
+                    moveNode(PointerFunction.Rotate, Vector3.UnitY * 0.1f * Step);
                     break;
                 case Key.NumPad5:
-                    moveNode(PointerFunction.Move, new Vector3(0, 0, -1));
+                    moveNode(PointerFunction.Move, -Vector3.UnitZ * Step);
                     break;
                 case Key.NumPad6:
+                    moveNode(PointerFunction.Rotate, Vector3.UnitY * -0.1f * Step);
                     break;
                 case Key.NumPad7:
                     break;
@@ -150,10 +161,12 @@ namespace Map_editor
                 case Key.Multiply:
                     break;
                 case Key.Add:
+                    moveNode(PointerFunction.Move, Vector3.UnitY * Step);
                     break;
                 case Key.Separator:
                     break;
                 case Key.Subtract:
+                    moveNode(PointerFunction.Move, -Vector3.UnitY * Step);
                     break;
                 case Key.Decimal:
                     break;
@@ -303,23 +316,28 @@ namespace Map_editor
             
         }
 
+        void ReportLocation(Vector3 l)
+        {
+            UpdateLocation.Invoke(l.X, l.Y, l.Z, Step, null, "");
+        }
+
         private void moveNode(PointerFunction action, Vector3 value)
         {
             Node n = (Node)ObjectBrowser.getValue(selectedNode, Form1.currentWorld);
             string[] pathParts = selectedNode.Split('/');
-            if (action == PointerFunction.Move || action == PointerFunction.Height) n.Location += value;
-            else
+            if (action == PointerFunction.Move || action == PointerFunction.Height)
             {
-                value = value / (float)(2 * Math.PI);
-                Vector3 RotationDif = new Vector3();
-                if (CurrentFunction == PointerFunction.RotateX) RotationDif = new Vector3(value.Y, 0, 0);
-                if (CurrentFunction == PointerFunction.RotateY) RotationDif = new Vector3(0, value.Y, 0);
-                if (CurrentFunction == PointerFunction.RotateZ) RotationDif = new Vector3(0, 0, value.Y);
-                n.Rotation += RotationDif;
+                n.Location += value;
+                ReportLocation(n.Location);
+            }
+            else if (action == PointerFunction.Rotate)
+            {
+                n.Rotation += value / (float)(2 * Math.PI);
+                ReportLocation(n.Rotation);
             }
             if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
-            ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).PointerLocation = n.Location;
+            Graphics.PointerLocation = n;
         }
 
         private void NodeBtn_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -339,7 +357,7 @@ namespace Map_editor
                     Vector p = Point.Subtract(grabPoint, Mouse.GetPosition(mainGrid));
                     float ydif = (float)(p.Y / 10);
                     Vector3 Location = n.Location + new Vector3(0, ydif, 0);
-                    UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, this, " H: " + Location.Y);
+                    UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, Location.Y, Step, this, "");
                 }
             }
         }
@@ -348,7 +366,7 @@ namespace Map_editor
         {
             if (e.LeftButton == MouseButtonState.Released || CurrentFunction != PointerFunction.Height)
             {
-                UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, this, "");
+                UpdateLocation.Invoke((Mouse.GetPosition(map).X) / PixelScale, (Mouse.GetPosition(map).Y) / PixelScale, null, Step, this, "");
             }
         }
 

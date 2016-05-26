@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenTK;
 using System.Reflection;
+using OpenTK.Graphics;
 
 namespace Map_editor
 {
@@ -32,6 +33,7 @@ namespace Map_editor
             dataTypes.Add(typeof(bool), 0);
             dataTypes.Add(typeof(Vector2), 2);
             dataTypes.Add(typeof(Vector3), 3);
+            dataTypes.Add(typeof(Color4), 4);
         }
 
         private void ObjectBrowser_Load(object sender, EventArgs e)

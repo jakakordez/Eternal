@@ -9,6 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.IO.Compression;
 using EGE.Meshes;
+using OpenTK.Graphics;
 
 namespace EGE
 {
@@ -263,8 +264,13 @@ namespace EGE
 
         public static void DrawMesh(string name)
         {
+            DrawMesh(name, Color4.Transparent);
+        }
+
+        public static void DrawMesh(string name, Color4 color)
+        {
             Mesh m = (Mesh)findFile(name + ".mesh", RFile.RFileType.Mesh).obj;
-            if(m != null)m.Draw();
+            if (m != null) m.Draw(color);
         }
 
         public static BulletSharp.CollisionShape GetMeshCollisionShape(string name)

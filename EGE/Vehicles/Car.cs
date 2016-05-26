@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using BulletSharp;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics;
+using EGE.Environment;
 
 namespace EGE.Vehicles
 {
@@ -16,6 +18,7 @@ namespace EGE.Vehicles
         public Vector3 Dimensions { get; set; }
         public Vector2 SteeringWheelAngle { get; set; }
         public Vector2 FrontWheelLocation { get; set; }
+        public Node FrontWheel { get; set; }
         public Vector2 RearWheelLocation { get; set; }
         public float WheelRadius { get; set; }
         public float WheelWidth { get; set; }
@@ -41,8 +44,10 @@ namespace EGE.Vehicles
         public float MaxEnginePower { get; set; }
         public float MaxEngineRPM { get; set; }
         public float[] GearRatio { get; set; }
+        public Color4[] PrimaryColors { get; set; }
         float Throttle, RPM, Clutch;
         public int CurrentGear;
+        public int CurrentColor;
 
         public Car()
         {
@@ -50,11 +55,15 @@ namespace EGE.Vehicles
             VelocityNeedle = new Meshes.RotatableMesh();
             RPMNeedle = new Meshes.RotatableMesh();
             GearRatio = new float[] { -1, 1 };
+            PrimaryColors = new Color4[] { Color4.White};
             CurrentGear = 1;
+            FrontWheel = new Node();
         }
 
         public override void Load(Vector3 Location)
         {
+            CurrentColor = Global.RNG.Next(PrimaryColors.Length);
+
             CollisionShape chassisShape = new BoxShape(Dimensions.Y / 2, Dimensions.Z / 2, Dimensions.X / 2);
             collisionShape = new CompoundShape();
             //localTrans effectively shifts the center of mass with respect to the chassis
@@ -69,24 +78,20 @@ namespace EGE.Vehicles
 
             vehicleBody.ActivationState = ActivationState.DisableDeactivation;
 
-            
-            bool isFrontWheel = true;
-            float CUBE_HALF_EXTENTS = Dimensions.Y / 2;
             // choose coordinate system
             raycastVehicle.SetCoordinateSystem(rightIndex, upIndex, forwardIndex);
 
             Vector3 connectionPointCS0 = new Vector3(FrontWheelLocation.Y, SuspensionHeight, FrontWheelLocation.X);
-            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, isFrontWheel);
+            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
             connectionPointCS0 = new Vector3(-FrontWheelLocation.Y, SuspensionHeight, FrontWheelLocation.X);
-            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, isFrontWheel);
+            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
-            isFrontWheel = false;
             connectionPointCS0 = new Vector3(-RearWheelLocation.Y, SuspensionHeight, -RearWheelLocation.X);
-            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, isFrontWheel);
+            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
 
             connectionPointCS0 = new Vector3(RearWheelLocation.Y, SuspensionHeight, -RearWheelLocation.X);
-            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, isFrontWheel);
+            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
 
             for (int i = 0; i < raycastVehicle.NumWheels; i++)
             {
@@ -107,37 +112,54 @@ namespace EGE.Vehicles
             
             trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Resources.DrawMesh((vehicleBody.CenterOfMassPosition-eye).LengthSquared>900?lowPolyVehicleMesh:vehicleMesh);
-            SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
-            if (CurrentCamera == 0)
+            if ((vehicleBody.CenterOfMassPosition - eye).LengthSquared < 900)
             {
-                VelocityNeedle.Draw(vehicleBody.CenterOfMassTransform);
-                RPMNeedle.Draw(vehicleBody.CenterOfMassTransform);
+                Resources.DrawMesh(vehicleMesh, PrimaryColors[CurrentColor]);
+                SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
+                if (CurrentCamera == 0)
+                {
+                    VelocityNeedle.Draw(vehicleBody.CenterOfMassTransform);
+                    RPMNeedle.Draw(vehicleBody.CenterOfMassTransform);
+                }
+                //for (int i = 0; i < 4; i++) DrawWheel(false, i);
+                Matrix4 wheel;
+                wheel = raycastVehicle.GetWheelTransformWS(0) * World.WorldMatrix;
+                GL.LoadMatrix(ref wheel);
+                Resources.DrawMesh(WheelMesh);
+                wheel = Matrix4.CreateRotationY(MathHelper.Pi);
+                wheel *= raycastVehicle.GetWheelTransformWS(1) * World.WorldMatrix;
+                GL.LoadMatrix(ref wheel);
+                Resources.DrawMesh(WheelMesh);
+                wheel = Matrix4.CreateRotationY(MathHelper.Pi);
+                wheel *= raycastVehicle.GetWheelTransformWS(2) * World.WorldMatrix;
+                GL.LoadMatrix(ref wheel);
+                Resources.DrawMesh(WheelMesh);
+                wheel = raycastVehicle.GetWheelTransformWS(3) * World.WorldMatrix;
+                GL.LoadMatrix(ref wheel);
+                Resources.DrawMesh(WheelMesh);
+            }
+            else
+            {
+                Resources.DrawMesh(lowPolyVehicleMesh, PrimaryColors[CurrentColor]);
+                for (int i = 0; i < 4; i++) DrawWheel(true, i);
             }
             
+        }
 
-            Matrix4 wheel;
-            wheel = raycastVehicle.GetWheelTransformWS(0)*World.WorldMatrix;
+        private void DrawWheel(bool lowPoly, int number)
+        {
+            Matrix4 wheel = Matrix4.Identity;
+            if(lowPoly) wheel *= Matrix4.CreateScale(new Vector3(WheelWidth, WheelRadius, WheelRadius));
+            wheel *= raycastVehicle.GetWheelTransformWS(number) * World.WorldMatrix;
             GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(WheelMesh);
-            wheel = Matrix4.CreateRotationY((float)MathHelper.Pi);
-            wheel *= raycastVehicle.GetWheelTransformWS(1) * World.WorldMatrix;
-            GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(WheelMesh);
-            wheel = Matrix4.CreateRotationY((float)MathHelper.Pi);
-            wheel *= raycastVehicle.GetWheelTransformWS(2) * World.WorldMatrix;
-            GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(WheelMesh);
-            wheel = raycastVehicle.GetWheelTransformWS(3) * World.WorldMatrix;
-            GL.LoadMatrix(ref wheel);
-            Resources.DrawMesh(WheelMesh);
+            Resources.DrawMesh(lowPoly?"meshes/wheel":WheelMesh);
         }
 
         public override void Update()
         {
             base.Update();
-            raycastVehicle.ApplyEngineForce(/*GearRatio[CurrentGear] **/ Thrust * 5000, 2);
-            raycastVehicle.ApplyEngineForce(/*GearRatio[CurrentGear] **/ Thrust * 5000, 3);
+            raycastVehicle.ApplyEngineForce(GearRatio[CurrentGear] * Thrust * 5000, 2);
+            raycastVehicle.ApplyEngineForce(GearRatio[CurrentGear] * Thrust * 5000, 3);
             raycastVehicle.SetSteeringValue(Steering, 0);
             raycastVehicle.SetSteeringValue(Steering, 1);
             //raycastVehicle.SetBrake(Brake*100, 0);
@@ -175,7 +197,8 @@ namespace EGE.Vehicles
             }
             if(!Controller.In(Func.Right) && !Controller.In(Func.Left)) Steering *= 0.8f;
 
-            //if(Controller.Pressed(Func.GearUp)) CurrentGear += 
+            if (Controller.Pressed(Func.GearUp)) CurrentGear = (CurrentGear + GearRatio.Length + 1) %GearRatio.Length;
+            if (Controller.Pressed(Func.GearDown)) CurrentGear = (CurrentGear + GearRatio.Length - 1) % GearRatio.Length;
         }
     }
 }

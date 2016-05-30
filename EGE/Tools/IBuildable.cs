@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace EGE
 {
-    class MeshCollector
+    public interface IBuildable
     {
+        void Build();
     }
 }

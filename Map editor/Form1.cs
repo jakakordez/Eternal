@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using EGE;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Threading;
 
 namespace Map_editor
 {
@@ -43,7 +44,6 @@ namespace Map_editor
             MapPath = path;
             currentWorld.LoadData(path);
             objectBrowser1.LoadNodes(currentWorld.CurrentMap, "CurrentMap");
-
             currentWorld.Init();
             currentWorld.Build();
             hostedComponent1.UpdateWorld();

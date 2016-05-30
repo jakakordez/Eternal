@@ -106,6 +106,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGEResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Environment\Field.cs" />
+    <Compile Include="Environment\FieldNode.cs" />
     <Compile Include="Environment\Indexed.cs" />
     <Compile Include="Environment\Heightfield.cs" />
     <Compile Include="Environment\Node.cs" />
@@ -120,16 +122,17 @@
     <Compile Include="Environment\Paths\RoadNode.cs" />
     <Compile Include="Environment\Paths\Road.cs" />
     <Compile Include="Meshes\Material.cs" />
+    <Compile Include="Meshes\MeshReference.cs" />
     <Compile Include="Meshes\MovableMesh.cs" />
     <Compile Include="Meshes\RotatableMesh.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="Tools\IBuildable.cs" />
     <Compile Include="Tools\CollectionSerializer.cs" />
     <Compile Include="Tools\NodeCollection.cs" />
     <Compile Include="Tools\Contruction.cs" />
     <Compile Include="Tools\Global.cs" />
     <Compile Include="Environment\Map.cs" />
     <Compile Include="Meshes\Mesh.cs" />
-    <Compile Include="Meshes\MeshCollector.cs" />
     <Compile Include="Tools\Graphics.cs" />
     <Compile Include="Tools\Misc.cs" />
     <Compile Include="Tools\PhysicsDebugDrawer.cs" />

@@ -25,17 +25,17 @@ namespace EGE.Meshes
 
         public void SetX(float value)
         {
-            MeshRotation = new Vector3(XOffset + (value * XScale), MeshRotation.Y, MeshRotation.Z);
+            Offset.Rotation = new Vector3(XOffset + (value * XScale), Offset.Rotation.Y, Offset.Rotation.Z);
         }
 
         public void SetY(float value)
         {
-            MeshRotation = new Vector3(MeshRotation.X, YOffset + (value * YScale), MeshRotation.Z);
+            Offset.Rotation = new Vector3(MeshRotation.X, YOffset + (value * YScale), Offset.Rotation.Z);
         }
 
         public void SetZ(float value)
         {
-            MeshRotation = new Vector3(MeshRotation.X, MeshRotation.Y, ZOffset + (value * ZScale));
+            Offset.Rotation = new Vector3(Offset.Rotation.X, Offset.Rotation.Y, ZOffset + (value * ZScale));
         }
     }
 }

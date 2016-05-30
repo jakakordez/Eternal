@@ -43,6 +43,7 @@ namespace EGE.Environment
 
         public void Load()
         {
+            
             Stream entryStream = new MemoryStream(Resources.GetFile(HeightfieldName));
             if (entryStream  != null)
             {

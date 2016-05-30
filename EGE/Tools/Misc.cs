@@ -169,7 +169,7 @@ namespace EGE
             }
         }
 
-        public static bool PointIntPolygon(Vector2[] vertices, Vector2 point)
+        public static bool PointInPolygon(Vector2[] vertices, Vector2 point)
         {
             int j = vertices.Length - 1;
             bool c = false;

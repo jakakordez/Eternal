@@ -26,7 +26,10 @@ namespace EGE.Environment
 
         public Matrix4 CreateTransform()
         {
-            return Matrix4.CreateRotationY(Rotation.Y) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateTranslation(Location);
+            return  Matrix4.CreateRotationY(Rotation.Y) *
+                    Matrix4.CreateRotationX(Rotation.X) *
+                    Matrix4.CreateRotationZ(Rotation.Z) *
+                    Matrix4.CreateTranslation(Location);
         }
     }
 }

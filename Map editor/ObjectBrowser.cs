@@ -96,7 +96,7 @@ namespace Map_editor
             {
                 TreeNode t = new TreeNode(a[i], 4, 4);
                 AddNodeCollections(obj, t.Nodes, path, collectionPath + a[i] + ";");
-                t.ContextMenuStrip = ctxCollectionItem;
+                t.ContextMenuStrip = ctxCollection;
                 t.Tag = path + "/" + collectionPath + a[i];
                 t.Name = a[i];
                 node.Add(t);
@@ -251,7 +251,9 @@ namespace Map_editor
 
         private void buildToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            invokeWorldMethod(treeView1.SelectedNode.Tag + "/Build");
+            object a = getValue(treeView1.SelectedNode.Tag.ToString());
+            if (a.GetType().GetInterfaces().Contains(typeof(EGE.IBuildable))) ((EGE.IBuildable)a).Build();
+            else invokeWorldMethod(treeView1.SelectedNode.Tag + "/Build");
         }
 
         public object invokeWorldMethod(string path)

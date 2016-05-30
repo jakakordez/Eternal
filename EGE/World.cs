@@ -15,8 +15,6 @@ namespace EGE
 {
     public class World
     {
-        private MeshCollector MeshCollection;
-
         public Map CurrentMap { get; set;}
         public Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;
@@ -31,7 +29,6 @@ namespace EGE
         {
             Graphics.StaticView = StaticView;
             CurrentMap = new Map();
-            MeshCollection = new MeshCollector();
 
             if (StaticView) MainCharacter = new Characters.DebugView();
             else
@@ -75,6 +72,10 @@ namespace EGE
                 item.Load();
             }
             CurrentMap.TerrainHeightfield.Load();
+            foreach (var f in CurrentMap.Forests)
+            {
+                f.Build();
+            }
 
             if (!Graphics.StaticView)
             {
@@ -88,7 +89,7 @@ namespace EGE
                 car = Vehicles.Vehicles.getKey("Ship/Ferry/Guarda");
                 (car as Vehicles.Ship).Load(new Vector3(670, 5, 200));
                 VehicleList.Add(car);*/
-                CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 10, 284));
+                CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(693, 10, 284));
                 //CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 15, 294));
                 /*for(int i = 0; i < 2; i++)
                 {
@@ -96,7 +97,7 @@ namespace EGE
                 }*/
             }
         }
-
+        
         public void SaveData(string Path)
         {
             if (!Directory.Exists(Path + "\\Map")) Directory.CreateDirectory(Path + "\\Map");

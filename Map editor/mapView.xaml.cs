@@ -217,6 +217,39 @@ namespace Map_editor
             ProcessInput(e.Key);
         }
 
+        private void MapNodes(Node[] points, string basePath, string arrayPath)
+        {
+            string path;
+            Vector3 prevNode = new Vector3();
+            for (int j = 0; j < points.Length; j++)
+            {
+                path = basePath + arrayPath + j;
+                Vector3 n = points[j].Location;
+                UpdateNode(n, path);
+
+                if (j > 0)
+                {
+                    path = basePath + (j - 1) + "-" + j;
+                    if (!MapObjects.Keys.Contains(path))
+                    {
+                        Line l = new Line();
+                        l.StrokeThickness = Thickness;
+                        l.Stroke = Brushes.DarkGray;
+
+                        map.Children.Add(l);
+                        MapObjects.Add(path, l);
+                    }
+
+                    ((Line)MapObjects[path]).X1 = prevNode.X * PixelScale;
+                    ((Line)MapObjects[path]).Y1 = prevNode.Z * PixelScale;
+                    ((Line)MapObjects[path]).X2 = n.X * PixelScale;
+                    ((Line)MapObjects[path]).Y2 = n.Z * PixelScale;
+                    Canvas.SetZIndex(((Line)MapObjects[path]), -1);
+                }
+                prevNode = n;
+            }
+        }
+
         public void UpdateWorld()
         {
             foreach (var item in Form1.currentWorld.CurrentMap.ObjectCollection.ObjectReferences.GetNodes())
@@ -227,35 +260,13 @@ namespace Map_editor
             }
             for (int i = 0; i < Form1.currentWorld.CurrentMap.Roads.Length; i++)
             {
-                Vector3 prevNode = new Vector3();
-                EGE.Environment.Paths.Road r = Form1.currentWorld.CurrentMap.Roads[i];
-                for (int j = 0; j < r.Points.Length; j++)
-                {
-                    string path = "CurrentMap/Roads/" + i + "/Points/" + j;
-                    Vector3 n = Form1.currentWorld.CurrentMap.Roads[i].Points[j].Location;
-                    UpdateNode(n, path);
-                    
-                    if (j > 0)
-                    {
-                        path = "CurrentMap/Roads/" + i + "/" + (j - 1) + "-" + j;
-                        if (!MapObjects.Keys.Contains(path))
-                        {
-                            Line l = new Line();
-                            l.StrokeThickness = Thickness;
-                            l.Stroke = Brushes.DarkGray;
-
-                            map.Children.Add(l);
-                            MapObjects.Add(path, l);
-                        }
-
-                        ((Line)MapObjects[path]).X1 = prevNode.X * PixelScale;
-                        ((Line)MapObjects[path]).Y1 = prevNode.Z * PixelScale;
-                        ((Line)MapObjects[path]).X2 = n.X * PixelScale;
-                        ((Line)MapObjects[path]).Y2 = n.Z * PixelScale;
-                        Canvas.SetZIndex(((Line)MapObjects[path]), -1);
-                    }
-                    prevNode = n;
-                }
+                var r = Form1.currentWorld.CurrentMap.Roads[i];
+                MapNodes(r.Points, "CurrentMap/Roads/" + i + "/", "Points/");
+            }
+            for (int i = 0; i < Form1.currentWorld.CurrentMap.Forests.Length; i++)
+            {
+                var r = Form1.currentWorld.CurrentMap.Forests[i];
+                MapNodes(r.Polygon, "CurrentMap/Forests/" + i + "/", "Polygon/");
             }
 
             if (heightfieldBitmap == null)
@@ -311,7 +322,7 @@ namespace Map_editor
                 n.Rotation = n.Rotation + RotationDif;
             }
 
-            if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
+            if (pathParts[1] == "Roads" || pathParts[1] == "Forests") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
             UpdateWorld();
             
         }

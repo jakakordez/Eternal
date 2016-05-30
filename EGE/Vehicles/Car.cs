@@ -8,6 +8,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using EGE.Environment;
+using EGE.Meshes;
 
 namespace EGE.Vehicles
 {
@@ -35,9 +36,9 @@ namespace EGE.Vehicles
         public const int upIndex = 1;
         public const int forwardIndex = 2;
 
-        public Meshes.MovableMesh SteeringWheel { get; set; }
-        public Meshes.RotatableMesh VelocityNeedle { get; set; }
-        public Meshes.RotatableMesh RPMNeedle { get; set; }
+        public RotatableMesh SteeringWheel { get; set; }
+        public RotatableMesh VelocityNeedle { get; set; }
+        public RotatableMesh RPMNeedle { get; set; }
 
         public float MaxEnginePower { get; set; }
         public float MaxEngineRPM { get; set; }
@@ -49,9 +50,10 @@ namespace EGE.Vehicles
 
         public Car()
         {
-            SteeringWheel = new Meshes.MovableMesh();
-            VelocityNeedle = new Meshes.RotatableMesh();
-            RPMNeedle = new Meshes.RotatableMesh();
+            SteeringWheel = new RotatableMesh();
+            SteeringWheel.ZScale = -5;
+            VelocityNeedle = new RotatableMesh();
+            RPMNeedle = new RotatableMesh();
             GearRatio = new float[] { -1, 1 };
             PrimaryColors = new Color4[] { Color4.White};
             CurrentGear = 1;
@@ -107,9 +109,7 @@ namespace EGE.Vehicles
 
         public override void Draw(Vector3 eye)
         {
-            Matrix4 trans = World.WorldMatrix;
-            
-            trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
+            Matrix4 trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             if ((vehicleBody.CenterOfMassPosition - eye).LengthSquared < 900)
             {
@@ -166,7 +166,8 @@ namespace EGE.Vehicles
             raycastVehicle.SetBrake(Brake*400, 2);
             raycastVehicle.SetBrake(Brake*400, 3);
 
-            SteeringWheel.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, -5*Steering);
+            SteeringWheel.SetZ(Steering);
+            //SteeringWheel.MeshRotation = new Vector3(SteeringWheel.MeshRotation.X, SteeringWheel.MeshRotation.Y, -5*Steering);
             VelocityNeedle.SetZ(raycastVehicle.CurrentSpeedKmHour/50);
             RPM = (float)((Math.Sin(Clutch * MathHelper.PiOver2)*1000) + ((1-Math.Sin(Clutch * MathHelper.PiOver2))*0));
             RPMNeedle.SetZ(RPM);

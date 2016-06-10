@@ -34,7 +34,7 @@ namespace EGE.Environment
 
         public Heightfield()
         {
-            Scale = Vector3.Zero;
+            Scale = Vector3.One;
             HeightfieldName = "";
             HeightfieldMesh = new Mesh();
             Maximum = float.MinValue;
@@ -94,6 +94,61 @@ namespace EGE.Environment
             }
         }
 
+        public void PopulateHeights(ref List<Vector3> pos)
+        {
+            Stream entryStream = new MemoryStream(Resources.GetFile(HeightfieldName));
+            if (entryStream != null)
+            {
+                for (int i = 0; i < pos.Count; i++)
+                {
+                    if (pos[i].X < 0 || pos[i].Z > Size || pos[i].Z < 0 || pos[i].X > Size) continue;
+
+                    // we'll use integer division to figure out where in the "heights" array
+                    // positionOnHeightmap is. Remember that integer division always rounds
+                    // down, so that the result of these divisions is the indices of the "upper
+                    // left" of the 4 corners of that cell.
+                    int left, top;
+                    left = (int)pos[i].X / (int)Scale.X;
+                    top = (int)pos[i].Z / (int)Scale.Z;
+
+                    // next, we'll use modulus to find out how far away we are from the upper
+                    // left corner of the cell. Mod will give us a value from 0 to terrainScale,
+                    // which we then divide by terrainScale to normalize 0 to 1.
+                    float xNormalized = (pos[i].X % Scale.X) / Scale.X;
+                    float zNormalized = (pos[i].Z % Scale.Z) / Scale.Z;
+
+                    // Now that we've calculated the indices of the corners of our cell, and
+                    // where we are in that cell, we'll use bilinear interpolation to calculuate
+                    // our height. This process is best explained with a diagram, so please see
+                    // the accompanying doc for more information.
+                    // First, calculate the heights on the bottom and top edge of our cell by
+                    // interpolating from the left and right sides.
+                    
+                    float topHeight = Misc.lerp(
+                        GetPoint(ref entryStream, left, top),//heightmap[left, top],
+                        GetPoint(ref entryStream, left+1, top),//heightmap[left + 1, top],
+                        xNormalized);
+
+                    float bottomHeight = Misc.lerp(
+                        GetPoint(ref entryStream, left, top+1),//heightmap[left, top + 1],
+                        GetPoint(ref entryStream, left+1, top+1),//heightmap[left + 1, top + 1],
+                        xNormalized);
+
+                    // next, interpolate between those two values to calculate the height at our
+                    // position.
+                    pos[i] = new Vector3(pos[i].X, Misc.lerp(topHeight, bottomHeight, zNormalized), pos[i].Z);
+                }
+            }
+        }
+
+        float GetPoint(ref Stream entryStream, int i, int j)
+        {
+            byte[] b = new byte[4];
+            entryStream.Seek((i*4) + (j * 4*Size), SeekOrigin.Begin);
+            entryStream.Read(b, 0, 4);
+            return BitConverter.ToSingle(b, 0);
+        }
+        
         public Bitmap GetBitmap()
         {
             Bitmap result = new Bitmap(Size, Size);

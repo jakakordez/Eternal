@@ -74,7 +74,7 @@ namespace EGE
             CurrentMap.TerrainHeightfield.Load();
             foreach (var f in CurrentMap.Forests)
             {
-                f.Build();
+                f.Build(CurrentMap.TerrainHeightfield);
             }
 
             if (!Graphics.StaticView)

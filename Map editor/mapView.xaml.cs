@@ -107,15 +107,18 @@ namespace Map_editor
             map.Children.Add(heightfieldCanvas);
         }
 
-        public void FocusNode(string Id)
+        public void FocusNode(string Id, bool align = false)
         {
             if (MapObjects.ContainsKey(Id))
             {
                 selectedNode = Id;
                 NodeObj a = (NodeObj)MapObjects[Id];
-                double mx = -a.Margin.Left + (ActualWidth / zoom.ScaleX / 2);
-                double my = -a.Margin.Top + (ActualHeight / zoom.ScaleX / 2);
-                map.Margin = new Thickness(mx, my, 0, 0);
+                if (align)
+                {
+                    double mx = -a.Margin.Left + (ActualWidth / zoom.ScaleX / 2);
+                    double my = -a.Margin.Top + (ActualHeight / zoom.ScaleX / 2);
+                    map.Margin = new Thickness(mx, my, 0, 0);
+                }
                 Node n = (Node)ObjectBrowser.getValue(Id, Form1.currentWorld);
                 ((EGE.Characters.DebugView)Form1.currentWorld.MainCharacter).Navigate(n, null);
             }
@@ -292,7 +295,7 @@ namespace Map_editor
 
         private void NodeBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            FocusNode(((NodeObj)sender).Tag.ToString());
+            FocusNode(((NodeObj)sender).Tag.ToString(), false);
             grabPoint = Mouse.GetPosition(mainGrid);
         }
 
@@ -330,6 +333,13 @@ namespace Map_editor
         void ReportLocation(Vector3 l)
         {
             UpdateLocation.Invoke(l.X, l.Y, l.Z, null, "");
+        }
+
+        public Vector3 PickLocation()
+        {
+            double xLocation = ((ActualWidth / zoom.ScaleX / 2) - map.Margin.Left) / PixelScale;
+            double yLocation = ((ActualHeight / zoom.ScaleY / 2) - map.Margin.Top) / PixelScale;
+            return new Vector3((float)xLocation, 0, (float)yLocation);
         }
 
         private void moveNode(PointerFunction action, Vector3 value)

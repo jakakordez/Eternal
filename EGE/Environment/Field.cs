@@ -49,7 +49,6 @@ namespace EGE.Environment
                             var vector = v[k] + (new Vector3(i * 20, 0, j * 20));
                             if (Misc.PointInPolygon(poly, vector.Xz)) locations.Add(vector);
                         }
-                        //if (Misc.PointInPolygon(poly, new Vector2(i, j))) locations.Add(new Vector3(i, 10, j));
                     }
                 }
             }

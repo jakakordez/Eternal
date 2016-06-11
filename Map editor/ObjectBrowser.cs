@@ -17,10 +17,12 @@ namespace Map_editor
     {
         Dictionary<Type, int> dataTypes = new Dictionary<Type, int>();
         string previousPath = "";
+        public delegate Vector3 LocationCallback();
         public object currentObject;
         public event EventHandler ValueChanged;
         public event EventHandler UpdateWorld;
         public event EventHandler<string> NavigateNode;
+        public event LocationCallback PickLocation;
 
         public ObjectBrowser()
         {
@@ -46,7 +48,7 @@ namespace Map_editor
             treeView1.Nodes.Clear();
             currentObject = obj;
             AddNode(obj, treeView1.Nodes, title, title);
-            treeView1.Sort();
+            //treeView1.Sort();
             treeView1.Nodes[0].Expand();
         }
 
@@ -207,6 +209,11 @@ namespace Map_editor
             {
                 object newObj = arr.GetType().GetElementType().GetMethod("Create", BindingFlags.Public | BindingFlags.Static).Invoke(null, null);
                 copyArray.SetValue(newObj, arrayObject.Length);
+            }
+            else if (arr.GetType().GetElementType() == typeof(EGE.Environment.Node))
+            {
+                var node = new EGE.Environment.Node(new Vector3(PickLocation.Invoke()));
+                copyArray.SetValue(node, arrayObject.Length);
             }
             else copyArray.SetValue(Activator.CreateInstance(arr.GetType().GetElementType()), arrayObject.Length);
             setValue(treeView1.SelectedNode.Tag.ToString().Split('/'), currentObject, copyArray, 0);

@@ -210,5 +210,10 @@ namespace Map_editor
             tsbPointerDelete.Checked = (int)clickedButton.Tag == 7;
             hostedComponent1.CurrentFunction = (mapView.PointerFunction)clickedButton.Tag;
         }
+
+        private Vector3 objectBrowser1_PickLocation()
+        {
+            return hostedComponent1.PickLocation();
+        }
     }
 }

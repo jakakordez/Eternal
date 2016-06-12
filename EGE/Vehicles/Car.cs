@@ -46,7 +46,6 @@ namespace EGE.Vehicles
         public Color4[] PrimaryColors { get; set; }
         float Throttle, RPM, Clutch;
         public int CurrentGear;
-        public int CurrentColor;
 
         public Car()
         {
@@ -63,7 +62,7 @@ namespace EGE.Vehicles
 
         public override void Load(Vector3 Location)
         {
-            CurrentColor = Global.RNG.Next(PrimaryColors.Length);
+            VehicleMesh.MeshColor = PrimaryColors[Global.RNG.Next(PrimaryColors.Length)];
 
             CollisionShape chassisShape = new BoxShape(Dimensions.Y / 2, Dimensions.Z / 2, Dimensions.X / 2);
             collisionShape = new CompoundShape();
@@ -86,10 +85,10 @@ namespace EGE.Vehicles
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
             connectionPointCS0 = FrontWheel.Location * new Vector3(-1, 1, 1) + (Vector3.UnitY * SuspensionRestLength); // Front right
-            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
+            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, -wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
             connectionPointCS0 = RearWheel.Location * new Vector3(-1, 1, 1) + (Vector3.UnitY * SuspensionRestLength); // Rear right
-            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
+            raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, -wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
 
             connectionPointCS0 = RearWheel.Location + (Vector3.UnitY * SuspensionRestLength); // Rear left
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, false);
@@ -109,40 +108,21 @@ namespace EGE.Vehicles
 
         public override void Draw(Vector3 eye)
         {
-            Matrix4 trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
-            GL.LoadMatrix(ref trans);
+            VehicleMesh.Draw(vehicleBody.CenterOfMassTransform, eye);
             if ((vehicleBody.CenterOfMassPosition - eye).LengthSquared < 900)
             {
-                Resources.DrawMesh(vehicleMesh, PrimaryColors[CurrentColor]);
                 SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);
                 if (CurrentCamera == 0)
                 {
                     VelocityNeedle.Draw(vehicleBody.CenterOfMassTransform);
                     RPMNeedle.Draw(vehicleBody.CenterOfMassTransform);
                 }
-                //for (int i = 0; i < 4; i++) DrawWheel(false, i);
-                Matrix4 wheel;
-                wheel = raycastVehicle.GetWheelTransformWS(0) * World.WorldMatrix;
-                GL.LoadMatrix(ref wheel);
-                Resources.DrawMesh(WheelMesh);
-                wheel = Matrix4.CreateRotationY(MathHelper.Pi);
-                wheel *= raycastVehicle.GetWheelTransformWS(1) * World.WorldMatrix;
-                GL.LoadMatrix(ref wheel);
-                Resources.DrawMesh(WheelMesh);
-                wheel = Matrix4.CreateRotationY(MathHelper.Pi);
-                wheel *= raycastVehicle.GetWheelTransformWS(2) * World.WorldMatrix;
-                GL.LoadMatrix(ref wheel);
-                Resources.DrawMesh(WheelMesh);
-                wheel = raycastVehicle.GetWheelTransformWS(3) * World.WorldMatrix;
-                GL.LoadMatrix(ref wheel);
-                Resources.DrawMesh(WheelMesh);
+                for (int i = 0; i < 4; i++) DrawWheel(false, i);
             }
             else
             {
-                Resources.DrawMesh(lowPolyVehicleMesh, PrimaryColors[CurrentColor]);
                 for (int i = 0; i < 4; i++) DrawWheel(true, i);
             }
-            
         }
 
         private void DrawWheel(bool lowPoly, int number)

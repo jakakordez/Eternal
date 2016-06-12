@@ -267,10 +267,10 @@ namespace EGE
             DrawMesh(name, Color4.Transparent);
         }
 
-        public static void DrawMesh(string name, Color4 color)
+        public static void DrawMesh(string name, Color4 color, bool solidColor = false)
         {
             Mesh m = (Mesh)findFile(name + ".mesh", RFile.RFileType.Mesh).obj;
-            if (m != null) m.Draw(color);
+            if (m != null) m.Draw(color, solidColor);
         }
 
         public static BulletSharp.CollisionShape GetMeshCollisionShape(string name)

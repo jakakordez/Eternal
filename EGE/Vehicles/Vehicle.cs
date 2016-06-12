@@ -19,7 +19,7 @@ namespace EGE.Vehicles
         }
 
         public VehicleController ControllerType;
-
+        public MeshReference VehicleMesh { get; set; }
         public string vehicleMesh { get; set; }
         public string lowPolyVehicleMesh { get; set; }
 
@@ -49,6 +49,7 @@ namespace EGE.Vehicles
             vehicleMesh = "";
             lowPolyVehicleMesh = "";
             CurrentCamera = 1;
+            VehicleMesh = new MeshReference();
         }
 
         public virtual void Draw(Vector3 eye)

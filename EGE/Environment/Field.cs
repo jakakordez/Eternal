@@ -12,7 +12,6 @@ namespace EGE.Environment
     public class Field 
     {
         public MeshReference[] Meshes { get; set; }
-        public MeshReference LowPolyMesh { get; set; }
         public Node[] Polygon { get; set; }
         List<FieldNode> points;
 
@@ -20,7 +19,6 @@ namespace EGE.Environment
         {
             Meshes = new MeshReference[0];
             Polygon = new Node[0];
-            LowPolyMesh = new MeshReference();
         }
 
         public void Build(Heightfield currentHeightfield)
@@ -60,9 +58,7 @@ namespace EGE.Environment
         {
             foreach (var p in points)
             {
-                float l = (eye - p.Location).LengthSquared;
-                if (l < 600) Meshes[p.MeshIndex].Draw(p.Location);
-                else if(l < 250000) LowPolyMesh.Draw(p.Location);
+                Meshes[p.MeshIndex].Draw(Matrix4.CreateTranslation(p.Location), eye);
             }
         }
 

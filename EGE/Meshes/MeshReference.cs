@@ -11,28 +11,25 @@ namespace EGE
 {
     public class MeshReference
     {
-        public string MeshKey{get;set;}
+        public string PrimaryMesh { get; set; }
+        public string LowPolyMesh { get; set; }
+        public Color4 MeshColor { get; set; }
 
         public MeshReference()
         {
-            MeshKey = "";
+            PrimaryMesh = "";
+            LowPolyMesh = "";
+            MeshColor = Color4.Transparent;
         }
 
-        public void Draw()
+        public void Draw(Matrix4 Transform, Vector3 eye)
         {
-            Draw(Color4.Transparent);
-        }
-
-        public void Draw(Color4 Color)
-        {
-            Resources.DrawMesh(MeshKey, Color);
-        }
-
-        public void Draw(Vector3 Location)
-        {
-            Matrix4 trans = Matrix4.CreateTranslation(Location) * World.WorldMatrix;
+            Matrix4 trans = Transform * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
-            Resources.DrawMesh(MeshKey);
+            float l = (eye - Transform.ExtractTranslation()).LengthSquared;
+            if (l < 600) Resources.DrawMesh(PrimaryMesh, MeshColor);
+            else if (l < 90000) Resources.DrawMesh(LowPolyMesh, MeshColor);
+            else Resources.DrawMesh(LowPolyMesh, MeshColor, true);
         }
     }
 }

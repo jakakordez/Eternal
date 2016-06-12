@@ -41,28 +41,32 @@ namespace EGE.Meshes
 
         public void Draw()
         {
-            Draw(Color4.Transparent);
+            Draw(Color4.Transparent, false);
         }
 
-        public void Draw(Color4 color)
+        public void Draw(Color4 color, bool solidColor)
         {
+            if (solidColor) GL.Color4(color);
             for (int i = 0; i < ElementArraySizes.Length; i++)
             {
-                if (Materials[i].Texture != "")
+                if (!solidColor)
                 {
-                    GL.Color4(Color.White);
-                    Resources.BindTexture(MeshFolder+Materials[i].Texture);
-                }
-                else if(color != Color4.Transparent && Materials[i].Name == "primary_color")
-                {
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
-                    GL.Color4(color);
-                    color = Color4.Transparent;
-                }
-                else
-                {
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
-                    GL.Color4(Materials[i].Brush);
+                    if (Materials[i].Texture != "")
+                    {
+                        GL.Color4(Color.White);
+                        Resources.BindTexture(MeshFolder + Materials[i].Texture);
+                    }
+                    else if (color != Color4.Transparent && Materials[i].Name == "primary_color")
+                    {
+                        GL.BindTexture(TextureTarget.Texture2D, 0);
+                        GL.Color4(color);
+                        color = Color4.Transparent;
+                    }
+                    else
+                    {
+                        GL.BindTexture(TextureTarget.Texture2D, 0);
+                        GL.Color4(Materials[i].Brush);
+                    }
                 }
 
                 GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);

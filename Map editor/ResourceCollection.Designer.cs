@@ -40,6 +40,7 @@
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rebuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateCollisionMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imgTextures = new System.Windows.Forms.ImageList(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -55,7 +56,8 @@
             this.fileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Size = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.bcgMeshBuilder = new System.ComponentModel.BackgroundWorker();
-            this.generateCollisionMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStrip2.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.ctxFolders.SuspendLayout();
@@ -71,7 +73,9 @@
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
             this.tlsAddress,
-            this.toolStripButton1});
+            this.toolStripButton1,
+            this.toolStripSeparator1,
+            this.toolStripButton2});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(527, 25);
@@ -109,7 +113,7 @@
             this.rebuildToolStripMenuItem,
             this.generateCollisionMeshToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 136);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 114);
             // 
             // exportToolStripMenuItem
             // 
@@ -139,6 +143,13 @@
             this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.rebuildToolStripMenuItem.Text = "Build";
             this.rebuildToolStripMenuItem.Click += new System.EventHandler(this.rebuildToolStripMenuItem_Click);
+            // 
+            // generateCollisionMeshToolStripMenuItem
+            // 
+            this.generateCollisionMeshToolStripMenuItem.Name = "generateCollisionMeshToolStripMenuItem";
+            this.generateCollisionMeshToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.generateCollisionMeshToolStripMenuItem.Text = "Generate collision mesh";
+            this.generateCollisionMeshToolStripMenuItem.Click += new System.EventHandler(this.generateCollisionMeshToolStripMenuItem_Click);
             // 
             // imgTextures
             // 
@@ -265,12 +276,20 @@
             this.bcgMeshBuilder.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bcgMeshBuilder_ProgressChanged);
             this.bcgMeshBuilder.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bcgMeshBuilder_RunWorkerCompleted);
             // 
-            // generateCollisionMeshToolStripMenuItem
+            // toolStripSeparator1
             // 
-            this.generateCollisionMeshToolStripMenuItem.Name = "generateCollisionMeshToolStripMenuItem";
-            this.generateCollisionMeshToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.generateCollisionMeshToolStripMenuItem.Text = "Generate collision mesh";
-            this.generateCollisionMeshToolStripMenuItem.Click += new System.EventHandler(this.generateCollisionMeshToolStripMenuItem_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton2.Text = "Export resource file";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // ResourceCollector
             // 
@@ -325,5 +344,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tlsStatus;
         private System.ComponentModel.BackgroundWorker bcgMeshBuilder;
         private System.Windows.Forms.ToolStripMenuItem generateCollisionMeshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
     }
 }

@@ -259,8 +259,7 @@ namespace Map_editor
         private void buildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             object a = getValue(treeView1.SelectedNode.Tag.ToString());
-            if (a.GetType().GetInterfaces().Contains(typeof(EGE.IBuildable))) ((EGE.IBuildable)a).Build();
-            else invokeWorldMethod(treeView1.SelectedNode.Tag + "/Build");
+            if(a.GetType().GetInterfaces().Contains(typeof(EGE.IBuildable))) ((EGE.IBuildable)a).Build(Form1.currentWorld.CurrentMap);
         }
 
         public object invokeWorldMethod(string path)

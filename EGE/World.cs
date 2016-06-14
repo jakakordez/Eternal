@@ -66,16 +66,12 @@ namespace EGE
             
             foreach (Environment.Paths.Road r in CurrentMap.Roads)
             {
-                if(r.Points.Length > 1) r.Build(CurrentMap.ObjectCollection);
-            }
-            foreach (var item in CurrentMap.StaticModels)
-            {
-                item.Load();
+                if(r.Points.Length > 1) r.Build(CurrentMap);
             }
             CurrentMap.TerrainHeightfield.Load();
             foreach (var f in CurrentMap.Forests)
             {
-                f.Build(CurrentMap.TerrainHeightfield);
+                f.Build(CurrentMap);
             }
 
             if (!Graphics.StaticView)

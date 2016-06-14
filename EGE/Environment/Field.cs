@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace EGE.Environment
 {
-    public class Field 
+    public class Field : IBuildable
     {
         public MeshReference[] Meshes { get; set; }
         public Node[] Polygon { get; set; }
@@ -21,7 +21,7 @@ namespace EGE.Environment
             Polygon = new Node[0];
         }
 
-        public void Build(Heightfield currentHeightfield)
+        public void Build(Map currentMap)
         {
             var locations = new List<Vector3>();
             if (Polygon.Length >= 3)
@@ -50,11 +50,11 @@ namespace EGE.Environment
                     }
                 }
             }
-            currentHeightfield.PopulateHeights(ref locations);
+            currentMap.TerrainHeightfield.PopulateHeights(ref locations);
             points = locations.Select(l => new FieldNode() { Location = l, MeshIndex = Global.RNG.Next(Meshes.Length - 1) }).ToList();
         }
 
-        public void Draw(Vector3 eye)
+        public void Draw()
         {
             foreach (var p in points)
             {

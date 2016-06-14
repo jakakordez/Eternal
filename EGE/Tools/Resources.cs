@@ -312,5 +312,22 @@ namespace EGE
             }
             return new RFile();
         }
+
+        public static void exportCompiled(string filename)
+        {
+            try
+            {
+                File.Copy(ArchivePath, filename);
+                using (ZipArchive archive = ZipFile.Open(filename, ZipArchiveMode.Update, Global.Encoding))
+                {
+                    string[] names = archive.Entries.Select(e => e.FullName).ToArray();
+                    foreach (var e in names)
+                    {
+                        if (e.EndsWith(".obj")) archive.GetEntry(e).Delete();
+                    }      
+                }
+            }
+            catch { }
+        }
     }
 }

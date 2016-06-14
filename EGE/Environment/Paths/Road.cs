@@ -11,7 +11,7 @@ using BulletSharp;
 
 namespace EGE.Environment.Paths
 {
-    public class Road : Path
+    public class Road : Path, IBuildable
     {
         public string TextureName { get; set; }
 
@@ -38,14 +38,14 @@ namespace EGE.Environment.Paths
             RoadMesh.Draw();
         }
 
-        public void Build(ObjectManager objects)
+        public void Build(Map currentMap)
         {
             List<Vector3> BezierCurve = new List<Vector3>();
             List<Node> PointsForPath = new List<Node>();
             Vector3[] BezierControlPoints = new Vector3[4];
 
             Vector2 dir = new Vector2();
-            Node first = FirstEndpoint.getPosition(objects);
+            Node first = FirstEndpoint.getPosition(currentMap.ObjectCollection);
             if (first != null)
             {
                 dir = Misc.getCartesian(first.Rotation.Y);
@@ -53,7 +53,7 @@ namespace EGE.Environment.Paths
                 PointsForPath.Add(first); // First endpoint exists, so add it to the list
             }
             PointsForPath.AddRange(Points);
-            Node last = LastEndpoint.getPosition(objects);
+            Node last = LastEndpoint.getPosition(currentMap.ObjectCollection);
             if (last != null)
             {
                 // Set rotation for the last endpoint

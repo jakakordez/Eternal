@@ -325,7 +325,8 @@ namespace Map_editor
                 n.Rotation = n.Rotation + RotationDif;
             }
 
-            if (pathParts[1] == "Roads" || pathParts[1] == "Forests") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
+            var parent = ObjectBrowser.getValue(string.Join("/", pathParts.Take(pathParts.Length - 2).ToArray()), Form1.currentWorld);
+            if (parent.GetType().GetInterfaces().Contains(typeof(IBuildable))) (parent as IBuildable).Build(Form1.currentWorld.CurrentMap);
             UpdateWorld();
             
         }
@@ -356,7 +357,10 @@ namespace Map_editor
                 n.Rotation += value / (float)(2 * Math.PI);
                 ReportLocation(n.Rotation);
             }
-            if (pathParts[1] == "Roads") Form1.currentWorld.CurrentMap.Roads[Convert.ToInt32(pathParts[2])].Build(Form1.currentWorld.CurrentMap.ObjectCollection);
+
+            var parent = ObjectBrowser.getValue(string.Join("/", pathParts.Take(pathParts.Length - 2).ToArray()), Form1.currentWorld);
+            if (parent.GetType().GetInterfaces().Contains(typeof(IBuildable))) (parent as IBuildable).Build(Form1.currentWorld.CurrentMap);
+
             UpdateWorld();
             Graphics.PointerLocation = n;
         }

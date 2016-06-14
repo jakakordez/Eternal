@@ -179,5 +179,10 @@ namespace Map_editor
             generateCollisionMeshToolStripMenuItem.Checked = !generateCollisionMeshToolStripMenuItem.Checked;
 
         }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK) EGE.Resources.exportCompiled(saveFileDialog1.FileName);
+        }
     }
 }

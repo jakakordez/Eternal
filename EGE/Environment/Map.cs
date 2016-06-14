@@ -21,8 +21,6 @@ namespace EGE
     {
         public Road[] Roads { get; set; }
 
-        public Model[] StaticModels { get; set; }
-
         public Field[] Forests { get; set; }
 
         public ObjectManager ObjectCollection { get; set; }
@@ -37,7 +35,6 @@ namespace EGE
         {
             Roads = new Road[0];
             Forests = new Field[0];
-            StaticModels = new Model[0];
             TerrainHeightfield = new Heightfield();
             ObjectCollection = new ObjectManager();
             VehicleCollection = new VehicleManager();
@@ -47,8 +44,7 @@ namespace EGE
         {
             Matrix4 trans = World.WorldMatrix;
             foreach (var r in Roads) r.Draw();
-            foreach (var m in StaticModels) m.Draw();
-            foreach (var f in Forests) f.Draw(eye);
+            foreach (var f in Forests) f.Draw();
         
             TerrainHeightfield.Draw();
             ObjectCollection.Draw();

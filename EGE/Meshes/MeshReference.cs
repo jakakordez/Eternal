@@ -21,15 +21,5 @@ namespace EGE
             LowPolyMesh = "";
             MeshColor = Color4.Transparent;
         }
-
-        public void Draw(Matrix4 Transform, Vector3 eye)
-        {
-            Matrix4 trans = Transform * World.WorldMatrix;
-            GL.LoadMatrix(ref trans);
-            float l = (eye - Transform.ExtractTranslation()).LengthSquared;
-            if (l < 600) Resources.DrawMesh(PrimaryMesh, MeshColor);
-            else if (l < 90000) Resources.DrawMesh(LowPolyMesh, MeshColor);
-            else Resources.DrawMesh(LowPolyMesh, MeshColor, true);
-        }
     }
 }

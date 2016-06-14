@@ -39,13 +39,14 @@ namespace Eternal
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            
             currentScreen.Focused = Focused;
             currentScreen.Draw();
             base.OnRenderFrame(e);
             SwapBuffers();
             time += e.Time;
             frames++;
-            if(time > 1){
+            if (time > 1){
                 Title = Math.Round(frames / time, 2) + " FPS";
                 frames = 0;
                 time = 0.0001;

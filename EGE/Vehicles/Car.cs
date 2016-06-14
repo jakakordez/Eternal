@@ -108,7 +108,7 @@ namespace EGE.Vehicles
 
         public override void Draw(Vector3 eye)
         {
-            VehicleMesh.Draw(vehicleBody.CenterOfMassTransform, eye);
+            Resources.DrawMesh(VehicleMesh, vehicleBody.CenterOfMassTransform);
             if ((vehicleBody.CenterOfMassPosition - eye).LengthSquared < 900)
             {
                 SteeringWheel.Draw(vehicleBody.CenterOfMassTransform);

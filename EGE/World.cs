@@ -15,6 +15,7 @@ namespace EGE
 {
     public class World
     {
+        public static string a = "";
         public Map CurrentMap { get; set;}
         public Characters.Character MainCharacter;
         public static Matrix4 WorldMatrix;

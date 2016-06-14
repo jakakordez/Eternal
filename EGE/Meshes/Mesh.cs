@@ -23,6 +23,7 @@ namespace EGE.Meshes
         int VertexBuffer;
         int TextureCoordinateBuffer;
         public string MeshFolder = "";
+        public float Size = 0;
         public string Name { get; set; }
         public bool GenerateCollisionShape { get; set; }
 
@@ -133,6 +134,7 @@ namespace EGE.Meshes
                 Vertices[i].X = BitConverter.ToSingle(input, 0);
                 Vertices[i].Y = BitConverter.ToSingle(input, 4);
                 Vertices[i].Z = BitConverter.ToSingle(input, 8);
+                if (Vertices[i].Length > Size) Size = Vertices[i].Length;
             }
             VertexBuffer = AddVertexBuffer(Vertices);
 

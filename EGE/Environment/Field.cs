@@ -58,7 +58,7 @@ namespace EGE.Environment
         {
             foreach (var p in points)
             {
-                Meshes[p.MeshIndex].Draw(Matrix4.CreateTranslation(p.Location), eye);
+                Resources.DrawMesh(Meshes[p.MeshIndex], Matrix4.CreateTranslation(p.Location));
             }
         }
 

@@ -61,9 +61,7 @@ namespace Map_editor
         {
             if (lstFiles.SelectedItems.Count > 0 && e.Button == MouseButtons.Left)
             {
-                if (((EGE.RFile)lstFiles.SelectedItems[0].Tag).Type == EGE.RFile.RFileType.Mesh)
-                    CollectionResult = ((EGE.RFile)lstFiles.SelectedItems[0].Tag).FullName.Replace(".mesh", "");
-                else CollectionResult = ((EGE.RFile)lstFiles.SelectedItems[0].Tag).FullName;
+                CollectionResult = ((EGE.RFile)lstFiles.SelectedItems[0].Tag).FullName;
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -83,11 +81,19 @@ namespace Map_editor
 
         private void rebuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(lstFiles.SelectedItems.Count > 0)
+            openFileDialog1.Filter = "OBJ files(*.obj) | *.obj";
+            openFileDialog1.Title = "Select OBJ file";
+            if(openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                bcgMeshBuilder.RunWorkerAsync((EGE.RFile)lstFiles.SelectedItems[0].Tag);
-                
+                string obj = openFileDialog1.FileName;
+                openFileDialog1.Filter = "MTL files(*.mtl) | *.mtl";
+                openFileDialog1.Title = "Select MTL file";
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    bcgMeshBuilder.RunWorkerAsync(new string[] { tlsAddress.Text, obj, openFileDialog1.FileName});
+                }
             }
+            openFileDialog1.Filter = "Any file(*.*) | *.*";
         }
 
         private void tlsAddress_KeyUp(object sender, KeyEventArgs e)
@@ -153,7 +159,8 @@ namespace Map_editor
 
         private void bcgMeshBuilder_DoWork(object sender, DoWorkEventArgs e)
         {
-            EGE.Resources.BuildMesh((EGE.RFile) e.Argument, new EGE.Resources.ProgressReport(progressReport));
+            string[] args = (string[])e.Argument;
+            EGE.Resources.BuildMesh(args[0]+EGE.Misc.pathName(args[1]).Replace(".obj", ".mesh"), File.Open(args[1], FileMode.Open), File.Open(args[2], FileMode.Open), new EGE.Resources.ProgressReport(progressReport));
         }
 
         private void bcgMeshBuilder_ProgressChanged(object sender, ProgressChangedEventArgs e)

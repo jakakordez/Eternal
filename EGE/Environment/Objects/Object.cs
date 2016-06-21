@@ -8,15 +8,13 @@ namespace EGE.Environment
 {
     public class Object : Indexed
     {
-        public string ObjectMesh { set; get; }
-        public string CollisionMesh { set; get; }
+        public MeshReference ObjectMesh { get; set; }
 
         public Node[] RoadEndpoints { set; get; }
 
         public Object()
         {
-            ObjectMesh = "";
-            CollisionMesh = "";
+            ObjectMesh = new MeshReference();
             RoadEndpoints = new Node[0];
         }
     }

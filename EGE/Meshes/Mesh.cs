@@ -16,7 +16,7 @@ namespace EGE.Meshes
 {
     public class Mesh
     {
-        public CollisionShape CollisionShape;
+        TriangleMesh CollisionShape;
         Material[] Materials;
         uint[] ElementArrays;
         int[] ElementArraySizes;
@@ -43,6 +43,23 @@ namespace EGE.Meshes
         public void Draw()
         {
             Draw(Color4.Transparent, false);
+        }
+
+        public CollisionShape GetConvexCollisionShape()
+        {
+            ConvexHullShape convexShape;
+            using (var tmpConvexShape = new ConvexTriangleMeshShape(CollisionShape))
+            {
+                var hull = new ShapeHull(tmpConvexShape);
+                hull.BuildHull(tmpConvexShape.Margin);
+                convexShape = new ConvexHullShape(hull.Vertices);
+            }
+            return convexShape;
+        }
+
+        public CollisionShape GetCollisionShape()
+        {
+            return new BvhTriangleMeshShape(CollisionShape, true);
         }
 
         public void Draw(Color4 color, bool solidColor)
@@ -101,28 +118,28 @@ namespace EGE.Meshes
             ElementArrays = new uint[1];
             GL.GenBuffers(1, ElementArrays);
             ElementArraySizes = new int[] { FillIndexBuffer(Indices, ElementArrays[0]) };
+            CollisionShape = new TriangleMesh();
 
             if (GenerateCollisionShape)
             {
                 TriangleMesh mesh = new TriangleMesh();
                 for (int i = 0; i < Indices.Length; i += 3)
                 {
-                    mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i + 1]], Vertices[Indices[i + 2]]);
+                    CollisionShape.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i + 1]], Vertices[Indices[i + 2]]);
                 }
-                CollisionShape = new BvhTriangleMeshShape(mesh, true);
             }
         }
 
         public void LoadMesh(ZipArchive MeshArchive)
         {
-            ElementArrays = new uint[MeshArchive.Entries.Count-3];
+            ElementArrays = new uint[MeshArchive.Entries.Count-4];
             GL.GenBuffers(ElementArrays.Length, ElementArrays);
             ElementArraySizes = new int[ElementArrays.Length];
-            TriangleMesh mesh = new TriangleMesh();
+            CollisionShape = new TriangleMesh();
 
             ZipArchiveEntry entry = MeshArchive.GetEntry("Descriptor.json");
             JsonConvert.PopulateObject(Misc.StreamToString(entry.Open()), this, Global.SerializerSettings);
-
+            using (Stream str = MeshArchive.GetEntry("Materials.mtl").Open()) LoadMTL(Misc.StreamToString(str).Replace("\r", "").Split('\n'));
             entry = MeshArchive.GetEntry("Vertices.raw");
             Stream s = entry.Open();
             Vector3[] Vertices = new Vector3[entry.Length / 12];
@@ -141,7 +158,7 @@ namespace EGE.Meshes
             foreach (var item in MeshArchive.Entries)
             {
                 s = item.Open();
-                if (item.Name == "Vertices.raw" || item.Name == "Descriptor.json") continue;
+                if (item.Name == "Vertices.raw" || item.Name == "Descriptor.json" || item.Name == "Materials.mtl") continue;
                 else if (item.Name == "TextureCoordinates.raw")
                 {
                     Vector2[] TextureCoordinates = new Vector2[item.Length / 8];
@@ -164,34 +181,39 @@ namespace EGE.Meshes
                     Buffer.BlockCopy(bytes, 0, Indices, 0, (int)item.Length);
                     for (int i = 0; i < Indices.Length; i+=3)
                     {
-                        mesh.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i+1]], Vertices[Indices[i+2]]);
+                        CollisionShape.AddTriangle(Vertices[Indices[i]], Vertices[Indices[i+1]], Vertices[Indices[i+2]]);
                     }
                     ElementArraySizes[mat] = FillIndexBuffer(Indices, ElementArrays[mat]);
                 }
                 s.Close();
             }
-
-            ConvexHullShape convexShape;
-            using (var tmpConvexShape = new ConvexTriangleMeshShape(mesh))
-            {
-                var hull = new ShapeHull(tmpConvexShape);
-                hull.BuildHull(tmpConvexShape.Margin);
-                convexShape = new ConvexHullShape(hull.Vertices);
-            }
-       
-            CollisionShape = convexShape; //new BvhTriangleMeshShape(mesh, false)
         }
 
-        public void BuildOBJ(string exportFilePath, Resources.ProgressReport progressReporter)
+        public void BuildFromFile(Stream objStream, Stream mtlStream, Resources.ProgressReport progressReporter)
         {
-            string name = Name+".obj";
+            ZipArchive archive = ZipFile.Open(Resources.ArchivePath, ZipArchiveMode.Update, Global.Encoding);
+            ZipArchive meshArchive = new ZipArchive(archive.CreateEntry(Name).Open(), ZipArchiveMode.Update);
+            progressReporter(this, 90, "Importing MTL file ...");
+
+            string mtlFile = Misc.StreamToString(mtlStream);
+            using (Stream s = meshArchive.CreateEntry("Materials.mtl").Open()) s.Write(Global.Encoding.GetBytes(mtlFile), 0, Global.Encoding.GetByteCount(mtlFile));
+            LoadMTL(mtlFile.Replace("\r", "").Split('\n'));
+
+            BuildOBJ(objStream, meshArchive, progressReporter);
+            meshArchive.Dispose();
+            archive.Dispose();
+            progressReporter(this, 100, "Done ...");
+        }
+
+        public void BuildOBJ(Stream objStream, ZipArchive meshArchive, Resources.ProgressReport progressReporter)
+        {
             List<Face> Faces = new List<Face>();
             List<Vector3> OriginalVertices = new List<Vector3>();
             List<Vector2> OriginalTextureCoordinates = new List<Vector2>();
             List<Vector3> SortedVertices = new List<Vector3>();
             List<Vector2> SortedTextureCoordinates = new List<Vector2>();
 
-            string[] file = Encoding.Default.GetString(Resources.GetFile(name)).Replace("\r", "").Split('\n');
+            string[] file = Misc.StreamToString(objStream).Replace("\r", "").Split('\n');
             int currentMaterial = 0;
             for (int i = 0; i < file.Length; i++)
             {
@@ -243,60 +265,40 @@ namespace EGE.Meshes
 
             Faces.Sort(delegate (Face x, Face y) { return x.mtl.CompareTo(y.mtl); });
             currentMaterial = Faces[0].mtl;
-            //  Misc.Push<Material>(Materials[currentMaterial].Brush, ref Materials);
             ElementArrays = new uint[Materials.Length];
-            //GL.GenBuffers(Materials.Length, ElementArrays);
             int[] currentElements = new int[0];
-            //ElementArraySizes = new int[0];
             int set = 0;
-
-            ZipArchive archive = null;
-            ZipArchive meshArchive = null;
-            if (exportFilePath != null)
-            {
-                 archive = ZipFile.Open(Resources.ArchivePath, ZipArchiveMode.Update, Global.Encoding);
-                 meshArchive = new ZipArchive(archive.CreateEntry(exportFilePath + ".mesh").Open(), ZipArchiveMode.Update);
-            }
 
             Stream s = meshArchive.CreateEntry("Descriptor.json").Open();
             byte[] entryBytes = Global.Encoding.GetBytes(JsonConvert.SerializeObject(this, Global.SerializerSettings));
             s.Write(entryBytes, 0, entryBytes.Length);
             s.Close();
 
-            //Materials = new Material[0];
             for (int i = 0; i < Faces.Count; i++)
             {
                 progressReporter(this, i*100/Faces.Count, "Exporting faces ...");
                 Misc.Push<int>(Faces[i].vertices, ref currentElements);
                 if (Faces.Count - 1 == i || currentMaterial != Faces[i + 1].mtl)
                 {
-                    //Misc.Push<int>(FillIndexBuffer(currentElements, ElementArrays[set]), ref ElementArraySizes);
-                    if(exportFilePath != null)
-                    {
-                        s = meshArchive.CreateEntry(set+".raw").Open();
+                    using (Stream str = meshArchive.CreateEntry(set + ".raw").Open()) { 
                         for (int j = 0; j < currentElements.Length; j++)
                         {
                             byte[] output = BitConverter.GetBytes(currentElements[j]);
-                            s.Write(output, 0, output.Length);
+                            str.Write(output, 0, output.Length);
                         }
-                        s.Close();
                     }
                     if (Faces.Count - 1 > i)
                     {
                         set++;
                         currentMaterial = Faces[i + 1].mtl;
-                        //Misc.Push<Material>(Materials[currentMaterial], ref Materials);
                         currentElements = new int[0];
                     }
                 }
 
             }
-            //VertexBuffer = AddVertexBuffer(SortedVertices);
-            //TextureCoordinateBuffer = AddTextureCoordsBuffer(SortedTextureCoordinates);
 
-            if(exportFilePath != null)
+            using (Stream str = meshArchive.CreateEntry("Vertices.raw").Open())
             {
-                s = meshArchive.CreateEntry("Vertices.raw").Open();
                 foreach (var item in SortedVertices)
                 {
                     progressReporter(this, 30, "Exporting vertices ...");
@@ -304,35 +306,25 @@ namespace EGE.Meshes
                     Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Z), 0, Output, 8, 4);
-                    s.Write(Output, 0, 12);
+                    str.Write(Output, 0, 12);
                 }
-                s.Close();
-                s = meshArchive.CreateEntry("TextureCoordinates.raw").Open();
+            }
+            using (Stream str = meshArchive.CreateEntry("TextureCoordinates.raw").Open())
+            {
                 foreach (var item in SortedTextureCoordinates)
                 {
                     progressReporter(this, 60, "Exporting texture coordinates ...");
                     byte[] Output = new byte[4 * 2];
                     Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
-                    s.Write(Output, 0, 8);
+                    str.Write(Output, 0, 8);
                 }
-                progressReporter(this, 90, "Finishing ...");
-                s.Close();
-                meshArchive.Dispose();
-                archive.Dispose();
-                progressReporter(this, 100, "Done ...");
-            }
+            }       
         }
 
-        public void LoadMTL(string name)
-        {
-            LoadMTL(new MemoryStream(Resources.GetFile(name)));
-        }
-
-        public void LoadMTL(Stream inputStream)
+        public void LoadMTL(string[] file)
         {
             Materials = new Material[0];
-            string[] file = Misc.StreamToString(inputStream).Replace("\r", "").Split('\n');
             Material currentMaterial = null;
             for (int i = 0; i < file.Length; i++)
             {

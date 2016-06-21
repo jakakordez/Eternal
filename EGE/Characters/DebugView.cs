@@ -13,7 +13,6 @@ namespace EGE.Characters
     public class DebugView:Character
     {
         Vector3 centerPoint = new Vector3(673, 5, 274);
-        bool inn = false;
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
             Distance = 10,
@@ -22,7 +21,6 @@ namespace EGE.Characters
             ViewAngle = Vector2.One,
             Style = DrawingStyle.Wireframe
         };
-
         
         Meshes.Mesh PointerMesh;
 
@@ -35,7 +33,6 @@ namespace EGE.Characters
         public void Load()
         {
             PointerMesh = new Meshes.Mesh();
-            PointerMesh.LoadMTL(new System.IO.MemoryStream(EGEResources.pointermtl));
             PointerMesh.LoadMesh(new ZipArchive(new System.IO.MemoryStream(EGEResources.pointermesh), ZipArchiveMode.Read));
         }
 

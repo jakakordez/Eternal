@@ -15,7 +15,7 @@ namespace EGE.Vehicles
         public float SteeringClamp { get; set; }
         public override void Load(Vector3 Location)
         {
-            CollisionShape m = Resources.GetMeshCollisionShape(lowPolyVehicleMesh);
+            CollisionShape m = VehicleMesh.GetCollisionMesh(true);
 
             vehicleBody = World.CreateRigidBody(Mass, Matrix4.CreateTranslation(Location), (m != null)? m : (CollisionShape)new BoxShape(5));
             vehicleBody.LinearFactor = new Vector3(1, 0, 1);
@@ -26,11 +26,7 @@ namespace EGE.Vehicles
 
         public override void Draw(Vector3 eye)
         {
-            Matrix4 trans = World.WorldMatrix;
-
-            trans = vehicleBody.CenterOfMassTransform * World.WorldMatrix;
-            GL.LoadMatrix(ref trans);
-            Resources.DrawMesh(vehicleMesh);
+            Resources.DrawMesh(VehicleMesh, vehicleBody.CenterOfMassTransform);
         }
 
         public override void Update()

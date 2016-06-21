@@ -69,15 +69,5 @@ namespace EGE {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] pointermtl {
-            get {
-                object obj = ResourceManager.GetObject("pointermtl", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

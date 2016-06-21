@@ -121,7 +121,7 @@ namespace EGE.Environment.Paths
 
             if (!Graphics.StaticView)
             {
-                RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, RoadMesh.CollisionShape);
+                RoadSurface = World.CreateRigidBody(0, Matrix4.Identity, RoadMesh.GetCollisionShape());
                 if (!Tools.PhysicsDebugDrawer.DrawRoads) RoadSurface.CollisionFlags |= CollisionFlags.DisableVisualizeObject;
             }
         }

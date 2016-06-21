@@ -168,7 +168,7 @@ namespace EGE
         public static Mesh LoadMesh(ZipArchiveEntry e, string folder)
         {
             Mesh m = new Mesh(e.Name);
-            m.LoadMTL(folder+e.Name.Split('.')[0] + ".mtl");
+            //m.LoadMTL(folder+e.Name.Split('.')[0] + ".mtl");
             using (ZipArchive meshArchive = new ZipArchive(e.Open(), ZipArchiveMode.Read))
             {
                 m.LoadMesh(meshArchive);
@@ -265,13 +265,13 @@ namespace EGE
 
         public static void DrawMesh(string name)
         {
-            Mesh m = (Mesh)findFile(name + ".mesh", RFile.RFileType.Mesh).obj;
+            Mesh m = (Mesh)findFile(name, RFile.RFileType.Mesh).obj;
             if (m != null) m.Draw(Color4.Transparent, false);
         }
 
         public static void DrawMesh(MeshReference mr, Matrix4 transform)
         {
-            Mesh mesh = (Mesh)findFile(mr.PrimaryMesh + ".mesh", RFile.RFileType.Mesh).obj;
+            Mesh mesh = (Mesh)findFile(mr.PrimaryMesh, RFile.RFileType.Mesh).obj;
             if (mesh != null)
             {
                 Matrix4 trans = transform * World.WorldMatrix;
@@ -281,31 +281,32 @@ namespace EGE
                 else if (dl == 0) return;
                 else if (dl < 3)
                 {
-                    mesh = (Mesh)findFile(mr.LowPolyMesh + ".mesh", RFile.RFileType.Mesh).obj;
+                    mesh = (Mesh)findFile(mr.LowPolyMesh, RFile.RFileType.Mesh).obj;
                     if (dl == 2) mesh.Draw(mr.MeshColor, false);
                     else mesh.Draw(mr.MeshColor, true);
                 }
             }
         }
 
-        public static BulletSharp.CollisionShape GetMeshCollisionShape(string name)
+        public static BulletSharp.CollisionShape GetMeshCollisionShape(string name, bool convexShape)
         {
-            Mesh m = (Mesh)findFile(name + ".mesh", RFile.RFileType.Mesh).obj;
-            if (m != null) return m.CollisionShape;
+            Mesh m = (Mesh)findFile(name, RFile.RFileType.Mesh).obj;
+            if (m != null) return convexShape?m.GetConvexCollisionShape() : m.GetCollisionShape();
             return null;
         }
 
-        public static void BuildMesh(RFile fromFile, ProgressReport progressReporter)
+        public static void BuildMesh(string name, Stream obj, Stream mtl, ProgressReport progressReporter)
         {
             Misc.CheckArchive(ArchivePath);
-
-            Mesh m = new Mesh(fromFile.Folder+fromFile.Name);
-            m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");
-            m.BuildOBJ(fromFile.Folder+fromFile.Name, progressReporter);
+            Mesh m = new Mesh(name);
+            m.BuildFromFile(obj, mtl, progressReporter);
+            //m.LoadMTL(fromFile.Folder+fromFile.Name + ".mtl");
+            //m.BuildOBJ(obj, mtl, fromFile.Folder+fromFile.Name, progressReporter);
         }
 
         public static RFile findFile(string name, RFile.RFileType type)
         {
+            //return Files.Where(f => f.FullName == name).FirstOrDefault();
             foreach (var item in Files)
             {
                 if (item.FullName == name && item.Type == type) return item;

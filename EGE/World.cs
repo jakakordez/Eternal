@@ -86,7 +86,7 @@ namespace EGE
                 car = Vehicles.Vehicles.getKey("Ship/Ferry/Guarda");
                 (car as Vehicles.Ship).Load(new Vector3(670, 5, 200));
                 VehicleList.Add(car);*/
-                CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(693, 10, 284));
+                CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(493, 10, 284));
                 //CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 15, 294));
                 /*for(int i = 0; i < 2; i++)
                 {

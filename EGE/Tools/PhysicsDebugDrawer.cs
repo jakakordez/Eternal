@@ -54,7 +54,6 @@ namespace EGE.Tools
 
         public void DrawBox(ref Vector3 bbMin, ref Vector3 bbMax, ref Matrix4 trans, Color4 color)
         {
-            //throw new NotImplementedException();
             trans = trans * World.WorldMatrix;
             GL.LoadMatrix(ref trans);
             GL.Begin(PrimitiveType.Lines);

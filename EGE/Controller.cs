@@ -74,8 +74,9 @@ namespace EGE
             {
                 MouseX = (Width / 2) / ((Width / 2) - ms.X);
                 MouseY = (Height / 2) / ((Height / 2) - ms.Y);
-                MouseScroll = ms.WheelPrecise;
+                
             }
+            MouseScroll = ms.WheelPrecise;
 
             foreach (var key in Controller.ControllerMapping.Keys)
             {

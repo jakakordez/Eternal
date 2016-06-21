@@ -69,7 +69,7 @@ namespace EGE.Vehicles
             //localTrans effectively shifts the center of mass with respect to the chassis
             Matrix4 localTrans = Matrix4.CreateTranslation(0 * Vector3.UnitY);
             ((CompoundShape)collisionShape).AddChildShape(localTrans, chassisShape);
-            if(lowPolyVehicleMesh != "") collisionShape = Resources.GetMeshCollisionShape(lowPolyVehicleMesh);
+            collisionShape = VehicleMesh.GetCollisionMesh(true);
             vehicleBody = World.CreateRigidBody(Mass, Matrix4.CreateTranslation(Location), collisionShape);
             
             // create vehicle
@@ -81,7 +81,7 @@ namespace EGE.Vehicles
             // choose coordinate system
             raycastVehicle.SetCoordinateSystem(rightIndex, upIndex, forwardIndex);
 
-            Vector3 connectionPointCS0 = FrontWheel.Location+(Vector3.UnitY*SuspensionRestLength); // Front left
+            Vector3 connectionPointCS0 = FrontWheel.Location +(Vector3.UnitY*SuspensionRestLength); // Front left
             raycastVehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, SuspensionRestLength, WheelRadius, tuning, true);
 
             connectionPointCS0 = FrontWheel.Location * new Vector3(-1, 1, 1) + (Vector3.UnitY * SuspensionRestLength); // Front right
@@ -137,7 +137,7 @@ namespace EGE.Vehicles
         public override void Update()
         {
             base.Update();
-            raycastVehicle.ApplyEngineForce(GearRatio[CurrentGear] * Thrust * 5000, 2);
+            raycastVehicle.ApplyEngineForce(-GearRatio[CurrentGear] * Thrust * 5000, 2);
             raycastVehicle.ApplyEngineForce(GearRatio[CurrentGear] * Thrust * 5000, 3);
             raycastVehicle.SetSteeringValue(Steering, 0);
             raycastVehicle.SetSteeringValue(Steering, 1);

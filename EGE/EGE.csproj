@@ -152,11 +152,11 @@
     <EmbeddedResource Include="EGEResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EGEResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\pointer.mesh" />
-    <None Include="Resources\pointer.mtl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

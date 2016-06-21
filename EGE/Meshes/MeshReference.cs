@@ -21,5 +21,12 @@ namespace EGE
             LowPolyMesh = "";
             MeshColor = Color4.Transparent;
         }
+
+        public BulletSharp.CollisionShape GetCollisionMesh(bool convex)
+        {
+            if (LowPolyMesh != "") return Resources.GetMeshCollisionShape(LowPolyMesh, convex);
+            if (PrimaryMesh != "") return Resources.GetMeshCollisionShape(PrimaryMesh, convex);
+            return null;
+        }
     }
 }

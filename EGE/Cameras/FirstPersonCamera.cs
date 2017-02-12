@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 
-
 namespace EGE
 {
     class FirstPersonCamera:Camera

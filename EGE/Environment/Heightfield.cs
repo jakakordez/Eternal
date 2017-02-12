@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Drawing;
@@ -12,7 +13,7 @@ using EGE.Meshes;
 
 namespace EGE.Environment
 {
-    public class Heightfield
+    public class Heightfield:IBuildable
     {
         public Vector3 Scale { get; set; }
 
@@ -41,13 +42,11 @@ namespace EGE.Environment
             Minimum = float.MaxValue;
         }
 
-        public void Load()
+        public void Build(Map currentMap)
         {
-            
             Stream entryStream = new MemoryStream(Resources.GetFile(HeightfieldName));
             if (entryStream  != null)
             {
-                
                 // Generate heightfield mesh
                 Vector3[] points = new Vector3[Size * Size];
                 entryStream.Position = 0;
@@ -84,7 +83,7 @@ namespace EGE.Environment
                     // Generate rigid body
                     entryStream.Position = 0;
                     float Extreme = (Math.Abs(Minimum) > Math.Abs(Maximum)) ? Math.Abs(Minimum) : Maximum;
-                    HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -Extreme, Extreme, 1, PhyScalarType.PhyFloat, true);
+                    HeightfieldTerrainShape heightfield = new HeightfieldTerrainShape(Size, Size, entryStream, 1, -Extreme, Extreme, 1, PhyScalarType.Single, true);
                     heightfield.LocalScaling = Scale;
                     GroundBody = World.CreateRigidBody(0, Matrix4.CreateTranslation(new Vector3(Size / 2, 0, Size / 2)), heightfield);
                     GroundBody.CollisionFlags |= CollisionFlags.DisableVisualizeObject;
@@ -195,15 +194,14 @@ namespace EGE.Environment
 
         public void Draw()
         {
-            Matrix4 trans = World.WorldMatrix;
-            GL.LoadMatrix(ref trans);
-
+            Matrix4 trans = Matrix4.Identity;
+            GL.UniformMatrix4(Graphics.ModelMatrixID, false, ref trans);
             Resources.BindTexture(TextureName);
             HeightfieldMesh.Draw();
 
-            GL.Begin(BeginMode.Quads);
             GL.BindTexture(TextureTarget.Texture2D, 0);
-            GL.Color4(Color.FromArgb(200, Color.Navy));
+            Graphics.SetColor(new Color4(0, 0, 0.5f, 200f));
+            GL.Begin(BeginMode.Quads);
             GL.Vertex3(new Vector3(-Size, 0, -Size));
             GL.Vertex3(new Vector3(-Size, 0, 2*Size));
             GL.Vertex3(new Vector3(2*Size, 0, 2*Size));

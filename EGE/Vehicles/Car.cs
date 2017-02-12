@@ -129,7 +129,7 @@ namespace EGE.Vehicles
         {
             Matrix4 wheel = Matrix4.Identity;
             if(lowPoly) wheel *= Matrix4.CreateScale(new Vector3(WheelWidth, WheelRadius, WheelRadius));
-            wheel *= raycastVehicle.GetWheelTransformWS(number) * World.WorldMatrix;
+            wheel *= raycastVehicle.GetWheelTransformWS(number) * World.ViewMatrix;
             GL.LoadMatrix(ref wheel);
             Resources.DrawMesh(lowPoly?"meshes/wheel":WheelMesh);
         }

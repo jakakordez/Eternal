@@ -21,6 +21,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -68,13 +70,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BulletSharp">
-      <HintPath>..\..\..\Projects 2015\Slovenia simulator\Slovenia simulator\bin\Debug\BulletSharp.dll</HintPath>
+      <HintPath>..\packages\BulletSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Projects 2015\Slovenia simulator\Slovenia simulator\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTK">
-      <HintPath>..\..\..\Projects 2015\Slovenia simulator\Slovenia simulator\bin\Debug\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="QuickFont">
       <HintPath>..\..\..\Projects 2015\Slovenia simulator\Slovenia simulator\bin\Debug\QuickFont.dll</HintPath>
@@ -126,6 +130,7 @@
     <Compile Include="Meshes\MovableMesh.cs" />
     <Compile Include="Meshes\RotatableMesh.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="Shaders\ShaderLoader.cs" />
     <Compile Include="Tools\IBuildable.cs" />
     <Compile Include="Tools\CollectionSerializer.cs" />
     <Compile Include="Tools\NodeCollection.cs" />
@@ -156,7 +161,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="OpenTK.dll.config" />
+    <None Include="packages.config" />
     <None Include="Resources\pointer.mesh" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fragment_shader.glsl.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vertex_shader.glsl.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vertex_shader.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

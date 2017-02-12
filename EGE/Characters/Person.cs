@@ -41,7 +41,7 @@ namespace EGE.Characters
             if (ControlledVehicle == null)
                 CameraList[CurrentCamera].GenerateLookAt(CharacterBody.CenterOfMassPosition);
             else ControlledVehicle.DrawCamera();
-            GL.LoadMatrix(ref World.WorldMatrix);
+            GL.LoadMatrix(ref World.ViewMatrix);
         }
 
         public override void Update(float elaspedTime, Map map)

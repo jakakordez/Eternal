@@ -54,7 +54,7 @@ namespace EGE.Tools
 
         public void DrawBox(ref Vector3 bbMin, ref Vector3 bbMax, ref Matrix4 trans, Color4 color)
         {
-            trans = trans * World.WorldMatrix;
+            trans = trans * World.ViewMatrix;
             GL.LoadMatrix(ref trans);
             GL.Begin(PrimitiveType.Lines);
             GL.Vertex3(bbMin);
@@ -96,7 +96,7 @@ namespace EGE.Tools
 
         public void DrawLine(ref Vector3 from, ref Vector3 to, Color4 color)
         {
-            GL.LoadMatrix( ref World.WorldMatrix);
+            GL.LoadMatrix( ref World.ViewMatrix);
             GL.Begin(PrimitiveType.Lines);
             GL.Vertex3(from);
             GL.Vertex3(to);
@@ -151,6 +151,11 @@ namespace EGE.Tools
         public void DrawTriangle(ref Vector3 v0, ref Vector3 v1, ref Vector3 v2, ref Vector3 __unnamed003, ref Vector3 __unnamed004, ref Vector3 __unnamed005, Color4 color, float alpha)
         {
             throw new NotImplementedException();
+        }
+
+        public void FlushLines()
+        {
+            //throw new NotImplementedException();
         }
 
         public void ReportErrorWarning(string warningString)

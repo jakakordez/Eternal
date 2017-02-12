@@ -34,8 +34,7 @@ namespace EGE
 
         public void Draw()
         {
-            Matrix4 trans = World.WorldMatrix;
-            trans = Center.CreateTransform() * World.WorldMatrix;
+            Matrix4 trans = Center.CreateTransform() * World.ViewMatrix;
             GL.LoadMatrix(ref trans);
             Resources.DrawMesh(MeshName);
         }

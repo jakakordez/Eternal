@@ -73,8 +73,11 @@
             this.tsbPointerRotateZ = new System.Windows.Forms.ToolStripButton();
             this.tsbPointerDelete = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.objectBrowser1 = new Map_editor.ObjectBrowser();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.hostedComponent1 = new Map_editor.mapView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.glControl1 = new OpenTK.GLControl();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
@@ -85,9 +88,6 @@
             this.lblFPS = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStep = new System.Windows.Forms.ToolStripStatusLabel();
-            this.objectBrowser1 = new Map_editor.ObjectBrowser();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.hostedComponent1 = new Map_editor.mapView();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -487,6 +487,17 @@
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
+            // objectBrowser1
+            // 
+            this.objectBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectBrowser1.Location = new System.Drawing.Point(0, 0);
+            this.objectBrowser1.Name = "objectBrowser1";
+            this.objectBrowser1.Size = new System.Drawing.Size(146, 368);
+            this.objectBrowser1.TabIndex = 2;
+            this.objectBrowser1.UpdateWorld += new System.EventHandler(this.objectBrowser1_UpdateWorld);
+            this.objectBrowser1.NavigateNode += new System.EventHandler<string>(this.objectBrowser1_NavigateNode);
+            this.objectBrowser1.PickLocation += new Map_editor.ObjectBrowser.LocationCallback(this.objectBrowser1_PickLocation);
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
@@ -509,6 +520,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Map";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(3, 3);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(519, 336);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.hostedComponent1;
             // 
             // tabPage2
             // 
@@ -591,27 +612,6 @@
             this.lblStep.Size = new System.Drawing.Size(25, 17);
             this.lblStep.Text = "S: 1";
             // 
-            // objectBrowser1
-            // 
-            this.objectBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.objectBrowser1.Name = "objectBrowser1";
-            this.objectBrowser1.Size = new System.Drawing.Size(146, 368);
-            this.objectBrowser1.TabIndex = 2;
-            this.objectBrowser1.UpdateWorld += new System.EventHandler(this.objectBrowser1_UpdateWorld);
-            this.objectBrowser1.NavigateNode += new System.EventHandler<string>(this.objectBrowser1_NavigateNode);
-            this.objectBrowser1.PickLocation += new Map_editor.ObjectBrowser.LocationCallback(this.objectBrowser1_PickLocation);
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(3, 3);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(519, 336);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.hostedComponent1;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -625,6 +625,7 @@
             this.Name = "Form1";
             this.Text = "Map editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.menuStrip1.ResumeLayout(false);

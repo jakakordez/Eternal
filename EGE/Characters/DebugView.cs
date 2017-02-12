@@ -12,7 +12,7 @@ namespace EGE.Characters
 {
     public class DebugView:Character
     {
-        Vector3 centerPoint = new Vector3(673, 5, 274);
+        Vector3 centerPoint = new Vector3(335, 3, 272);//new Vector3(673, 5, 274);
         static CameraDefinition defaultCameraDefinition = new CameraDefinition()
         {
             Distance = 10,
@@ -62,17 +62,13 @@ namespace EGE.Characters
 
         public override void Draw()
         {
-            
-            GL.MatrixMode(MatrixMode.Modelview);
-
             if (Controller.Pressed(Func.SwitchView)) CurrentCamera = (CurrentCamera + 1) % CameraList.Length;
 
             CameraList[CurrentCamera].GenerateLookAt(centerPoint);
-            
-            Matrix4 trans = Graphics.PointerLocation.CreateTransform() * World.WorldMatrix;
-            GL.LoadMatrix(ref trans);
+
+            Matrix4 trans = Graphics.PointerLocation.CreateTransform();
+            GL.UniformMatrix4(Graphics.ModelMatrixID, false, ref trans);
             PointerMesh.Draw();
-            GL.LoadMatrix(ref World.WorldMatrix);
         }
 
         public void Navigate(Environment.Node Point, string editMesh)

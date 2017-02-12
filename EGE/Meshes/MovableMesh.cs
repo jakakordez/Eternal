@@ -26,7 +26,7 @@ namespace EGE.Meshes
         {
             //Matrix4 trans = Matrix4.CreateRotationY(MeshRotation.Y) * Matrix4.CreateRotationZ(MeshRotation.Z) * Matrix4.CreateRotationX(MeshRotation.X);
             Matrix4 trans = Offset.CreateTransform();
-            trans *= /*Matrix4.CreateTranslation(MeshCenterOffset) */ transform * World.WorldMatrix;
+            trans *= /*Matrix4.CreateTranslation(MeshCenterOffset) */ transform * World.ViewMatrix;
             GL.LoadMatrix(ref trans);
             Resources.DrawMesh(Mesh);
         }

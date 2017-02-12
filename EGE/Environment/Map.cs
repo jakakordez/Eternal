@@ -42,13 +42,12 @@ namespace EGE
 
         public void Draw(Vector3 eye)
         {
-            Matrix4 trans = World.WorldMatrix;
-            foreach (var r in Roads) r.Draw();
-            foreach (var f in Forests) f.Draw();
+            //foreach (var r in Roads) r.Draw();
+            //foreach (var f in Forests) f.Draw();
         
             TerrainHeightfield.Draw();
             ObjectCollection.Draw();
-            VehicleCollection.Draw(eye);
+            //VehicleCollection.Draw(eye);
         }
 
         public void Load(string filePath)

@@ -42,7 +42,6 @@
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rebuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateCollisionMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imgTextures = new System.Windows.Forms.ImageList(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -125,22 +124,21 @@
             this.exportToolStripMenuItem,
             this.importToolStripMenuItem,
             this.removeToolStripMenuItem,
-            this.rebuildToolStripMenuItem,
-            this.generateCollisionMeshToolStripMenuItem});
+            this.rebuildToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
@@ -148,23 +146,16 @@
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             this.removeToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // rebuildToolStripMenuItem
             // 
             this.rebuildToolStripMenuItem.Name = "rebuildToolStripMenuItem";
-            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.rebuildToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rebuildToolStripMenuItem.Text = "Build";
             this.rebuildToolStripMenuItem.Click += new System.EventHandler(this.rebuildToolStripMenuItem_Click);
-            // 
-            // generateCollisionMeshToolStripMenuItem
-            // 
-            this.generateCollisionMeshToolStripMenuItem.Name = "generateCollisionMeshToolStripMenuItem";
-            this.generateCollisionMeshToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.generateCollisionMeshToolStripMenuItem.Text = "Generate collision mesh";
-            this.generateCollisionMeshToolStripMenuItem.Click += new System.EventHandler(this.generateCollisionMeshToolStripMenuItem_Click);
             // 
             // imgTextures
             // 
@@ -343,7 +334,6 @@
         private System.Windows.Forms.ToolStripProgressBar stProgress;
         private System.Windows.Forms.ToolStripStatusLabel tlsStatus;
         private System.ComponentModel.BackgroundWorker bcgMeshBuilder;
-        private System.Windows.Forms.ToolStripMenuItem generateCollisionMeshToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
     }

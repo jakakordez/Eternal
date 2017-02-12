@@ -39,5 +39,10 @@ namespace Eternal
         {
             currentWorld.Resize(Width, Height);
         }
+
+        public override void Close()
+        {
+            currentWorld.Exit();
+        }
     }
 }

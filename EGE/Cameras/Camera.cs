@@ -58,20 +58,18 @@ namespace EGE
 
         public virtual void GenerateLookAt(Vector3 center)
         {
-            Matrix4 e = new Matrix4();
-            Matrix4 v = new Matrix4();
-            e = Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
-            v = Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
-            World.WorldMatrix = Matrix4.LookAt(v.ExtractTranslation(), e.ExtractTranslation(), Vector3.UnitY);
+            Matrix4 e = Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
+            Matrix4 v = Matrix4.CreateTranslation(CameraSettings.Offset) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
+            World.ViewMatrix = Matrix4.LookAt(v.ExtractTranslation(), e.ExtractTranslation(), Vector3.UnitY);
+            GL.UniformMatrix4(Graphics.ViewMatrixID, false, ref World.ViewMatrix);
         }
 
         public virtual void GenerateLookAt(Matrix4 centerTransform)
         {
-            Matrix4 e = new Matrix4();
-            Matrix4 v = new Matrix4();
-            e = Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(CameraSettings.Offset) *  centerTransform;
-            v = Matrix4.CreateTranslation(CameraSettings.Offset) *  centerTransform;
-            World.WorldMatrix = Matrix4.LookAt(v.ExtractTranslation(), e.ExtractTranslation(), Vector3.UnitY);
+            Matrix4 e = Matrix4.CreateTranslation(1, 0, 0) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(CameraSettings.Offset) *  centerTransform;
+            Matrix4 v = Matrix4.CreateTranslation(CameraSettings.Offset) *  centerTransform;
+            World.ViewMatrix = Matrix4.LookAt(v.ExtractTranslation(), e.ExtractTranslation(), Vector3.UnitY);
+            GL.UniformMatrix4(Graphics.ViewMatrixID, false, ref World.ViewMatrix);
         }
     }
 }

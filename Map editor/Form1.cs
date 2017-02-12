@@ -215,5 +215,10 @@ namespace Map_editor
         {
             return hostedComponent1.PickLocation();
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            currentWorld.Exit();
+        }
     }
 }

@@ -61,12 +61,30 @@ namespace EGE {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string fragment_shader {
+            get {
+                return ResourceManager.GetString("fragment_shader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] pointermesh {
             get {
                 object obj = ResourceManager.GetObject("pointermesh", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string vertex_shader {
+            get {
+                return ResourceManager.GetString("vertex_shader", resourceCulture);
             }
         }
     }

@@ -40,6 +40,10 @@ namespace EGE.Environment.Paths
 
         public void Build(Map currentMap)
         {
+            if(Points.Length < 1)
+            {
+                return;
+            }
             List<Vector3> BezierCurve = new List<Vector3>();
             List<Node> PointsForPath = new List<Node>();
             Vector3[] BezierControlPoints = new Vector3[4];

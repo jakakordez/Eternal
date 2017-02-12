@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Collections;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -22,6 +24,7 @@ namespace EGE.Meshes
         int[] ElementArraySizes;
         int VertexBuffer;
         int TextureCoordinateBuffer;
+        int NormalBuffer;
         public string MeshFolder = "";
         public float Size = 0;
         public string Name { get; set; }
@@ -42,7 +45,7 @@ namespace EGE.Meshes
 
         public void Draw()
         {
-            Draw(Color4.Transparent, false);
+            Draw(Color4.Transparent);
         }
 
         public CollisionShape GetConvexCollisionShape()
@@ -62,48 +65,51 @@ namespace EGE.Meshes
             return new BvhTriangleMeshShape(CollisionShape, true);
         }
 
-        public void Draw(Color4 color, bool solidColor)
+        public void Draw(Color4 color)
         {
-            if (solidColor) GL.Color4(color);
             for (int i = 0; i < ElementArraySizes.Length; i++)
             {
-                if (!solidColor)
+                if (Materials[i].Texture != "")
                 {
-                    if (Materials[i].Texture != "")
-                    {
-                        GL.Color4(Color.White);
-                        Resources.BindTexture(MeshFolder + Materials[i].Texture);
-                    }
-                    else if (color != Color4.Transparent && Materials[i].Name == "primary_color")
-                    {
-                        GL.BindTexture(TextureTarget.Texture2D, 0);
-                        GL.Color4(color);
-                        color = Color4.Transparent;
-                    }
-                    else
-                    {
-                        GL.BindTexture(TextureTarget.Texture2D, 0);
-                        GL.Color4(Materials[i].Brush);
-                    }
+                    Resources.BindTexture(MeshFolder + Materials[i].Texture);
+                    Graphics.SetColor(new Color4(0, 0, 0, 255f));
+                }
+                else if (color != Color4.Transparent && Materials[i].Name == "primary_color")
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    Graphics.SetColor(color);
+                    color = Color4.Transparent;
+                }
+                else
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    Graphics.SetColor(Materials[i].Brush);
                 }
 
                 GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
-                // Vertex Array Buffer
-                GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Array Buffer
-                                                                       // Set the Pointer to the current bound array describing how the data ia stored
-                GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero);
-                // Enable the client state so it will use this array buffer pointer
                 GL.EnableClientState(ArrayCap.VertexArray);
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArrays[i]);
-
-                GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer);
-                // Set the Pointer to the current bound array describing how the data ia stored
-                GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero);
-                // Enable the client state so it will use this array buffer pointer
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
 
+                // Vertex Array Buffer
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer); //Bind Vertex Buffer
+                GL.VertexPointer(3, VertexPointerType.Float, Vector3.SizeInBytes, IntPtr.Zero); // Set vertex pointer
+
+                // Normal buffer
+                GL.EnableVertexArrayAttrib(0, 2);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, NormalBuffer);
+                GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
+
+                // Texture buffer
+                GL.EnableVertexArrayAttrib(0, 1);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, TextureCoordinateBuffer); // Bind texture buffer
+                //GL.TexCoordPointer(2, TexCoordPointerType.Float, 8, IntPtr.Zero); // Set texture pointer
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, IntPtr.Zero);
+
+                // Index buffer
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementArrays[i]); // Bind Index buffer
+
                 GL.DrawElements(PrimitiveType.Triangles, ElementArraySizes[i], DrawElementsType.UnsignedInt, IntPtr.Zero);
-                GL.BindTexture(TextureTarget.Texture2D, 0);
+                GL.BindTexture(TextureTarget.Texture2D, 0); // Reset texture
 
                 // Restore the state
                 GL.PopClientAttrib();
@@ -132,9 +138,6 @@ namespace EGE.Meshes
 
         public void LoadMesh(ZipArchive MeshArchive)
         {
-            ElementArrays = new uint[MeshArchive.Entries.Count-4];
-            GL.GenBuffers(ElementArrays.Length, ElementArrays);
-            ElementArraySizes = new int[ElementArrays.Length];
             CollisionShape = new TriangleMesh();
 
             ZipArchiveEntry entry = MeshArchive.GetEntry("Descriptor.json");
@@ -155,6 +158,10 @@ namespace EGE.Meshes
             }
             VertexBuffer = AddVertexBuffer(Vertices);
 
+            ElementArrays = new uint[MeshArchive.Entries.Where(z => new Regex(@"\d+.raw").IsMatch(z.Name)).Count()];
+            GL.GenBuffers(ElementArrays.Length, ElementArrays);
+            ElementArraySizes = new int[ElementArrays.Length];
+
             foreach (var item in MeshArchive.Entries)
             {
                 s = item.Open();
@@ -162,7 +169,7 @@ namespace EGE.Meshes
                 else if (item.Name == "TextureCoordinates.raw")
                 {
                     Vector2[] TextureCoordinates = new Vector2[item.Length / 8];
-                    for (int i = 0; i < item.Length / 8; i++)
+                    for (int i = 0; i < TextureCoordinates.Length; i++)
                     {
                         TextureCoordinates[i] = new Vector2();
                         byte[] input = new byte[8];
@@ -171,6 +178,20 @@ namespace EGE.Meshes
                         TextureCoordinates[i].Y = BitConverter.ToSingle(input, 4);
                     }
                     TextureCoordinateBuffer = AddTextureCoordsBuffer(TextureCoordinates);
+                }
+                else if (item.Name == "Normals.raw")
+                {
+                    Vector3[] Normals = new Vector3[item.Length/12];
+                    for (int i = 0; i < Normals.Length; i++)
+                    {
+                        Normals[i] = new Vector3();
+                        byte[] input = new byte[12];
+                        s.Read(input, 0, 12);
+                        Normals[i].X = BitConverter.ToSingle(input, 0);
+                        Normals[i].Y = BitConverter.ToSingle(input, 4);
+                        Normals[i].Z = BitConverter.ToSingle(input, 8);
+                    }
+                    NormalBuffer = AddNormalsBuffer(Normals);
                 }
                 else
                 {
@@ -209,8 +230,10 @@ namespace EGE.Meshes
         {
             List<Face> Faces = new List<Face>();
             List<Vector3> OriginalVertices = new List<Vector3>();
+            List<Vector3> OriginalNormals = new List<Vector3>();
             List<Vector2> OriginalTextureCoordinates = new List<Vector2>();
             List<Vector3> SortedVertices = new List<Vector3>();
+            List<Vector3> SortedNormals = new List<Vector3>();
             List<Vector2> SortedTextureCoordinates = new List<Vector2>();
 
             string[] file = Misc.StreamToString(objStream).Replace("\r", "").Split('\n');
@@ -248,9 +271,9 @@ namespace EGE.Meshes
                                 {
                                     string[] fac = line[j].Split('/');
                                     SortedVertices.Add(OriginalVertices[Misc.toInt(fac[0]) - 1]);
-                                    int v = SortedVertices.Count - 1;
                                     SortedTextureCoordinates.Add(OriginalTextureCoordinates[Misc.toInt(fac[1]) - 1]);
-                                    int t = SortedTextureCoordinates.Count - 1;
+                                    SortedNormals.Add(OriginalNormals[Misc.toInt(fac[2]) - 1]);
+                                    int v = SortedVertices.Count - 1; // Index of last vertex
                                     Misc.Push<int>(v, ref f.vertices);
                                 }
                             }
@@ -258,6 +281,9 @@ namespace EGE.Meshes
                             break;
                         case "vt":
                             OriginalTextureCoordinates.Add(new Vector2(Misc.toFloat(line[2]), Misc.toFloat(line[1])));
+                            break;
+                        case "vn":
+                            OriginalNormals.Add(new Vector3(new Vector3(Misc.toFloat(line[1]), Misc.toFloat(line[2]), Misc.toFloat(line[3]))));
                             break;
                     }
                 }
@@ -301,7 +327,19 @@ namespace EGE.Meshes
             {
                 foreach (var item in SortedVertices)
                 {
-                    progressReporter(this, 30, "Exporting vertices ...");
+                    progressReporter(this, 25, "Exporting vertices ...");
+                    byte[] Output = new byte[4 * 3];
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
+                    Buffer.BlockCopy(BitConverter.GetBytes(item.Z), 0, Output, 8, 4);
+                    str.Write(Output, 0, 12);
+                }
+            }
+            using (Stream str = meshArchive.CreateEntry("Normals.raw").Open())
+            {
+                foreach (var item in SortedNormals)
+                {
+                    progressReporter(this, 50, "Exporting normals ...");
                     byte[] Output = new byte[4 * 3];
                     Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
@@ -313,7 +351,7 @@ namespace EGE.Meshes
             {
                 foreach (var item in SortedTextureCoordinates)
                 {
-                    progressReporter(this, 60, "Exporting texture coordinates ...");
+                    progressReporter(this, 75, "Exporting texture coordinates ...");
                     byte[] Output = new byte[4 * 2];
                     Buffer.BlockCopy(BitConverter.GetBytes(item.X), 0, Output, 0, 4);
                     Buffer.BlockCopy(BitConverter.GetBytes(item.Y), 0, Output, 4, 4);
@@ -401,6 +439,21 @@ namespace EGE.Meshes
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             }
             return TextureCoordinateBuffer;
+        }
+
+        public static int AddNormalsBuffer(Vector3[] normals)
+        {
+            int NormalsBuffer = GL.GenBuffer();
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, NormalsBuffer);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(normals.Length * 12), normals, BufferUsageHint.StaticDraw);
+                long bufferSize;
+                GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out bufferSize);
+                if (normals.Length * Vector3.SizeInBytes != bufferSize)
+                    throw new ApplicationException("Normals array not uploaded correctly");
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            }
+            return NormalsBuffer;
         }
 
         static int FillIndexBuffer(int[] Indicies, uint Buffer)

@@ -30,6 +30,7 @@ namespace EGE.Environment
                     Matrix4.CreateRotationX(Rotation.X) *
                     Matrix4.CreateRotationZ(Rotation.Z) *
                     Matrix4.CreateTranslation(Location);
+                    
         }
     }
 }

@@ -15,10 +15,9 @@ namespace EGE
 {
     public class World
     {
-        public static string a = "";
         public Map CurrentMap { get; set;}
         public Characters.Character MainCharacter;
-        public static Matrix4 WorldMatrix;
+        public static Matrix4 ViewMatrix;
         
         public static DiscreteDynamicsWorld DynamicsWorld;
 
@@ -54,6 +53,11 @@ namespace EGE
             Controller.InitController();
         }
 
+        public void Exit()
+        {
+            if(!Graphics.StaticView) ExitPhysics();
+        }
+
         public void LoadData(string Path)
         {
             Resources.LoadResources(Path + "\\Map");
@@ -62,30 +66,13 @@ namespace EGE
         }
         public void Build()
         {
-            //CurrentMap.CurrentTerrain.Roads.AsParallel().ForAll(r => r.Build());
-            
-            foreach (Environment.Paths.Road r in CurrentMap.Roads)
-            {
-                if(r.Points.Length > 1) r.Build(CurrentMap);
-            }
-            CurrentMap.TerrainHeightfield.Load();
-            foreach (var f in CurrentMap.Forests)
-            {
-                f.Build(CurrentMap);
-            }
+            CurrentMap.TerrainHeightfield.Build(CurrentMap);
+            foreach (var r in CurrentMap.Roads) r.Build(CurrentMap);
+            foreach (var f in CurrentMap.Forests) f.Build(CurrentMap);
 
             if (!Graphics.StaticView)
             {
                 CurrentMap.ObjectCollection.Load();
-                /*var car = Vehicles.Vehicles.getKey("Car/Volkswagen/Polo"); 
-                car.Load(new Vector3(693, 10, 284));
-                VehicleList.Add(car);
-                /*car = Vehicles.Vehicles.getKey("Car/BMW/M3 E90");
-                (car as Vehicles.Car).Load(new Vector3(693, 15, 294));
-                VehicleList.Add(car);
-                car = Vehicles.Vehicles.getKey("Ship/Ferry/Guarda");
-                (car as Vehicles.Ship).Load(new Vector3(670, 5, 200));
-                VehicleList.Add(car);*/
                 CurrentMap.VehicleCollection.spawnVehicle("Polo", new Vector3(493, 10, 284));
                 //CurrentMap.VehicleCollection.spawnVehicle("BMW", new Vector3(693, 15, 294));
                 /*for(int i = 0; i < 2; i++)
@@ -128,7 +115,8 @@ namespace EGE
         {
             GL.ClearColor(Color.CornflowerBlue);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
+            GL.UseProgram(Graphics.ProgramID);
+            Graphics.SetLight(new Vector3(335, 100, 277));
             Graphics.SetProjection();
 
             MainCharacter.Draw();
@@ -155,7 +143,8 @@ namespace EGE
             DynamicsWorld.AddRigidBody(body);
             return body;
         }
-        /*public void ExitPhysics()
+
+        private void ExitPhysics()
         {
             //remove/dispose constraints
             int i;
@@ -183,6 +172,6 @@ namespace EGE
             broadphase.Dispose();
             if (dispatcher != null) dispatcher.Dispose();
             collisionConf.Dispose();
-        }*/
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace EGE
 
         public override void GenerateLookAt(Vector3 center)
         {
-            World.WorldMatrix = Matrix4.LookAt(center, center - Vector3.UnitY, -Vector3.UnitZ);
+            World.ViewMatrix = Matrix4.LookAt(center, center - Vector3.UnitY, -Vector3.UnitZ);
         }
     }
 }

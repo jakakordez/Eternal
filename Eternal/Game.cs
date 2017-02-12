@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenTK;
 using EGE;
+using System.ComponentModel;
 
 namespace Eternal
 {
@@ -57,6 +58,12 @@ namespace Eternal
         {
             currentScreen.Resize(Width, Height);
             base.OnResize(e);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            currentScreen.Close();
+            base.OnClosing(e);
         }
     }
 }

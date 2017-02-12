@@ -15,7 +15,7 @@ namespace EGE
         public override void GenerateLookAt(Vector3 center)
         {
             Matrix4 e = Matrix4.Identity * Matrix4.CreateTranslation(-CameraSettings.Distance, 0, 0) * Matrix4.CreateRotationZ(Orientation.X) * Matrix4.CreateRotationY(Orientation.Y) * Matrix4.CreateTranslation(center);
-            World.WorldMatrix = Matrix4.LookAt(e.ExtractTranslation(), center, Vector3.UnitY);
+            World.ViewMatrix = Matrix4.LookAt(e.ExtractTranslation(), center, Vector3.UnitY);
         }
     }
 }

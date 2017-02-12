@@ -259,31 +259,34 @@ namespace EGE
         {
             using (ZipArchive archive = ZipFile.Open(ArchivePath, ZipArchiveMode.Update, Global.Encoding))
             {
-                archive.Entries.Where(e => e.FullName.StartsWith(folder)).AsParallel().ForAll(e => e.Delete());
+                archive.Entries.Where(e => e.FullName.StartsWith(folder)).ToList().ForEach(e => e.Delete());
             }
         }
 
         public static void DrawMesh(string name)
         {
             Mesh m = (Mesh)findFile(name, RFile.RFileType.Mesh).obj;
-            if (m != null) m.Draw(Color4.Transparent, false);
+            if (m != null) m.Draw(Color4.Transparent);
         }
 
-        public static void DrawMesh(MeshReference mr, Matrix4 transform)
+        public static void DrawMesh(MeshReference mr, Matrix4 model)
         {
             Mesh mesh = (Mesh)findFile(mr.PrimaryMesh, RFile.RFileType.Mesh).obj;
             if (mesh != null)
             {
-                Matrix4 trans = transform * World.WorldMatrix;
-                GL.LoadMatrix(ref trans);
-                int dl = Graphics.GetDetailLevel(transform.ExtractTranslation(), mesh.Size);
-                if (dl == 3) mesh.Draw(mr.MeshColor, false);
-                else if (dl == 0) return;
-                else if (dl < 3)
+                GL.UniformMatrix4(Graphics.ModelMatrixID, false, ref model);
+
+                int dl = Graphics.GetDetailLevel(model.ExtractTranslation(), mesh.Size);
+                switch (dl)
                 {
-                    mesh = (Mesh)findFile(mr.LowPolyMesh, RFile.RFileType.Mesh).obj;
-                    if (dl == 2) mesh.Draw(mr.MeshColor, false);
-                    else mesh.Draw(mr.MeshColor, true);
+                    case 2:
+                        mesh.Draw(mr.MeshColor);
+                        break;
+                    case 1:
+                        mesh = (Mesh)findFile(mr.LowPolyMesh, RFile.RFileType.Mesh).obj;
+                        mesh.Draw(mr.MeshColor);
+                        break;
+                    default: return;
                 }
             }
         }

@@ -14,5 +14,6 @@ namespace Eternal
         public abstract void Draw();
         public abstract void Update(FrameEventArgs e);
         public abstract void Resize(float Width, float Height);
+        public abstract void Close();
     }
 }
